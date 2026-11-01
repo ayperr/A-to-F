@@ -1,0 +1,7 @@
+# Verified current on 2026-11-01. Pinned so results are reproducible.
+astral==3.2
+pytest==8.*
+# Day 3+ (uncomment when used):
+# pyopensky==2.18   # OpenSky Trino client (needs approved research account)
+# pandas==3.1.0
+# anthropic==2.3.0  # evaluation + Batches pre-generation

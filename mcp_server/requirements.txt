@@ -1,0 +1,3 @@
+# v1 API on purpose (FastMCP, stateless_http, json_response). mcp 2.x renamed FastMCP -> MCPServer.
+mcp==1.30.0
+astral==3.2

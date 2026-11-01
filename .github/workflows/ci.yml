@@ -1,0 +1,40 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  pipeline:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.13"
+      - run: pip install -r pipeline/requirements.txt -r mcp_server/requirements.txt
+      - name: Geometry tests
+        run: python -m pytest pipeline -q
+      - name: Data is up to date with the engine
+        run: |
+          python pipeline/build_data.py
+          git diff --exit-code -- web/public/data || (echo "::error::web/public/data is stale. Run python pipeline/build_data.py and commit." && exit 1)
+      - name: MCP server smoke test (STDIO, progress notifications)
+        run: python mcp_server/smoke_test.py
+
+  web:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: web
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run build
