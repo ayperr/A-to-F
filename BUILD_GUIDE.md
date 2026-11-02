@@ -32,7 +32,7 @@ Facts were checked on 1 Nov 2026; sources at the end.
 2. **Anthropic key** (console.anthropic.com): set a **$5 monthly spend limit** first, then create a key and add it in Vercel
    (project a-to-f, `ANTHROPIC_API_KEY`, Production) for the live features, and as a GitHub secret for narration,
    never in chat: GitHub → A-to-F → Settings → Secrets and variables → Actions: `ANTHROPIC_API_KEY`.
-   (The website itself no longer calls Claude; "Choosing for something else?" was removed on 2 Nov.)
+   Live features (What's that?, Tell me about it) are capped at 300 photos and 1,000 notes a day.
 3. **Run the narration:** GitHub → Actions → "Generate Claude data" → Run workflow.
    It commits `narration.json` (checked against the geometry) and the site redeploys. Expected cost: a few cents.
    (The "Claude alone vs engine" evaluation was removed on 2 Nov.)
