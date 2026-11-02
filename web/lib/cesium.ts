@@ -13,6 +13,21 @@ export const TOKEN = process.env.NEXT_PUBLIC_CESIUM_ION_TOKEN;
 export const PITCH_DEG = -18;
 export const EARTH_AT_NIGHT_ASSET = 3812;
 
+/**
+ * Shade the ground by the real sun, also from a cabin window. Cesium only applies day/night lighting
+ * when the camera is thousands of km away (by default everything is fully lit closer than ~10,000 km),
+ * so at cruising altitude the ground looked like noon at night. Pull all four fade distances to zero.
+ */
+export function lightFromSun(globe: CesiumNS.Globe) {
+  globe.enableLighting = true;
+  globe.dynamicAtmosphereLighting = true;
+  globe.showGroundAtmosphere = true;
+  globe.lightingFadeOutDistance = 0;
+  globe.lightingFadeInDistance = 1;
+  globe.nightFadeOutDistance = 0;
+  globe.nightFadeInDistance = 1;
+}
+
 export function loadCesium(): Promise<typeof CesiumNS> {
   if (window.Cesium) return Promise.resolve(window.Cesium);
   window.CESIUM_BASE_URL = "/cesium/";

@@ -10,7 +10,7 @@ import type { RouteDetail } from "@/lib/engine/types";
 import { duration } from "@/lib/routes";
 import styles from "./VirtualWindow.module.css";
 
-import { EARTH_AT_NIGHT_ASSET, interpolate, ionWorks, loadCesium, PITCH_DEG, TOKEN } from "@/lib/cesium";
+import { EARTH_AT_NIGHT_ASSET, interpolate, ionWorks, lightFromSun, loadCesium, PITCH_DEG, TOKEN } from "@/lib/cesium";
 
 const SPEEDS = [1, 60, 300];
 const CRUISE_M = 10_700;
@@ -93,9 +93,7 @@ export default function VirtualWindow({ detail, backHref }: { detail: RouteDetai
         viewerRef.current = v;
         (window as unknown as { __atofViewer?: unknown }).__atofViewer = v;
         const scene = v.scene;
-        scene.globe.enableLighting = true;
-        scene.globe.dynamicAtmosphereLighting = true;
-        scene.globe.showGroundAtmosphere = true;
+        lightFromSun(scene.globe);
         scene.screenSpaceCameraController.enableInputs = false;
         (v.camera.frustum as CesiumNS.PerspectiveFrustum).fov = C.Math.toRadians(62);
 

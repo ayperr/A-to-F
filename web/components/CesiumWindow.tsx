@@ -5,7 +5,7 @@
 // illustration underneath stays visible.
 import type * as CesiumNS from "cesium";
 import { useEffect, useRef, useState } from "react";
-import { EARTH_AT_NIGHT_ASSET, interpolate, ionWorks, loadCesium, PITCH_DEG, TOKEN } from "@/lib/cesium";
+import { EARTH_AT_NIGHT_ASSET, interpolate, ionWorks, lightFromSun, loadCesium, PITCH_DEG, TOKEN } from "@/lib/cesium";
 import type { RouteDetail } from "@/lib/engine/types";
 import styles from "./CesiumWindow.module.css";
 
@@ -41,9 +41,7 @@ export default function CesiumWindow({ detail, departureMs, minute, side, placeh
             : { baseLayer: C.ImageryLayer.fromProviderAsync(C.TileMapServiceImageryProvider.fromUrl(C.buildModuleUrl("Assets/Textures/NaturalEarthII"))) }),
         });
         viewer.current = v;
-        v.scene.globe.enableLighting = true;
-        v.scene.globe.dynamicAtmosphereLighting = true;
-        v.scene.globe.showGroundAtmosphere = true;
+        lightFromSun(v.scene.globe);
         v.scene.screenSpaceCameraController.enableInputs = false;
         v.clock.shouldAnimate = false;
         (v.camera.frustum as CesiumNS.PerspectiveFrustum).fov = C.Math.toRadians(62);
