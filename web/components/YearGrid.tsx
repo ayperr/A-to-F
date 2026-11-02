@@ -42,7 +42,7 @@ export default function YearGrid({ data }: { data: Insights }) {
       <ul className={styles.legend} aria-label="Legend">
         <li><span className={`${styles.swatch} ${styles.A}`}>A</span>Left side wins</li>
         <li><span className={`${styles.swatch} ${styles.F}`}>F</span>Right side wins</li>
-        <li><span className={`${styles.swatch} ${styles.mixed}`}>A</span>Wins on most sampled days, not all</li>
+        <li><span className={`${styles.swatch} ${styles.A} ${styles.mixed}`}>A</span>Wins on most sampled days, not all</li>
         <li><span className={`${styles.swatch} ${styles.none}`} />Either side</li>
         <li><span className={styles.dot} />Golden light on most days</li>
       </ul>

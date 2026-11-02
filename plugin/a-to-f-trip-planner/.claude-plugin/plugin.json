@@ -5,7 +5,7 @@
   "author": {
     "name": "Ayper Seyyedbaily"
   },
-  "homepage": "https://a-to-f-ayper1.vercel.app",
+  "homepage": "https://a-to-f.vercel.app",
   "repository": "https://github.com/ayperr/A-to-F",
   "license": "MIT",
   "keywords": [
@@ -15,5 +15,5 @@
     "sunset",
     "trip planning"
   ],
-  "privacyPolicyUrl": "https://a-to-f-ayper1.vercel.app/privacy"
+  "privacyPolicyUrl": "https://a-to-f.vercel.app/privacy"
 }

@@ -8,7 +8,7 @@
 
 .legend { list-style: none; padding: 0; margin: 0 0 16px; display: flex; flex-wrap: wrap; gap: 8px 22px; font-size: 0.9rem; color: var(--cream-dim); }
 .legend li { display: inline-flex; align-items: center; gap: 8px; }
-.swatch { width: 26px; height: 22px; border-radius: 5px; display: inline-grid; place-items: center; font-weight: 800; font-size: 0.75rem; }
+.swatch { width: 26px; height: 22px; border-radius: 5px; border: 2px solid transparent; display: inline-grid; place-items: center; font-weight: 800; font-size: 0.75rem; }
 .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--ground); box-shadow: 0 0 0 2px var(--coral); display: inline-block; }
 
 .scroll { overflow-x: auto; }

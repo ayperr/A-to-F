@@ -24,7 +24,7 @@ Produce a brief a traveller can act on in ten seconds, grounded only in the A to
   low confidence: say they may be on either side.
 - If the answer is "either side", say so and suggest picking by landmarks or by sleep.
 - Close with one line: "Flight path is approximate; real routes bend with winds and air traffic control."
-- Optional link for the interactive version: `https://a-to-f-ayper1.vercel.app/route/<route_id>?d=<date>&t=<time>`.
+- Optional link for the interactive version: `https://a-to-f.vercel.app/route/<route_id>?d=<date>&t=<time>`.
 
 ## Rules
 

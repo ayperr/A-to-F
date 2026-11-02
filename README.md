@@ -19,14 +19,22 @@ This project answers it with geometry, not guesswork — and then makes sure eve
    front-lit views; landmarks decide the rest.
 4. **Claude narrates, geometry decides.** Every side claim is checked against the engine before it ships.
 
-## Status
-| Piece | State |
+## Try it
+
+- Site: **https://a-to-f.vercel.app**
+- MCP server (stateless StreamableHTTP): `https://a-to-f-mcp.vercel.app/mcp`
+- Claude plugin: `plugin/a-to-f-trip-planner`
+
+## What's in the repo
+
+| Folder | What |
 |---|---|
-| Sun-side engine + tests | ✅ working (`pipeline/`) |
-| Route pages (20 directions, 4 departure slots) | ✅ working (`web/`) |
-| MCP server (STDIO with progress; stateless StreamableHTTP) | ✅ working (`mcp_server/`) |
-| Real OpenSky tracks | ⏳ data access requested |
-| Landmarks, Virtual Window, postcard, evaluation | ⏳ see `BUILD_GUIDE.md` |
+| `pipeline/` | Python engine, landmarks, data builders, evaluation, narration, claim checker, tests |
+| `web/` | Next.js site: planner, Virtual Window (CesiumJS), postcard, insights; TypeScript engine port |
+| `mcp_server/` | MCP server: progress, logging, sampling, roots; `main.py` hosts it on Vercel |
+| `.claude/` | Skills, subagents and hooks used to build and check the project with Claude Code |
+| `plugin/` | Cowork plugin for trip planners |
+| `.github/workflows/` | CI, Claude Code PR review, Claude data generation |
 
 ## Run it
 ```bash
