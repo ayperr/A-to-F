@@ -5,7 +5,7 @@
 // illustration underneath stays visible.
 import type * as CesiumNS from "cesium";
 import { useEffect, useRef, useState } from "react";
-import { EARTH_AT_NIGHT_ASSET, interpolate, ionWorks, lightFromSun, loadCesium, PITCH_DEG, TOKEN } from "@/lib/cesium";
+import { addCityLights, interpolate, ionWorks, lightFromSun, loadCesium, PITCH_DEG, TOKEN } from "@/lib/cesium";
 import type { RouteDetail } from "@/lib/engine/types";
 import styles from "./CesiumWindow.module.css";
 
@@ -45,14 +45,7 @@ export default function CesiumWindow({ detail, departureMs, minute, side, placeh
         v.scene.screenSpaceCameraController.enableInputs = false;
         v.clock.shouldAnimate = false;
         (v.camera.frustum as CesiumNS.PerspectiveFrustum).fov = C.Math.toRadians(62);
-        if (ion) {
-          try {
-            const night = C.ImageryLayer.fromProviderAsync(C.IonImageryProvider.fromAssetId(EARTH_AT_NIGHT_ASSET));
-            night.dayAlpha = 0;
-            night.nightAlpha = 0.9;
-            v.imageryLayers.add(night);
-          } catch { /* city lights are a bonus */ }
-        }
+        addCityLights(C, v);
         for (const l of detail.landmarks) {
           v.entities.add({
             position: C.Cartesian3.fromDegrees(l.lon, l.lat),

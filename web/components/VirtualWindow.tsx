@@ -10,7 +10,7 @@ import type { RouteDetail } from "@/lib/engine/types";
 import { duration } from "@/lib/routes";
 import styles from "./VirtualWindow.module.css";
 
-import { aimNight, EARTH_AT_NIGHT_ASSET, interpolate, ionWorks, type LightMode, lightFromSun, loadCesium, PITCH_DEG, setLightMode, TOKEN } from "@/lib/cesium";
+import { addCityLights, aimNight, interpolate, ionWorks, type LightMode, lightFromSun, loadCesium, PITCH_DEG, setLightMode, TOKEN } from "@/lib/cesium";
 import { samplesFor } from "@/lib/engine/geometry";
 
 const SPEEDS = [1, 60, 300];
@@ -103,16 +103,7 @@ export default function VirtualWindow({ detail, backHref }: { detail: RouteDetai
         scene.screenSpaceCameraController.enableInputs = false;
         (v.camera.frustum as CesiumNS.PerspectiveFrustum).fov = C.Math.toRadians(62);
 
-        if (ion) {
-          try {
-            const night = C.ImageryLayer.fromProviderAsync(C.IonImageryProvider.fromAssetId(EARTH_AT_NIGHT_ASSET));
-            night.dayAlpha = 0;
-            night.nightAlpha = 0.9;
-            v.imageryLayers.add(night);
-          } catch {
-            /* night lights are a bonus */
-          }
-        }
+        addCityLights(C, v);
         setLightMode(C, v, modeRef.current);
 
         for (const l of detail.landmarks) {
@@ -153,8 +144,8 @@ export default function VirtualWindow({ detail, backHref }: { detail: RouteDetai
           }
         });
         setStatus(ion ? "" : TOKEN
-          ? `Low-detail globe: the Cesium token isn't allowed on ${window.location.host} yet, so terrain and city lights are off.`
-          : "Low-detail globe: add a Cesium token for terrain and city lights.");
+          ? `Low-detail globe: the Cesium token isn't allowed on ${window.location.host} yet, so the detailed terrain is off.`
+          : "Low-detail globe: add a Cesium token for detailed terrain.");
       })
       .catch((e: Error) => setStatus(e.message));
     return () => {
