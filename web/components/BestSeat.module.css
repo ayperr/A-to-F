@@ -1,0 +1,15 @@
+.box { margin-top: 30px; padding-top: 18px; border-top: 1px solid var(--line); max-width: 46ch; }
+.q { margin: 0 0 10px; font-weight: 700; }
+.options { display: flex; flex-wrap: wrap; gap: 8px; }
+.options button {
+  font: inherit; font-size: 0.9rem; font-weight: 600; color: var(--cream);
+  background: none; border: 2px solid var(--line-strong); border-radius: 999px;
+  padding: 7px 14px; min-height: 40px; cursor: pointer;
+}
+.options button:hover { border-color: var(--cream-dim); }
+.options button[aria-pressed="true"] { border-color: var(--coral); color: var(--coral); }
+.options button:disabled { cursor: progress; }
+.answer { min-height: 1.5em; }
+.answer p { margin: 12px 0 0; }
+.answer b { color: var(--coral); }
+.dim { color: var(--cream-dim); font-size: 0.85rem; }

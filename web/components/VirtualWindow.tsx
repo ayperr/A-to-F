@@ -72,6 +72,15 @@ export default function VirtualWindow({ detail }: { detail: RouteDetail }) {
   const [speed, setSpeed] = useState(60);
   const [status, setStatus] = useState("Loading the 3D view");
   const [gps, setGps] = useState<string | null>(null);
+  const [lines, setLines] = useState<Record<string, string>>({});
+
+  // Pre-generated narration (pipeline/narrate.py), already checked against the geometry. Optional.
+  useEffect(() => {
+    fetch("/data/narration.json")
+      .then((r) => (r.ok ? r.json() : null))
+      .then((n) => n?.landmarks?.[detail.id] && setLines(n.landmarks[detail.id]))
+      .catch(() => undefined);
+  }, [detail.id]);
 
   useEffect(() => {
     const q = new URLSearchParams(window.location.search);
@@ -247,7 +256,7 @@ export default function VirtualWindow({ detail }: { detail: RouteDetail }) {
     ? null
     : upcoming
       ? upcoming.minute - m <= 1
-        ? upcoming.side === "below" ? `${upcoming.name} is below you now` : `${upcoming.name} on your ${word} now`
+        ? lines[upcoming.name] ?? (upcoming.side === "below" ? `${upcoming.name} is below you now` : `${upcoming.name} on your ${word} now`)
         : `${upcoming.name} ${upcoming.side === "below" ? "below you" : `on your ${word}`} in ${upcoming.minute - m} min`
       : null;
 

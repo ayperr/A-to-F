@@ -1,0 +1,38 @@
+name: Claude Code review
+
+# Reviews every pull request. Needs the repo secret ANTHROPIC_API_KEY.
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+
+jobs:
+  review:
+    if: ${{ !github.event.pull_request.draft }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+      id-token: write
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 1
+      - uses: anthropics/claude-code-action@v1
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          prompt: |
+            REPO: ${{ github.repository }}
+            PR NUMBER: ${{ github.event.pull_request.number }}
+
+            Review this pull request for A to F. Read CLAUDE.md first; its golden rules are the review checklist.
+            Focus on:
+            1. Geometry is the source of truth: any change to pipeline/sun_geometry.py, pipeline/solar.py or
+               pipeline/landmarks.py must be mirrored in web/lib/engine and keep the parity tests passing.
+            2. No hand-edited generated data (web/public/data/routes, insights, golden fixtures).
+            3. Any narration or copy that says left/right must match the landmark's side in the route data.
+            4. No API keys in code; the Anthropic key is only read server-side in app/api/best-seat.
+            5. Brand and legal: "for JetBlue flyers", never "by JetBlue"; no blue in the palette.
+            Leave inline comments for concrete problems and one short summary comment. Don't nitpick style.
+          claude_args: |
+            --max-turns 8
+            --allowedTools "mcp__github_inline_comment__create_inline_comment,Bash(gh pr comment:*),Bash(gh pr diff:*),Bash(gh pr view:*)"

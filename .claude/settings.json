@@ -1,5 +1,23 @@
 {
   "permissions": {
     "deny": ["Read(./.env)", "Read(./.env.*)", "Read(./web/.env*)"]
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          { "type": "command", "command": "python3", "args": ["${CLAUDE_PROJECT_DIR}/.claude/hooks/guard_generated.py"] }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          { "type": "command", "command": "python3", "args": ["${CLAUDE_PROJECT_DIR}/.claude/hooks/check_after_edit.py"], "timeout": 180 }
+        ]
+      }
+    ]
   }
 }

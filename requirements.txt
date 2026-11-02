@@ -1,0 +1,3 @@
+# Vercel Python runtime: hosted MCP server (main.py). Same pins as mcp_server/requirements.txt.
+mcp==1.30.0
+numpy==2.5.4

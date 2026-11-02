@@ -24,6 +24,7 @@ jobs:
         run: |
           python pipeline/build_data.py
           python pipeline/basemap.py
+          (cd pipeline && python stats.py)
           git diff --exit-code -- web/public/data web/lib/engine/fixtures || (echo "::error::web/public/data is stale. Run python pipeline/build_data.py and commit." && exit 1)
       - name: MCP server smoke test (STDIO, progress notifications)
         run: python mcp_server/smoke_test.py

@@ -36,7 +36,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <footer className="site-footer">
           <div className="wrap">
             <span>Independent student project. Not affiliated with JetBlue Airways.</span>
-            <span>Every seat gets the view.</span>
+            <span>Every seat gets the view. <Link href="/privacy">Privacy</Link></span>
           </div>
         </footer>
       </body>

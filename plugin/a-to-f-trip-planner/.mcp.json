@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "a-to-f": {
+      "type": "http",
+      "url": "https://a-to-f-mcp.vercel.app/mcp"
+    }
+  }
+}

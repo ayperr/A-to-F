@@ -1,0 +1,35 @@
+{
+ "week_of": "2026-11-09",
+ "flights": [
+  {
+   "route": "lhr-bos",
+   "origin": "LHR",
+   "dest": "BOS",
+   "date": "2026-11-15",
+   "local": "07:00",
+   "side": "A",
+   "golden_minutes": 255,
+   "reason": "Sunrise on the left (A): 255 min of golden light, starting 0h 20m after takeoff."
+  },
+  {
+   "route": "lhr-jfk",
+   "origin": "LHR",
+   "dest": "JFK",
+   "date": "2026-11-15",
+   "local": "07:00",
+   "side": "A",
+   "golden_minutes": 253,
+   "reason": "Sunrise on the left (A): 253 min of golden light, starting 0h 20m after takeoff."
+  },
+  {
+   "route": "jfk-lax",
+   "origin": "JFK",
+   "dest": "LAX",
+   "date": "2026-11-10",
+   "local": "16:00",
+   "side": "A",
+   "golden_minutes": 147,
+   "reason": "Sunset on the left (A): 147 min of golden light, starting 0h 07m after takeoff."
+  }
+ ]
+}

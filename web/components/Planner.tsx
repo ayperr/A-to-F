@@ -6,6 +6,7 @@ import { recommend, samplesFor } from "@/lib/engine/geometry";
 import { clock, localToUtcMs, todayIn } from "@/lib/engine/time";
 import type { RouteDetail } from "@/lib/engine/types";
 import { destinationsFrom, duration, getRoute, origins, routeId } from "@/lib/routes";
+import BestSeat from "./BestSeat";
 import SeatRow from "./SeatRow";
 import Timeline from "./Timeline";
 import WindowView from "./WindowView";
@@ -126,6 +127,7 @@ export default function Planner({ detail }: { detail: RouteDetail }) {
               Make a postcard
             </Link>
           </div>
+          <BestSeat routeId={detail.id} date={date} time={time} />
         </div>
       </section>
 

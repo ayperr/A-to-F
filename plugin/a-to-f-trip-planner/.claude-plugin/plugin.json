@@ -1,0 +1,19 @@
+{
+  "name": "a-to-f-trip-planner",
+  "version": "0.1.0",
+  "description": "Window-seat advice for JetBlue trips: which side gets the sunset, sunrise and landmarks, worked out from the flight path. Independent student project, not affiliated with JetBlue.",
+  "author": {
+    "name": "Ayper Seyyedbaily"
+  },
+  "homepage": "https://a-to-f-ayper1.vercel.app",
+  "repository": "https://github.com/ayperr/A-to-F",
+  "license": "MIT",
+  "keywords": [
+    "travel",
+    "flights",
+    "window seat",
+    "sunset",
+    "trip planning"
+  ],
+  "privacyPolicyUrl": "https://a-to-f-ayper1.vercel.app/privacy"
+}

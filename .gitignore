@@ -16,3 +16,6 @@ __pycache__/
 
 # Raw downloads (keep the repo small; processed JSON lives in web/public/data)
 pipeline/raw/
+
+# Headless verification output
+reports/
