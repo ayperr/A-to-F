@@ -44,6 +44,13 @@ export function setLightMode(C: typeof CesiumNS, viewer: CesiumNS.Viewer, mode: 
   scene.globe.showGroundAtmosphere = mode !== "night"; // the haze glows grey under fake night
   if (scene.skyBox) scene.skyBox.show = mode !== "day";
   if (scene.sun) scene.sun.show = mode === "real";
+  // Night mode is for looking, so lift the moonlit map a little (measured: average brightness 27 -> 51
+  // of 255 over Ohio). Real nights stay as dark as they really are.
+  if (viewer.imageryLayers.length) {
+    const base = viewer.imageryLayers.get(0);
+    base.brightness = mode === "night" ? 1.8 : 1;
+    base.contrast = mode === "night" ? 1.2 : 1;
+  }
 }
 
 /** Night mode: light travelling straight up through the ground under the camera, so everything in view is unlit. */
