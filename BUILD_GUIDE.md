@@ -13,7 +13,7 @@ Facts were checked on 1 Nov 2026; sources at the end.
 | Engine | NOAA solar position (`pipeline/solar.py`), side rules, horizon dip, golden "glow" band, landmarks, recommend() | Identical to astral on 20,000 random cases; 19 Python tests |
 | Landmarks | Corridor search over Natural Earth features with Wikidata IDs (`pipeline/landmarks.py`), side/minute/distance/confidence | Tests: provenance, Rockies + Grand Canyon on JFK→LAX, sides flip on return |
 | Browser engine | TypeScript port (`web/lib/engine`) for any date and time | 320 parity cases vs Python (`npm test`) |
-| Planner | Flight-number lookup or route picker, A/F answer, clickable seat row (middle/aisle seats explained), sky window with scrubber, two-lane timeline | `/`, `/route/[id]` |
+| Planner | Flight-number lookup or route picker, A/F answer, clickable seat row (middle/aisle seats explained), camera moments that open the Virtual Window at that minute, two-lane timeline | `/`, `/route/[id]` |
 | Any JetBlue flight | Flight number + date → AeroDataBox → airports and time; pre-built routes get everything, other routes get the sun answer with a browser-computed track (tested equal to the pipeline's) | `/api/flight`, `/flight`, `/flight/window`, `/flight/postcard` |
 | Virtual Window | CesiumJS side camera, real sun lighting, terrain + night lights (ion token), 1×/60×/300×, phone GPS | `/window/[id]` |
 | Postcard | 1080×1350 canvas: map, golden stretch, landmarks on your side, your photo in the window, share/download | `/postcard/[id]` |

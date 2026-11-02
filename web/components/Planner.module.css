@@ -1,13 +1,7 @@
 .planner {
   display: grid;
-  grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
-  grid-template-areas:
-    "summary summary"
-    "context context"
-    "answer view"
-    "moments moments"
-    "snap snap"
-    "strip strip";
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-areas: "summary" "context" "answer" "moments" "snap" "strip";
   column-gap: 56px;
   padding-top: 32px;
 }
@@ -70,17 +64,6 @@
 .primary:hover { background: #184fb6; }
 .secondary { font-weight: 600; color: var(--accent); text-underline-offset: 4px; min-height: 44px; display: inline-flex; align-items: center; }
 
-.view { grid-area: view; display: grid; gap: 14px; justify-items: center; }
-.scrub { width: min(100%, 360px); display: grid; gap: 8px; }
-.scrub input[type="range"] { width: 100%; accent-color: var(--accent); min-height: 32px; }
-.scrub p { margin: 0; color: var(--ink-soft); font-size: 0.85rem; text-align: center; font-variant-numeric: tabular-nums; }
-.play {
-  justify-self: center;
-  font: inherit; font-weight: 700; color: var(--accent);
-  background: var(--bg); border: 2px solid var(--accent); border-radius: 999px;
-  padding: 8px 20px; min-height: 44px; cursor: pointer;
-}
-.play:hover { background: var(--accent-soft); }
 
 /* Camera moments: when to get the phone out */
 .hint { margin: 12px 0 0; color: var(--ink-soft); font-size: 0.88rem; max-width: 46ch; }
@@ -91,10 +74,9 @@
 .moments li .seek {
   width: 100%; display: grid; grid-template-columns: 5.2em 4.6em 1fr; gap: 14px; align-items: baseline;
   padding: 12px 6px; border: 0; border-bottom: 1px solid var(--line); background: none; text-align: left;
-  font: inherit; color: var(--ink); cursor: pointer; min-height: 48px;
+  font: inherit; color: var(--ink); cursor: pointer; min-height: 48px; text-decoration: none;
 }
 .moments li .seek:hover { background: var(--bg-soft); }
-.moments li .seek[aria-current="true"] { background: var(--accent-soft); }
 .when { font-weight: 800; font-variant-numeric: tabular-nums; display: grid; }
 .when small { font-weight: 500; color: var(--ink-soft); font-size: 0.78rem; }
 .photo, .video {
@@ -112,8 +94,6 @@
 .fine a { color: var(--accent); }
 
 @media (max-width: 860px) {
-  .planner { grid-template-columns: 1fr; grid-template-areas: "summary" "context" "answer" "view" "moments" "snap" "strip"; }
-  .view { margin-top: 40px; }
   .answer { gap: 18px; }
 }
 @media (max-width: 520px) {
@@ -124,7 +104,6 @@
   .answer { flex-direction: column; }
 }
 
-.dayLink { color: var(--accent); font-weight: 600; font-size: 0.9rem; text-underline-offset: 4px; padding: 6px 0; }
 
 .momentRow { display: grid; grid-template-columns: 1fr auto; align-items: center; column-gap: 10px; border-bottom: 1px solid var(--line); }
 .momentRow .seek { border-bottom: 0 !important; }

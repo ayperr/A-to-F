@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { recommend, samplesFor } from "@/lib/engine/geometry";
 import { clock, localToUtcMs, todayIn } from "@/lib/engine/time";
 import type { RouteDetail } from "@/lib/engine/types";
@@ -8,8 +8,6 @@ import { duration } from "@/lib/routes";
 import { cameraMoments } from "@/lib/moments";
 import SeatRow from "./SeatRow";
 import Timeline from "./Timeline";
-import CesiumWindow from "./CesiumWindow";
-import WindowView from "./WindowView";
 import WhatsThat from "./WhatsThat";
 import LandmarkAbout from "./LandmarkAbout";
 import styles from "./Planner.module.css";
@@ -41,8 +39,6 @@ export default function Planner({ detail, adhoc }: { detail: RouteDetail; adhoc?
   const [seat, setSeat] = useState<string | null>(null);
   const [minute, setMinute] = useState(0);
   const [viewing, setViewing] = useState<"A" | "F" | null>(null);
-  const [playing, setPlaying] = useState(false);
-  const raf = useRef<number | null>(null);
 
   // Date and time live in the URL so a plan can be shared; read them once on load.
   useEffect(() => {
@@ -70,36 +66,14 @@ export default function Planner({ detail, adhoc }: { detail: RouteDetail; adhoc?
   const rec = useMemo(() => recommend(samples, detail.landmarks), [samples, detail.landmarks]);
   const side = (seat ? SIDE_OF_SEAT[seat] : viewing) ?? rec.side ?? "A";
   const last = samples.length - 1;
-  const exact = Math.min(minute, last);   // fractional, drives the 3D camera
-  const m = Math.floor(exact);
+  const m = Math.min(Math.floor(minute), last);   // highlighted minute on the timeline
 
-  useEffect(() => {
-    if (!playing) return;
-    // Smooth playback: about 8 flight-minutes per second, advanced every animation frame.
-    let prev = performance.now();
-    const step = (now: number) => {
-      const dt = (now - prev) / 1000;
-      prev = now;
-      setMinute((x) => {
-        const next = Math.min(last, x + dt * 8);
-        if (next >= last) setPlaying(false);
-        return next;
-      });
-      raf.current = requestAnimationFrame(step);
-    };
-    raf.current = requestAnimationFrame(step);
-    return () => { if (raf.current) cancelAnimationFrame(raf.current); };
-  }, [playing, last]);
-
-  const nearby = detail.landmarks
-    .filter((l) => (l.side === side || l.side === "below") && Math.abs(l.minute - m) <= 6)
-    .sort((a, b) => Math.abs(a.minute - m) - Math.abs(b.minute - m))[0];
-  const nearbyLabel = nearby
-    ? nearby.side === "below" ? `${nearby.name}, below you` : `${nearby.name}, ${nearby.dist_km} km out`
-    : undefined;
   const startMinute = rec.golden_start_min !== undefined ? Math.max(0, rec.golden_start_min - 10) : Math.min(30, last);
-  const params = `d=${date}&t=${time}&s=${side}&m=${startMinute}`;
-  const windowHref = adhoc ? `/flight/window?${adhoc.query}&${params}` : `/window/${detail.id}?${params}`;
+  const base = `d=${date}&t=${time}&s=${side}`;
+  const windowAt = (minute: number) =>
+    adhoc ? `/flight/window?${adhoc.query}&${base}&m=${minute}` : `/window/${detail.id}?${base}&m=${minute}`;
+  const params = `${base}&m=${startMinute}`;
+  const windowHref = windowAt(startMinute);
   const postcardHref = adhoc ? `/flight/postcard?${adhoc.query}&${params}` : `/postcard/${detail.id}?${params}`;
   // During the flight itself, the photo was taken "now": use the live minute after takeoff.
   const [liveMinute, setLiveMinute] = useState<number | null>(null);
@@ -182,36 +156,15 @@ export default function Planner({ detail, adhoc }: { detail: RouteDetail; adhoc?
         </div>
       </section>
 
-      <section className={styles.view}>
-        <CesiumWindow detail={detail} departureMs={departureMs} minute={exact} side={side}
-          caption={nearbyLabel ?? (samples[m].golden ? "Golden light" : samples[m].visible ? "Daylight" : "Dark outside")}
-          placeholder={<WindowView side={side} sample={samples[m]} row={detail.track[m]} landmarks={detail.landmarks} minute={m} />} />
-        <div className={styles.scrub}>
-          <button type="button" onClick={() => { if (m >= last) setMinute(0); setPlaying((p) => !p); }}
-            className={styles.play} aria-label={playing ? "Pause" : "Play the flight"}>
-            {playing ? "Pause" : "Play the flight"}
-          </button>
-          <input type="range" min={0} max={last} value={exact} step="any" onChange={(e) => { setPlaying(false); setMinute(+e.target.value); }}
-            aria-label="Minutes after takeoff" />
-          <p>
-            Seat {seat ?? side}{seat && seat !== side ? ` looking out of ${side}` : ""}, {clock(departureMs + m * 60_000, detail.origin.tz)} {detail.origin.city} time,{" "}
-            {m === 0 ? "takeoff" : `${duration(m)} after takeoff`}
-          </p>
-          {!samples[m].visible && (
-            <Link href={`${windowHref}&light=day`} className={styles.dayLink}>Dark outside? See it in day mode</Link>
-          )}
-        </div>
-      </section>
-
       <section className={styles.moments}>
         <h2>Camera moments, seat {side}</h2>
         <p className={styles.fine}>
-          {moments.length} times to get your phone out, in {detail.origin.city} time. Tap one to see it in the window.
+          {moments.length} times to get your phone out, in {detail.origin.city} time. Tap one to open the Virtual Window at that moment.
         </p>
         <ol>
           {moments.map((mo) => (
             <li key={`${mo.minute}${mo.title}`} className={styles.momentRow}>
-              <button type="button" className={styles.seek} onClick={() => { setPlaying(false); setMinute(mo.minute); }} aria-current={m === mo.minute || undefined}>
+              <Link href={windowAt(mo.minute)} className={styles.seek}>
                 <span className={styles.when}>
                   {clock(departureMs + mo.minute * 60_000, detail.origin.tz)}
                   <small>{mo.minute === 0 ? "takeoff" : `+${duration(mo.minute)}`}</small>
@@ -221,7 +174,7 @@ export default function Planner({ detail, adhoc }: { detail: RouteDetail; adhoc?
                   <b>{mo.title}</b>
                   <small>{mo.detail}</small>
                 </span>
-              </button>
+              </Link>
               {mo.wikidata && !adhoc && <LandmarkAbout routeId={detail.id} wikidata={mo.wikidata} side={side} />}
             </li>
           ))}
@@ -240,7 +193,7 @@ export default function Planner({ detail, adhoc }: { detail: RouteDetail; adhoc?
       <section className={styles.strip}>
         <h2>What passes each side</h2>
         <Timeline samples={samples} landmarks={detail.landmarks} departureMs={departureMs} tz={detail.origin.tz}
-          minute={m} onMinute={(x) => { setPlaying(false); setMinute(x); }} cityLabel={`${detail.origin.city} time`} />
+          minute={m} onMinute={setMinute} cityLabel={`${detail.origin.city} time`} />
         <p className={styles.fine}>
           Flight path is the shortest route between the airports. Real flights bend with winds and air traffic control,
           so anything within 40 km of the line is marked as possibly on either side. Landmarks come from Natural Earth
