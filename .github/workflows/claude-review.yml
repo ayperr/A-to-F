@@ -30,7 +30,7 @@ jobs:
                pipeline/landmarks.py must be mirrored in web/lib/engine and keep the parity tests passing.
             2. No hand-edited generated data (web/public/data/routes, insights, golden fixtures).
             3. Any narration or copy that says left/right must match the landmark's side in the route data.
-            4. No API keys in code; the Anthropic key is only read server-side in app/api/best-seat.
+            4. No API keys in code or in the browser bundle; the site makes no Claude calls, keys live only in Vercel env vars and repo secrets.
             5. Brand and legal: "for JetBlue flyers", never "by JetBlue"; no JetBlue logo or exact brand colours (our own blues are fine).
             Leave inline comments for concrete problems and one short summary comment. Don't nitpick style.
           claude_args: |

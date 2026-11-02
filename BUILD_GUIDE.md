@@ -13,12 +13,11 @@ Facts were checked on 1 Nov 2026; sources at the end.
 | Engine | NOAA solar position (`pipeline/solar.py`), side rules, horizon dip, golden "glow" band, landmarks, recommend() | Identical to astral on 20,000 random cases; 19 Python tests |
 | Landmarks | Corridor search over Natural Earth features with Wikidata IDs (`pipeline/landmarks.py`), side/minute/distance/confidence | Tests: provenance, Rockies + Grand Canyon on JFK→LAX, sides flip on return |
 | Browser engine | TypeScript port (`web/lib/engine`) for any date and time | 320 parity cases vs Python (`npm test`) |
-| Planner | Flight-number lookup or route picker, A/F answer, clickable seat row (middle/aisle seats explained), sky window with scrubber, two-lane timeline, best seat | `/`, `/route/[id]` |
+| Planner | Flight-number lookup or route picker, A/F answer, clickable seat row (middle/aisle seats explained), sky window with scrubber, two-lane timeline | `/`, `/route/[id]` |
 | Any JetBlue flight | Flight number + date → AeroDataBox → airports and time; pre-built routes get everything, other routes get the sun answer with a browser-computed track (tested equal to the pipeline's) | `/api/flight`, `/flight`, `/flight/window`, `/flight/postcard` |
 | Virtual Window | CesiumJS side camera, real sun lighting, terrain + night lights (ion token), 1×/60×/300×, phone GPS | `/window/[id]` |
 | Postcard | 1080×1350 canvas: map, golden stretch, landmarks on your side, your photo in the window, share/download | `/postcard/[id]` |
 | Insights | Year grid per route (months × departure times), headline facts, evaluation section | `/insights` |
-| Best seat for you | Claude Haiku 5.5, structured output, engine facts, geometry override, rate limits | `/api/best-seat` (needs key) |
 | Evaluation | Claude alone vs Claude + engine numbers, 120 golden-light cases, Batches API | `pipeline/evaluate.py` (needs key) |
 | Narration | Batches (Haiku lines, Sonnet adaptive-thinking tips), claim check rejects wrong sides | `pipeline/narrate.py`, `check_claims.py` |
 | MCP | STDIO: progress, logging, sampling (with side check), roots; hosted stateless HTTP + JSON | `mcp_server/smoke_test.py`; live endpoint |
@@ -31,14 +30,13 @@ Facts were checked on 1 Nov 2026; sources at the end.
 1. ~~**Cesium ion** token and allowed URL~~ — done (token accepted on a-to-f.vercel.app).
 1b. ~~**Flight-number lookup (AeroDataBox via RapidAPI, free Basic plan)**~~ — done 2 Nov: key in Vercel
    (Production), live test B6 615 on 3 Nov → JFK–SFO 17:55. Keys from aerodatabox.com itself need a paid plan.
-2. **Anthropic key** (console.anthropic.com): set a **$5 monthly spend limit** first, then create a key and add it in two places,
-   never in chat:
-   - Vercel → project a-to-f → Settings → Environment Variables: `ANTHROPIC_API_KEY`, type Sensitive, Production. Redeploy.
-   - GitHub → A-to-F → Settings → Secrets and variables → Actions: `ANTHROPIC_API_KEY`.
+2. **Anthropic key** (console.anthropic.com): set a **$5 monthly spend limit** first, then create a key and add it as a GitHub secret,
+   never in chat: GitHub → A-to-F → Settings → Secrets and variables → Actions: `ANTHROPIC_API_KEY`.
+   (The website itself no longer calls Claude; "Choosing for something else?" was removed on 2 Nov.)
 3. **Run the evaluation and narration:** GitHub → Actions → "Generate Claude data" → Run workflow → `both`.
    It commits `evaluation.json` + `narration.json` and the site redeploys with results. Expected cost: well under $1.
 4. **Install the Claude GitHub App for PR reviews** (if not already): open a small PR to see the review run.
-5. **Routes:** confirm BOS–LAX, JFK–LAS, BOS–DEN on jetblue.com for a Nov–Dec date; tell me which exist.
+5. ~~**Routes**~~ — done: all 10 pairs confirmed.
 6. **OpenSky** (optional, for real tracks): register → My OpenSky → Request Data Access (MSc research, non-commercial).
 7. **Install the plugin** in Claude: open the `.plugin` file I sent and press install; ask "which side for JFK to LAX…".
 8. **Routine:** say the word and I'll schedule the weekly "view of the week" run (Mondays) as a Claude scheduled task.

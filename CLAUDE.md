@@ -24,8 +24,8 @@ Plan, status and what's left: `BUILD_GUIDE.md`.
    ink #0b2350, accent #1f5fd6, accent-soft #e4eefc. Font: Manrope. "Not affiliated" footer on every page.
 8. **First page stays simple.** Only the B6 flight-number form, with "No flight number?" for route and time.
    Results unlock after one of them is filled in; a bare route link asks for date and time first.
-9. **Cost.** Visitors cost $0 except "Best seat for you" (Haiku, rate-limited). Keys only in Vercel env vars
-   or GitHub secrets, never in code or chat.
+9. **Cost.** Visitors cost $0: the site makes no Claude calls. Claude runs in the pipeline (evaluation, narration),
+   CI review, the MCP server and the plugin. Keys only in Vercel env vars or GitHub secrets, never in code or chat.
 
 ## Commands
 ```bash
@@ -53,7 +53,7 @@ npm test && npm run lint && npm run build
   corridor search), `fetch_tracks.py`, `build_data.py`, `stats.py` (year grid), `view_of_week.py`, `basemap.py`,
   `evaluate.py`, `narrate.py`, `check_claims.py`, `tests/`.
 - `web/` Next.js 16 (App Router, `cacheComponents`), Vercel root `web`. Pages: `/`, `/route/[id]`, `/window/[id]`
-  (CesiumJS), `/postcard/[id]` (canvas), `/insights`, `/about`, `/privacy`; API `/api/best-seat`.
+  (CesiumJS), `/postcard/[id]` (canvas), `/insights`, `/about`, `/privacy`; APIs `/api/flight` (AeroDataBox), `/api/cesium-check`.
   Engine port in `web/lib/engine`. Next's docs: `web/node_modules/next/dist/docs/`.
 - `mcp_server/` FastMCP, **pinned mcp==1.30.0** (v1 API; 2.x renamed FastMCP). `main.py` at repo root hosts it.
 - `.claude/` skills (route-analysis, window-narrator, postcard-copy), agents (route-analyst, storyteller,

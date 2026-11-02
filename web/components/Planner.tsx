@@ -5,7 +5,6 @@ import { recommend, samplesFor } from "@/lib/engine/geometry";
 import { clock, localToUtcMs, todayIn } from "@/lib/engine/time";
 import type { RouteDetail } from "@/lib/engine/types";
 import { duration } from "@/lib/routes";
-import BestSeat from "./BestSeat";
 import SeatRow from "./SeatRow";
 import Timeline from "./Timeline";
 import CesiumWindow from "./CesiumWindow";
@@ -166,7 +165,6 @@ export default function Planner({ detail, adhoc }: { detail: RouteDetail; adhoc?
               Make a postcard
             </Link>
           </div>
-          {!adhoc && <BestSeat routeId={detail.id} date={date} time={time} />}
         </div>
       </section>
 

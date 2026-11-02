@@ -77,8 +77,17 @@ export default function Postcard({ detail, backHref }: { detail: RouteDetail; ba
       // Header: route and date
       const day = new Intl.DateTimeFormat("en-GB", { weekday: "long", day: "numeric", month: "long", year: "numeric", timeZone: "UTC" })
         .format(new Date(`${date}T12:00:00Z`));
+      // Header text stays left of the photo (x 730) or the logo (x 860), with a gap.
+      const textMax = (photo ? 730 : 860) - 32 - 72;
+      const big = (px: number) => `800 ${px}px Manrope`;
+      let headPx = 132;
+      const headWidth = () => {
+        ctx.font = big(headPx);
+        return ctx.measureText(`${detail.origin.iata}${side}${detail.dest.iata}`).width + 68;
+      };
+      while (headPx > 90 && headWidth() > textMax) headPx -= 4;
+      ctx.font = big(headPx);
       ctx.fillStyle = C.cream;
-      ctx.font = "800 132px Manrope";
       ctx.fillText(`${detail.origin.iata}`, 70, 210);
       const wo = ctx.measureText(`${detail.origin.iata}`).width;
       ctx.fillStyle = C.coral;
@@ -86,14 +95,22 @@ export default function Postcard({ detail, backHref }: { detail: RouteDetail; ba
       const ws = ctx.measureText(side).width;
       ctx.fillStyle = C.cream;
       ctx.fillText(`${detail.dest.iata}`, 70 + wo + ws + 68, 210);
+
       ctx.font = "500 34px Manrope";
       ctx.fillStyle = C.dim;
-      ctx.fillText(`${detail.origin.city} to ${detail.dest.city}`, 72, 268);
-      ctx.fillText(`${day}, seat ${side} by the ${side === "A" ? "left" : "right"} window`, 72, 314);
+      const seatText = `seat ${side} by the ${side === "A" ? "left" : "right"} window`;
+      const dateLine = `${day}, ${seatText}`;
+      const sub = [
+        ...wrap(ctx, `${detail.origin.city} to ${detail.dest.city}`, textMax),
+        // Too long for one line: break at the comma, not mid-phrase.
+        ...(ctx.measureText(dateLine).width <= textMax ? [dateLine] : [`${day},`, seatText]),
+      ].slice(0, 3);
+      const lineH = sub.length > 2 ? 40 : 46;
+      sub.forEach((ln, i) => ctx.fillText(ln, 72, (sub.length > 2 ? 260 : 268) + i * lineH));
 
       // Top right: the traveller's photo in the window shape, or the logo
       if (photo) {
-        const x = 800, y = 56, w = 210, h = 280;
+        const x = 730, y = 44, w = 280, h = 373; // 3:4, the logo window's shape
         ctx.save();
         windowPath(ctx, x, y, w, h);
         ctx.clip();
@@ -109,7 +126,7 @@ export default function Postcard({ detail, backHref }: { detail: RouteDetail; ba
       }
 
       // Map
-      const mx = 70, my = 370, mw = 940, mh = 600;
+      const mx = 70, my = 440, mw = 940, mh = 550;
       ctx.save();
       ctx.beginPath();
       ctx.roundRect(mx, my, mw, mh, 28);
