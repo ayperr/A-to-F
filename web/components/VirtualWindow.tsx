@@ -10,7 +10,7 @@ import type { RouteDetail } from "@/lib/engine/types";
 import { duration } from "@/lib/routes";
 import styles from "./VirtualWindow.module.css";
 
-import { addCityLights, aimNight, interpolate, ionWorks, type LightMode, lightFromSun, loadCesium, PITCH_DEG, setLightMode, TOKEN } from "@/lib/cesium";
+import { aimNight, interpolate, ionWorks, type LightMode, lightFromSun, loadCesium, PITCH_DEG, setLightMode, TOKEN } from "@/lib/cesium";
 import { samplesFor } from "@/lib/engine/geometry";
 
 const SPEEDS = [1, 60, 300];
@@ -103,7 +103,6 @@ export default function VirtualWindow({ detail, backHref }: { detail: RouteDetai
         scene.screenSpaceCameraController.enableInputs = false;
         (v.camera.frustum as CesiumNS.PerspectiveFrustum).fov = C.Math.toRadians(62);
 
-        addCityLights(C, v);
         setLightMode(C, v, modeRef.current);
 
         for (const l of detail.landmarks) {
@@ -274,8 +273,8 @@ export default function VirtualWindow({ detail, backHref }: { detail: RouteDetai
             {mode === "day"
               ? `Day mode: the ground as if it were noon, so you can tell what's down there.${dark ? " Outside it's dark right now." : ""}`
               : mode === "night"
-                ? `Night mode: as if the sun had set, with the city lights on.${dark ? "" : " Outside it's daylight right now."}`
-                : dark ? "It's dark out there right now. Day mode shows the ground as if it were noon." : "Night mode shows the city lights."}
+                ? `Night mode: the same view after sunset.${dark ? "" : " Outside it's daylight right now."}`
+                : dark ? "It's dark out there right now. Day mode shows the ground as if it were noon." : "\u00a0"}
           </p>
           {!gps && (
             <>

@@ -5,7 +5,7 @@
 // illustration underneath stays visible.
 import type * as CesiumNS from "cesium";
 import { useEffect, useRef, useState } from "react";
-import { addCityLights, interpolate, ionWorks, lightFromSun, loadCesium, PITCH_DEG, TOKEN } from "@/lib/cesium";
+import { interpolate, ionWorks, lightFromSun, loadCesium, PITCH_DEG, TOKEN } from "@/lib/cesium";
 import type { RouteDetail } from "@/lib/engine/types";
 import styles from "./CesiumWindow.module.css";
 
@@ -45,7 +45,6 @@ export default function CesiumWindow({ detail, departureMs, minute, side, placeh
         v.scene.screenSpaceCameraController.enableInputs = false;
         v.clock.shouldAnimate = false;
         (v.camera.frustum as CesiumNS.PerspectiveFrustum).fov = C.Math.toRadians(62);
-        addCityLights(C, v);
         for (const l of detail.landmarks) {
           v.entities.add({
             position: C.Cartesian3.fromDegrees(l.lon, l.lat),

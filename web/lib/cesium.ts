@@ -11,11 +11,6 @@ declare global {
 
 export const TOKEN = process.env.NEXT_PUBLIC_CESIUM_ION_TOKEN;
 export const PITCH_DEG = -18;
-// City lights: NASA Black Marble 2016 (VIIRS), served free by NASA GIBS. Zoom level 8 (about 500 m),
-// one level sharper than the copy on Cesium ion, and it needs no Cesium account or token.
-const CITY_LIGHTS_URL =
-  "https://gibs.earthdata.nasa.gov/wmts/epsg3857/best/VIIRS_Black_Marble/default/2016-01-01/GoogleMapsCompatible_Level8/{z}/{y}/{x}.png";
-
 /**
  * Shade the ground by the real sun, also from a cabin window. Cesium only applies day/night lighting
  * when the camera is thousands of km away (by default everything is fully lit closer than ~10,000 km),
@@ -31,35 +26,14 @@ export function lightFromSun(globe: CesiumNS.Globe) {
   globe.nightFadeInDistance = 1;
 }
 
-/**
- * Adds the city lights for the night side. On the night side only the lights show over black (the
- * daytime photo layer is switched off there instead of drawn darkened, which looked like grey smear),
- * with extra contrast so a 500 m map reads as glow rather than blur.
- */
-export function addCityLights(C: typeof CesiumNS, viewer: CesiumNS.Viewer) {
-  const layer = viewer.imageryLayers.addImageryProvider(new C.UrlTemplateImageryProvider({
-    url: CITY_LIGHTS_URL,
-    tilingScheme: new C.WebMercatorTilingScheme(),
-    maximumLevel: 8,
-    credit: new C.Credit("City lights: NASA Black Marble, imagery from NASA GIBS"),
-  }));
-  layer.dayAlpha = 0;
-  layer.nightAlpha = 1;
-  layer.brightness = 1.15;
-  layer.contrast = 1.4;
-  layer.gamma = 0.9;
-  if (viewer.imageryLayers.length > 1) viewer.imageryLayers.get(0).nightAlpha = 0;
-  return layer;
-}
-
 export type LightMode = "real" | "day" | "night";
 
 /**
  * Real light follows the sun. Day mode shows ground and sky as if it were noon, whatever the clock says
  * (globe lighting off; Cesium derives the sky's lighting from the globe flags), so a night flight can
- * still tell what's below. Night mode lights the scene from straight below the plane, so the ground and
- * sky go dark and the Earth at Night layer shows city lights, even on a day flight. Call aimNight() each
- * time the camera moves while in night mode.
+ * still tell what's below. Night mode lights the scene from straight below the plane, so ground and sky
+ * look as they would after sunset, even on a day flight. Call aimNight() each time the camera moves.
+ * No city-lights layer: the best free night imagery (NASA Black Marble, ~500 m) looked blocky from 11 km.
  */
 export function setLightMode(C: typeof CesiumNS, viewer: CesiumNS.Viewer, mode: LightMode) {
   const scene = viewer.scene;
@@ -70,10 +44,6 @@ export function setLightMode(C: typeof CesiumNS, viewer: CesiumNS.Viewer, mode: 
   scene.globe.showGroundAtmosphere = mode !== "night"; // the haze glows grey under fake night
   if (scene.skyBox) scene.skyBox.show = mode !== "day";
   if (scene.sun) scene.sun.show = mode === "real";
-  for (let i = 0; i < viewer.imageryLayers.length; i++) {
-    const layer = viewer.imageryLayers.get(i);
-    if (layer.dayAlpha === 0 && layer.nightAlpha > 0) layer.show = mode !== "day"; // city lights
-  }
 }
 
 /** Night mode: light travelling straight up through the ground under the camera, so everything in view is unlit. */
