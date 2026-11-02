@@ -10,7 +10,7 @@ import type { RouteDetail } from "@/lib/engine/types";
 import { duration } from "@/lib/routes";
 import styles from "./VirtualWindow.module.css";
 
-import { EARTH_AT_NIGHT_ASSET, interpolate, ionWorks, lightFromSun, loadCesium, PITCH_DEG, setDayMode, TOKEN } from "@/lib/cesium";
+import { aimNight, EARTH_AT_NIGHT_ASSET, interpolate, ionWorks, type LightMode, lightFromSun, loadCesium, PITCH_DEG, setLightMode, TOKEN } from "@/lib/cesium";
 import { samplesFor } from "@/lib/engine/geometry";
 
 const SPEEDS = [1, 60, 300];
@@ -25,7 +25,7 @@ export default function VirtualWindow({ detail, backHref }: { detail: RouteDetai
   const watchId = useRef<number | null>(null);
   const minuteRef = useRef(0);
   const depRef = useRef(0);
-  const dayRef = useRef(false);
+  const modeRef = useRef<LightMode>("real");
 
   const [side, setSide] = useState<"A" | "F">("A");
   const [date, setDate] = useState("2026-11-12");
@@ -35,7 +35,7 @@ export default function VirtualWindow({ detail, backHref }: { detail: RouteDetai
   const [speed, setSpeed] = useState(60);
   const [status, setStatus] = useState("Loading the 3D view");
   const [gps, setGps] = useState<string | null>(null);
-  const [dayMode, setDayModeOn] = useState(false);
+  const [mode, setMode] = useState<LightMode>("real");
   const [lines, setLines] = useState<Record<string, string>>({});
 
   // Pre-generated narration (pipeline/narrate.py), already checked against the geometry. Optional.
@@ -54,7 +54,8 @@ export default function VirtualWindow({ detail, backHref }: { detail: RouteDetai
     if (q.get("s") === "F" || q.get("s") === "A") { setSide(q.get("s") as "A" | "F"); sideRef.current = q.get("s") as "A" | "F"; }
     const startAt = Number(q.get("m"));
     if (Number.isFinite(startAt) && startAt > 0) { setMinute(startAt); minuteRef.current = startAt; }
-    if (q.get("light") === "day") { setDayModeOn(true); dayRef.current = true; }
+    const light = q.get("light");
+    if (light === "day" || light === "night") { setMode(light); modeRef.current = light; }
     /* eslint-enable react-hooks/set-state-in-effect */
   }, []);
 
@@ -69,6 +70,7 @@ export default function VirtualWindow({ detail, backHref }: { detail: RouteDetai
       destination: C.Cartesian3.fromDegrees(p.lon, p.lat, Math.max(p.alt, 300)),
       orientation: { heading: C.Math.toRadians(p.heading + look), pitch: C.Math.toRadians(PITCH_DEG), roll: 0 },
     });
+    if (modeRef.current === "night") aimNight(C, v);
   }, [detail.track]);
 
   // Build the viewer once.
@@ -111,7 +113,7 @@ export default function VirtualWindow({ detail, backHref }: { detail: RouteDetai
             /* night lights are a bonus */
           }
         }
-        setDayMode(v, dayRef.current);
+        setLightMode(C, v, modeRef.current);
 
         for (const l of detail.landmarks) {
           v.entities.add({
@@ -164,11 +166,11 @@ export default function VirtualWindow({ detail, backHref }: { detail: RouteDetai
     };
   }, [detail.landmarks, last, placeCamera]);
 
-  // Day mode or the real light. `status` changes once the viewer exists, so this also runs after setup.
+  // Real light, day mode or night mode. `status` changes once the viewer exists, so this also runs after setup.
   useEffect(() => {
-    dayRef.current = dayMode;
-    if (viewerRef.current) setDayMode(viewerRef.current, dayMode);
-  }, [dayMode, status]);
+    modeRef.current = mode;
+    if (viewerRef.current && window.Cesium) setLightMode(window.Cesium, viewerRef.current, mode);
+  }, [mode, status]);
 
   // Flight time, speed and play state drive the Cesium clock.
   useEffect(() => {
@@ -271,13 +273,18 @@ export default function VirtualWindow({ detail, backHref }: { detail: RouteDetai
             ))}
           </div>
           <div className={styles.toggle} role="group" aria-label="Light">
-            <button type="button" aria-pressed={!dayMode} onClick={() => setDayModeOn(false)}>Real light</button>
-            <button type="button" aria-pressed={dayMode} onClick={() => setDayModeOn(true)}>Day mode</button>
+            {(["real", "day", "night"] as const).map((x) => (
+              <button key={x} type="button" aria-pressed={mode === x} onClick={() => setMode(x)}>
+                {x === "real" ? "Real light" : x === "day" ? "Day" : "Night"}
+              </button>
+            ))}
           </div>
           <p className={styles.lightNote}>
-            {dayMode
+            {mode === "day"
               ? `Day mode: the ground as if it were noon, so you can tell what's down there.${dark ? " Outside it's dark right now." : ""}`
-              : dark ? "It's dark out there right now. Day mode shows the ground as if it were noon." : " "}
+              : mode === "night"
+                ? `Night mode: as if the sun had set, with the city lights on.${dark ? "" : " Outside it's daylight right now."}`
+                : dark ? "It's dark out there right now. Day mode shows the ground as if it were noon." : "Night mode shows the city lights."}
           </p>
           {!gps && (
             <>

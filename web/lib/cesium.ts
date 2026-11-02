@@ -28,21 +28,34 @@ export function lightFromSun(globe: CesiumNS.Globe) {
   globe.nightFadeInDistance = 1;
 }
 
+export type LightMode = "real" | "day" | "night";
+
 /**
- * Day mode: show the ground and sky as if it were noon, whatever the clock says, so a night flight
- * can still tell what's below. Turning globe lighting off also switches the sky to its fully lit look
- * (Cesium derives the sky's lighting from the globe flags). Stars and the city-lights layer are hidden.
- * Off: back to the real sun with lightFromSun().
+ * Real light follows the sun. Day mode shows ground and sky as if it were noon, whatever the clock says
+ * (globe lighting off; Cesium derives the sky's lighting from the globe flags), so a night flight can
+ * still tell what's below. Night mode lights the scene from straight below the plane, so the ground and
+ * sky go dark and the Earth at Night layer shows city lights, even on a day flight. Call aimNight() each
+ * time the camera moves while in night mode.
  */
-export function setDayMode(viewer: CesiumNS.Viewer, on: boolean) {
-  const globe = viewer.scene.globe;
-  if (on) globe.enableLighting = false;
-  else lightFromSun(globe);
-  if (viewer.scene.skyBox) viewer.scene.skyBox.show = !on;
+export function setLightMode(C: typeof CesiumNS, viewer: CesiumNS.Viewer, mode: LightMode) {
+  const scene = viewer.scene;
+  if (mode === "day") scene.globe.enableLighting = false;
+  else lightFromSun(scene.globe);
+  if (mode === "night") aimNight(C, viewer);
+  else scene.light = new C.SunLight();
+  if (scene.skyBox) scene.skyBox.show = mode !== "day";
+  if (scene.sun) scene.sun.show = mode === "real";
   for (let i = 0; i < viewer.imageryLayers.length; i++) {
     const layer = viewer.imageryLayers.get(i);
-    if (layer.dayAlpha === 0 && layer.nightAlpha > 0) layer.show = !on; // Earth at Night
+    if (layer.dayAlpha === 0 && layer.nightAlpha > 0) layer.show = mode !== "day"; // Earth at Night
   }
+}
+
+/** Night mode: light travelling straight up through the ground under the camera, so everything in view is unlit. */
+export function aimNight(C: typeof CesiumNS, viewer: CesiumNS.Viewer) {
+  const up = C.Cartesian3.normalize(viewer.camera.positionWC, new C.Cartesian3());
+  if (viewer.scene.light instanceof C.DirectionalLight) viewer.scene.light.direction = up;
+  else viewer.scene.light = new C.DirectionalLight({ direction: up });
 }
 
 export function loadCesium(): Promise<typeof CesiumNS> {
