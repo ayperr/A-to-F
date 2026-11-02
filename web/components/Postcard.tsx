@@ -9,7 +9,7 @@ import { duration } from "@/lib/routes";
 import styles from "./Postcard.module.css";
 
 const W = 1080, H = 1350;
-const C = { ground: "#FFFFFF", deep: "#EEF3FA", cream: "#0B2350", dim: "#4B5F80", coral: "#1F5FD6", land: "#D3DEEC", line: "#B5C5DD" };
+const C = { ground: "#FFFFFF", deep: "#EEF3FA", cream: "#0B2350", dim: "#4B5F80", coral: "#1F5FD6", accentSoft: "#E4EEFC", land: "#D3DEEC", line: "#B5C5DD" };
 
 type Basemap = { land: number[][]; lakes: number[][]; borders: number[][] };
 
@@ -66,70 +66,84 @@ export default function Postcard({ detail, backHref }: { detail: RouteDetail; ba
     let cancelled = false;
     (async () => {
       await Promise.all([document.fonts.load("800 64px Manrope"), document.fonts.load("500 32px Manrope")]);
-      const logo = new Image();
-      logo.src = "/logo.svg";
-      await logo.decode().catch(() => undefined);
       if (cancelled) return;
 
       ctx.fillStyle = C.ground;
       ctx.fillRect(0, 0, W, H);
+      ctx.textBaseline = "alphabetic";
 
-      // Header: route and date
-      const day = new Intl.DateTimeFormat("en-GB", { weekday: "long", day: "numeric", month: "long", year: "numeric", timeZone: "UTC" })
-        .format(new Date(`${date}T12:00:00Z`));
-      // Header text stays left of the photo (x 730) or the logo (x 860), with a gap.
-      const textMax = (photo ? 730 : 860) - 32 - 72;
-      const big = (px: number) => `800 ${px}px Manrope`;
-      let headPx = 132;
-      const headWidth = () => {
-        ctx.font = big(headPx);
-        return ctx.measureText(`${detail.origin.iata}${side}${detail.dest.iata}`).width + 68;
-      };
-      while (headPx > 90 && headWidth() > textMax) headPx -= 4;
-      ctx.font = big(headPx);
-      ctx.fillStyle = C.cream;
-      ctx.fillText(`${detail.origin.iata}`, 70, 210);
-      const wo = ctx.measureText(`${detail.origin.iata}`).width;
-      ctx.fillStyle = C.coral;
-      ctx.fillText(side, 70 + wo + 34, 210);
-      const ws = ctx.measureText(side).width;
-      ctx.fillStyle = C.cream;
-      ctx.fillText(`${detail.dest.iata}`, 70 + wo + ws + 68, 210);
-
-      ctx.font = "500 34px Manrope";
-      ctx.fillStyle = C.dim;
-      const seatText = `seat ${side} by the ${side === "A" ? "left" : "right"} window`;
-      const dateLine = `${day}, ${seatText}`;
-      const sub = [
-        ...wrap(ctx, `${detail.origin.city} to ${detail.dest.city}`, textMax),
-        // Too long for one line: break at the comma, not mid-phrase.
-        ...(ctx.measureText(dateLine).width <= textMax ? [dateLine] : [`${day},`, seatText]),
-      ].slice(0, 3);
-      const lineH = sub.length > 2 ? 40 : 46;
-      sub.forEach((ln, i) => ctx.fillText(ln, 72, (sub.length > 2 ? 260 : 268) + i * lineH));
-
-      // Top right: the traveller's photo in the window shape, or the logo
+      // ── Row 1, left: the hero window. The traveller's photo, or a sky with the low A to F sun.
+      const hx = 70, hy = 70, hw = 540, hh = 720; // 3:4, the logo window's shape
+      ctx.save();
+      windowPath(ctx, hx, hy, hw, hh);
+      ctx.clip();
       if (photo) {
-        const x = 730, y = 44, w = 280, h = 373; // 3:4, the logo window's shape
-        ctx.save();
-        windowPath(ctx, x, y, w, h);
-        ctx.clip();
-        const s = Math.max(w / photo.width, h / photo.height);
-        ctx.drawImage(photo, x + (w - photo.width * s) / 2, y + (h - photo.height * s) / 2, photo.width * s, photo.height * s);
-        ctx.restore();
-        ctx.lineWidth = 12;
-        ctx.strokeStyle = C.cream;
-        windowPath(ctx, x, y, w, h);
-        ctx.stroke();
-      } else if (logo.complete && logo.naturalWidth) {
-        ctx.drawImage(logo, 860, 60, 150, 196);
+        const s = Math.max(hw / photo.width, hh / photo.height);
+        ctx.drawImage(photo, hx + (hw - photo.width * s) / 2, hy + (hh - photo.height * s) / 2, photo.width * s, photo.height * s);
+      } else {
+        const horizon = hy + hh * 0.7;
+        const sky = ctx.createLinearGradient(0, hy, 0, horizon);
+        sky.addColorStop(0, "#BFD5F5");
+        sky.addColorStop(1, "#F2F7FE");
+        ctx.fillStyle = sky;
+        ctx.fillRect(hx, hy, hw, horizon - hy);
+        ctx.fillStyle = C.coral;
+        ctx.beginPath();
+        ctx.arc(hx + hw / 2, horizon, hw * 0.17, Math.PI, 0);
+        ctx.fill();
+        ctx.fillStyle = C.accentSoft;
+        ctx.fillRect(hx, horizon, hw, hy + hh - horizon);
       }
+      // Window shade pulled down a little, like the logo
+      ctx.fillStyle = C.cream;
+      ctx.fillRect(hx, hy, hw, hh * 0.08);
+      ctx.restore();
+      ctx.fillStyle = C.cream;
+      ctx.beginPath();
+      ctx.roundRect(hx + hw / 2 - 30, hy + hh * 0.08 - 4, 60, 18, 9);
+      ctx.fill();
+      ctx.lineWidth = 18;
+      ctx.strokeStyle = C.cream;
+      windowPath(ctx, hx, hy, hw, hh);
+      ctx.stroke();
 
-      // Map
-      const mx = 70, my = 440, mw = 940, mh = 550;
+      // ── Row 1, right: route codes stacked with the seat letter between them, then city, date, seat.
+      const cx = 650, cw = W - 70 - cx;
+      let codePx = 150;
+      const widest = () => {
+        ctx.font = `800 ${codePx}px Manrope`;
+        return Math.max(...[detail.origin.iata, side, detail.dest.iata].map((t) => ctx.measureText(t).width));
+      };
+      while (codePx > 90 && widest() > cw) codePx -= 4;
+      ctx.font = `800 ${codePx}px Manrope`;
+      const y0 = hy + codePx * 0.97, step = codePx * 1.07;
+      ctx.fillStyle = C.cream;
+      ctx.fillText(detail.origin.iata, cx - 6, y0);
+      ctx.fillStyle = C.coral;
+      ctx.fillText(side, cx - 6, y0 + step);
+      ctx.fillStyle = C.cream;
+      ctx.fillText(detail.dest.iata, cx - 6, y0 + 2 * step);
+
+      const when = new Date(`${date}T12:00:00Z`);
+      const weekday = new Intl.DateTimeFormat("en-GB", { weekday: "long", timeZone: "UTC" }).format(when);
+      const day = new Intl.DateTimeFormat("en-GB", { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" }).format(when);
+      ctx.font = "500 30px Manrope";
+      const cities = `${detail.origin.city} to ${detail.dest.city}`;
+      // Too long for one line: break after "to" so no city name is split.
+      const cityLines = ctx.measureText(cities).width <= cw ? [cities] : [`${detail.origin.city} to`, detail.dest.city];
+      const info = [...cityLines, weekday, day];
+      let ty = y0 + 2 * step + 64;
+      ctx.fillStyle = C.dim;
+      for (const ln of info) { ctx.fillText(ln, cx, ty); ty += 38; }
+      ctx.font = "700 30px Manrope";
+      ctx.fillStyle = C.coral;
+      ctx.fillText(`Seat ${side}, ${side === "A" ? "left" : "right"} window`, cx, ty);
+
+      // ── Row 2, left: a small map of the flight.
+      const mx = 70, my = 840, mw = 540, mh = 370;
       ctx.save();
       ctx.beginPath();
-      ctx.roundRect(mx, my, mw, mh, 28);
+      ctx.roundRect(mx, my, mw, mh, 24);
       ctx.fillStyle = C.deep;
       ctx.fill();
       ctx.clip();
@@ -139,7 +153,7 @@ export default function Postcard({ detail, backHref }: { detail: RouteDetail; ba
       const kx = Math.cos((lat0 * Math.PI) / 180);
       const spanX = (Math.max(...lons) - Math.min(...lons)) * kx || 1;
       const spanY = Math.max(...lats) - Math.min(...lats) || 1;
-      const pad = 0.22;
+      const pad = 0.2;
       const scale = Math.min(mw / (spanX * (1 + 2 * pad)), mh / (spanY * (1 + 2 * pad)));
       const cxLon = (Math.min(...lons) + Math.max(...lons)) / 2;
       const proj = (lon: number, lat: number): [number, number] => [
@@ -160,36 +174,39 @@ export default function Postcard({ detail, backHref }: { detail: RouteDetail; ba
         ctx.fillStyle = C.deep;
         for (const r of basemap.lakes) { poly(r, true); ctx.fill(); }
         ctx.strokeStyle = C.line;
-        ctx.lineWidth = 1.5;
+        ctx.lineWidth = 1.2;
         for (const r of basemap.borders) { poly(r, false); ctx.stroke(); }
       }
-      // Route, with the golden stretch in coral
+      // Route, with the golden stretch on my side in accent blue
       ctx.lineCap = "round";
-      ctx.lineWidth = 6;
+      ctx.lineWidth = 4;
       ctx.strokeStyle = C.cream;
       ctx.beginPath();
       pts.forEach((p, i) => { const [x, y] = proj(p[0], p[1]); if (i) ctx.lineTo(x, y); else ctx.moveTo(x, y); });
       ctx.stroke();
       ctx.strokeStyle = C.coral;
-      ctx.lineWidth = 10;
+      ctx.lineWidth = 8;
       for (let i = 1; i < samples.length; i++) {
         if (!(samples[i].golden && samples[i].glowSide === side)) continue;
-        const [x0, y0] = proj(pts[i - 1][0], pts[i - 1][1]);
+        const [x0, y0m] = proj(pts[i - 1][0], pts[i - 1][1]);
         const [x1, y1] = proj(pts[i][0], pts[i][1]);
-        ctx.beginPath(); ctx.moveTo(x0, y0); ctx.lineTo(x1, y1); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(x0, y0m); ctx.lineTo(x1, y1); ctx.stroke();
       }
       // Airports and landmarks. Labels try four spots and are skipped rather than overlapped.
       type Box = [number, number, number, number];
       const placed: Box[] = [];
-      const hits = (b: Box) => placed.some((q) => b[0] < q[2] && b[2] > q[0] && b[1] < q[3] && b[3] > q[1]);
+      const segs: [number, number][] = pts.map((p) => proj(p[0], p[1]));
+      const hits = (b: Box) =>
+        placed.some((q) => b[0] < q[2] && b[2] > q[0] && b[1] < q[3] && b[3] > q[1]) ||
+        segs.some(([x, y]) => x > b[0] && x < b[2] && y > b[1] && y < b[3]);
       const label = (text: string, x: number, y: number, size: number) => {
         const tw = ctx.measureText(text).width;
-        const spots: [number, number][] = [[x + 16, y - 12], [x + 16, y + size + 8], [x - 16 - tw, y - 12], [x - 16 - tw, y + size + 8]];
-        for (const [tx, ty] of spots) {
-          const b: Box = [tx - 4, ty - size, tx + tw + 4, ty + 6];
+        const spots: [number, number][] = [[x + 12, y - 10], [x + 12, y + size + 6], [x - 12 - tw, y - 10], [x - 12 - tw, y + size + 6], [x - tw / 2, y - 16], [x - tw / 2, y + size + 12]];
+        for (const [lx, ly] of spots) {
+          const b: Box = [lx - 3, ly - size, lx + tw + 3, ly + 5];
           if (b[0] < mx + 8 || b[2] > mx + mw - 8 || b[1] < my + 8 || b[3] > my + mh - 8 || hits(b)) continue;
           placed.push(b);
-          ctx.fillText(text, tx, ty);
+          ctx.fillText(text, lx, ly);
           return;
         }
       };
@@ -199,41 +216,55 @@ export default function Postcard({ detail, backHref }: { detail: RouteDetail; ba
       ];
       for (const [x, y, , airport] of dots) {
         ctx.fillStyle = airport ? C.cream : C.coral;
-        ctx.beginPath(); ctx.arc(x, y, airport ? 11 : 8, 0, Math.PI * 2); ctx.fill();
-        placed.push([x - 12, y - 12, x + 12, y + 12]);
+        ctx.beginPath(); ctx.arc(x, y, airport ? 9 : 6, 0, Math.PI * 2); ctx.fill();
+        placed.push([x - 10, y - 10, x + 10, y + 10]);
       }
       for (const [x, y, text, airport] of dots) {
         ctx.fillStyle = C.cream;
-        ctx.font = airport ? "800 30px Manrope" : "600 26px Manrope";
-        label(text, x, y, airport ? 30 : 26);
+        ctx.font = airport ? "800 24px Manrope" : "600 20px Manrope";
+        label(text, x, y, airport ? 24 : 20);
       }
       ctx.restore();
 
-      // Facts
+      // ── Row 2, right: one light fact, then what's out my window.
+      const fx = cx, fw = cw;
+      let fy = my + 36;
       ctx.fillStyle = C.cream;
-      ctx.font = "800 44px Manrope";
+      ctx.font = "800 38px Manrope";
       const light = firstGolden
         ? `${setting ? "Sunset" : "Sunrise"} on my side at ${clock(departureMs + firstGolden.minute * 60_000, detail.origin.tz)}`
         : rec.rule === "dark" ? "A night flight" : "Daylight all the way";
-      ctx.fillText(light, 70, 1050);
-      ctx.font = "500 32px Manrope";
+      for (const ln of wrap(ctx, light, fw).slice(0, 2)) { ctx.fillText(ln, fx, fy); fy += 46; }
+      ctx.font = "500 26px Manrope";
       ctx.fillStyle = C.dim;
       const lightNote = firstGolden ? `${goldenOnSide} minutes of golden light, ${detail.origin.city} time` : `${duration(detail.duration_min)} in the air`;
-      ctx.fillText(lightNote, 72, 1096);
+      fy -= 6;
+      for (const ln of wrap(ctx, lightNote, fw).slice(0, 2)) { ctx.fillText(ln, fx, fy); fy += 34; }
+      fy += 30;
+      ctx.font = "600 24px Manrope";
+      ctx.fillText("Out my window", fx, fy);
+      fy += 42;
       ctx.fillStyle = C.cream;
-      ctx.font = "600 32px Manrope";
-      const names = seen.map((l) => l.name);
-      const lines = names.length ? wrap(ctx, `Out my window: ${names.join(", ")}`, 940) : ["Mostly open sky and sea out my window"];
-      lines.slice(0, 2).forEach((ln, i) => ctx.fillText(ln, 72, 1170 + i * 44));
+      ctx.font = "700 30px Manrope";
+      const names = seen.length ? seen.map((l) => l.name) : ["Mostly open sky and sea"];
+      for (const name of names) {
+        const lines = wrap(ctx, name, fw);
+        if (fy + (lines.length - 1) * 38 > my + mh) break; // keep inside the row; drop, never squeeze
+        for (const ln of lines) { ctx.fillText(ln, fx, fy); fy += 38; }
+        fy += 4;
+      }
 
-      // Footer
+      // ── Footer
+      ctx.strokeStyle = C.line;
+      ctx.lineWidth = 2;
+      ctx.beginPath(); ctx.moveTo(70, 1248); ctx.lineTo(W - 70, 1248); ctx.stroke();
       ctx.font = "italic 500 30px Manrope";
       ctx.fillStyle = C.coral;
-      ctx.fillText("Every seat gets the view", 70, 1290);
+      ctx.fillText("Every seat gets the view", 70, 1298);
       ctx.font = "500 22px Manrope";
       ctx.fillStyle = C.dim;
       const credit = "A to F, independent project, not affiliated with JetBlue";
-      ctx.fillText(credit, W - 70 - ctx.measureText(credit).width, 1290);
+      ctx.fillText(credit, W - 70 - ctx.measureText(credit).width, 1298);
     })();
     return () => { cancelled = true; };
   }, [basemap, photo, side, date, detail, samples, seen, rec.rule, firstGolden, setting, goldenOnSide, departureMs]);
