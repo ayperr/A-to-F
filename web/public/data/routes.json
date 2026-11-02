@@ -1,1606 +1,284 @@
 {
- "generated_for": "2026-11-12",
  "routes": [
   {
    "id": "jfk-lax",
    "origin": "JFK",
    "dest": "LAX",
-   "verified": true,
-   "source": "airportroutes.com observed ops, Jul 2026",
    "origin_city": "New York",
    "dest_city": "Los Angeles",
+   "origin_tz": "America/New_York",
+   "verified": true,
+   "source": "airportroutes.com observed ops, Jul 2026",
    "distance_km": 3974,
-   "date": "2026-11-12",
-   "track_source": "synthetic-great-circle",
-   "slots": [
-    {
-     "slot": "morning",
-     "departure_local": "2026-11-12T07:00:00-05:00",
-     "duration_min": 298,
-     "side": "A",
-     "rule": "golden",
-     "golden_start_min": 0,
-     "reason": "Sunrise on the left (A): 50 min of golden light, from takeoff.",
-     "golden_minutes": {
-      "A": 50,
-      "F": 0
-     },
-     "daylight_minutes": {
-      "A": 249,
-      "F": 0
-     }
-    },
-    {
-     "slot": "midday",
-     "departure_local": "2026-11-12T11:00:00-05:00",
-     "duration_min": 298,
-     "side": "F",
-     "rule": "shade",
-     "reason": "Sun is on the left (A) for 299 min; the right (F) side has front-lit views without glare.",
-     "golden_minutes": {
-      "A": 0,
-      "F": 0
-     },
-     "daylight_minutes": {
-      "A": 299,
-      "F": 0
-     }
-    },
-    {
-     "slot": "afternoon",
-     "departure_local": "2026-11-12T15:00:00-05:00",
-     "duration_min": 298,
-     "side": "A",
-     "rule": "golden",
-     "golden_start_min": 175,
-     "reason": "Sunset on the left (A): 63 min of golden light, starting 2h 55m after takeoff.",
-     "golden_minutes": {
-      "A": 63,
-      "F": 0
-     },
-     "daylight_minutes": {
-      "A": 144,
-      "F": 0
-     }
-    },
-    {
-     "slot": "evening",
-     "departure_local": "2026-11-12T19:00:00-05:00",
-     "duration_min": 298,
-     "side": null,
-     "rule": "dark",
-     "reason": "Sun is down the whole flight; pick by landmarks and city lights.",
-     "golden_minutes": {
-      "A": 0,
-      "F": 0
-     },
-     "daylight_minutes": {
-      "A": 0,
-      "F": 0
-     }
-    }
-   ]
+   "duration_min": 298,
+   "landmark_count": 12,
+   "track_source": "synthetic-great-circle"
   },
   {
    "id": "lax-jfk",
    "origin": "LAX",
    "dest": "JFK",
-   "verified": true,
-   "source": "airportroutes.com observed ops, Jul 2026",
    "origin_city": "Los Angeles",
    "dest_city": "New York",
+   "origin_tz": "America/Los_Angeles",
+   "verified": true,
+   "source": "airportroutes.com observed ops, Jul 2026",
    "distance_km": 3974,
-   "date": "2026-11-12",
-   "track_source": "synthetic-great-circle",
-   "slots": [
-    {
-     "slot": "morning",
-     "departure_local": "2026-11-12T07:00:00-08:00",
-     "duration_min": 298,
-     "side": "A",
-     "rule": "shade",
-     "reason": "Sun is on the right (F) for 299 min; the left (A) side has front-lit views without glare.",
-     "golden_minutes": {
-      "A": 0,
-      "F": 0
-     },
-     "daylight_minutes": {
-      "A": 0,
-      "F": 299
-     }
-    },
-    {
-     "slot": "midday",
-     "departure_local": "2026-11-12T11:00:00-08:00",
-     "duration_min": 298,
-     "side": "F",
-     "rule": "golden",
-     "golden_start_min": 190,
-     "reason": "Sunset on the right (F): 32 min of golden light, starting 3h 10m after takeoff.",
-     "golden_minutes": {
-      "A": 0,
-      "F": 32
-     },
-     "daylight_minutes": {
-      "A": 0,
-      "F": 190
-     }
-    },
-    {
-     "slot": "afternoon",
-     "departure_local": "2026-11-12T15:00:00-08:00",
-     "duration_min": 298,
-     "side": "F",
-     "rule": "golden",
-     "golden_start_min": 47,
-     "reason": "Sunset on the right (F): 11 min of golden light, starting 0h 47m after takeoff.",
-     "golden_minutes": {
-      "A": 0,
-      "F": 11
-     },
-     "daylight_minutes": {
-      "A": 0,
-      "F": 0
-     }
-    },
-    {
-     "slot": "evening",
-     "departure_local": "2026-11-12T19:00:00-08:00",
-     "duration_min": 298,
-     "side": null,
-     "rule": "dark",
-     "reason": "Sun is down the whole flight; pick by landmarks and city lights.",
-     "golden_minutes": {
-      "A": 0,
-      "F": 0
-     },
-     "daylight_minutes": {
-      "A": 0,
-      "F": 0
-     }
-    }
-   ]
+   "duration_min": 298,
+   "landmark_count": 12,
+   "track_source": "synthetic-great-circle"
   },
   {
    "id": "jfk-sfo",
    "origin": "JFK",
    "dest": "SFO",
-   "verified": true,
-   "source": "airportroutes.com observed ops, Jul 2026",
    "origin_city": "New York",
    "dest_city": "San Francisco",
+   "origin_tz": "America/New_York",
+   "verified": true,
+   "source": "airportroutes.com observed ops, Jul 2026",
    "distance_km": 4152,
-   "date": "2026-11-12",
-   "track_source": "synthetic-great-circle",
-   "slots": [
-    {
-     "slot": "morning",
-     "departure_local": "2026-11-12T07:00:00-05:00",
-     "duration_min": 311,
-     "side": "A",
-     "rule": "golden",
-     "golden_start_min": 0,
-     "reason": "Sunrise on the left (A): 57 min of golden light, from takeoff.",
-     "golden_minutes": {
-      "A": 57,
-      "F": 0
-     },
-     "daylight_minutes": {
-      "A": 255,
-      "F": 0
-     }
-    },
-    {
-     "slot": "midday",
-     "departure_local": "2026-11-12T11:00:00-05:00",
-     "duration_min": 311,
-     "side": "F",
-     "rule": "shade",
-     "reason": "Sun is on the left (A) for 312 min; the right (F) side has front-lit views without glare.",
-     "golden_minutes": {
-      "A": 0,
-      "F": 0
-     },
-     "daylight_minutes": {
-      "A": 312,
-      "F": 0
-     }
-    },
-    {
-     "slot": "afternoon",
-     "departure_local": "2026-11-12T15:00:00-05:00",
-     "duration_min": 311,
-     "side": "A",
-     "rule": "golden",
-     "golden_start_min": 159,
-     "reason": "Sunset on the left (A): 122 min of golden light, starting 2h 39m after takeoff.",
-     "golden_minutes": {
-      "A": 122,
-      "F": 0
-     },
-     "daylight_minutes": {
-      "A": 159,
-      "F": 0
-     }
-    },
-    {
-     "slot": "evening",
-     "departure_local": "2026-11-12T19:00:00-05:00",
-     "duration_min": 311,
-     "side": null,
-     "rule": "dark",
-     "reason": "Sun is down the whole flight; pick by landmarks and city lights.",
-     "golden_minutes": {
-      "A": 0,
-      "F": 0
-     },
-     "daylight_minutes": {
-      "A": 0,
-      "F": 0
-     }
-    }
-   ]
+   "duration_min": 311,
+   "landmark_count": 17,
+   "track_source": "synthetic-great-circle"
   },
   {
    "id": "sfo-jfk",
    "origin": "SFO",
    "dest": "JFK",
-   "verified": true,
-   "source": "airportroutes.com observed ops, Jul 2026",
    "origin_city": "San Francisco",
    "dest_city": "New York",
+   "origin_tz": "America/Los_Angeles",
+   "verified": true,
+   "source": "airportroutes.com observed ops, Jul 2026",
    "distance_km": 4152,
-   "date": "2026-11-12",
-   "track_source": "synthetic-great-circle",
-   "slots": [
-    {
-     "slot": "morning",
-     "departure_local": "2026-11-12T07:00:00-08:00",
-     "duration_min": 311,
-     "side": "F",
-     "rule": "golden",
-     "golden_start_min": 0,
-     "reason": "Sunrise on the right (F): 17 min of golden light, from takeoff.",
-     "golden_minutes": {
-      "A": 0,
-      "F": 17
-     },
-     "daylight_minutes": {
-      "A": 0,
-      "F": 295
-     }
-    },
-    {
-     "slot": "midday",
-     "departure_local": "2026-11-12T11:00:00-08:00",
-     "duration_min": 311,
-     "side": "F",
-     "rule": "golden",
-     "golden_start_min": 193,
-     "reason": "Sunset on the right (F): 33 min of golden light, starting 3h 13m after takeoff.",
-     "golden_minutes": {
-      "A": 0,
-      "F": 33
-     },
-     "daylight_minutes": {
-      "A": 0,
-      "F": 193
-     }
-    },
-    {
-     "slot": "afternoon",
-     "departure_local": "2026-11-12T15:00:00-08:00",
-     "duration_min": 311,
-     "side": "F",
-     "rule": "golden",
-     "golden_start_min": 50,
-     "reason": "Sunset on the right (F): 31 min of golden light, starting 0h 50m after takeoff.",
-     "golden_minutes": {
-      "A": 0,
-      "F": 31
-     },
-     "daylight_minutes": {
-      "A": 0,
-      "F": 13
-     }
-    },
-    {
-     "slot": "evening",
-     "departure_local": "2026-11-12T19:00:00-08:00",
-     "duration_min": 311,
-     "side": null,
-     "rule": "dark",
-     "reason": "Sun is down the whole flight; pick by landmarks and city lights.",
-     "golden_minutes": {
-      "A": 0,
-      "F": 0
-     },
-     "daylight_minutes": {
-      "A": 0,
-      "F": 0
-     }
-    }
-   ]
+   "duration_min": 311,
+   "landmark_count": 17,
+   "track_source": "synthetic-great-circle"
   },
   {
    "id": "jfk-sju",
    "origin": "JFK",
    "dest": "SJU",
-   "verified": true,
-   "source": "airportroutes.com observed ops, Jul 2026",
    "origin_city": "New York",
    "dest_city": "San Juan",
+   "origin_tz": "America/New_York",
+   "verified": true,
+   "source": "airportroutes.com observed ops, Jul 2026",
    "distance_km": 2578,
-   "date": "2026-11-12",
-   "track_source": "synthetic-great-circle",
-   "slots": [
-    {
-     "slot": "morning",
-     "departure_local": "2026-11-12T07:00:00-05:00",
-     "duration_min": 193,
-     "side": "A",
-     "rule": "golden",
-     "golden_start_min": 0,
-     "reason": "Sunrise on the left (A): 12 min of golden light, from takeoff.",
-     "golden_minutes": {
-      "A": 12,
-      "F": 0
-     },
-     "daylight_minutes": {
-      "A": 131,
-      "F": 0
-     }
-    },
-    {
-     "slot": "midday",
-     "departure_local": "2026-11-12T11:00:00-05:00",
-     "duration_min": 193,
-     "side": "A",
-     "rule": "shade",
-     "reason": "Sun is on the right (F) for 155 min; the left (A) side has front-lit views without glare.",
-     "golden_minutes": {
-      "A": 0,
-      "F": 0
-     },
-     "daylight_minutes": {
-      "A": 0,
-      "F": 155
-     }
-    },
-    {
-     "slot": "afternoon",
-     "departure_local": "2026-11-12T15:00:00-05:00",
-     "duration_min": 193,
-     "side": "F",
-     "rule": "golden",
-     "golden_start_min": 69,
-     "reason": "Sunset on the right (F): 47 min of golden light, starting 1h 09m after takeoff.",
-     "golden_minutes": {
-      "A": 0,
-      "F": 47
-     },
-     "daylight_minutes": {
-      "A": 0,
-      "F": 69
-     }
-    },
-    {
-     "slot": "evening",
-     "departure_local": "2026-11-12T19:00:00-05:00",
-     "duration_min": 193,
-     "side": null,
-     "rule": "dark",
-     "reason": "Sun is down the whole flight; pick by landmarks and city lights.",
-     "golden_minutes": {
-      "A": 0,
-      "F": 0
-     },
-     "daylight_minutes": {
-      "A": 0,
-      "F": 0
-     }
-    }
-   ]
+   "duration_min": 193,
+   "landmark_count": 0,
+   "track_source": "synthetic-great-circle"
   },
   {
    "id": "sju-jfk",
    "origin": "SJU",
    "dest": "JFK",
-   "verified": true,
-   "source": "airportroutes.com observed ops, Jul 2026",
    "origin_city": "San Juan",
    "dest_city": "New York",
+   "origin_tz": "America/Puerto_Rico",
+   "verified": true,
+   "source": "airportroutes.com observed ops, Jul 2026",
    "distance_km": 2578,
-   "date": "2026-11-12",
-   "track_source": "synthetic-great-circle",
-   "slots": [
-    {
-     "slot": "morning",
-     "departure_local": "2026-11-12T07:00:00-04:00",
-     "duration_min": 193,
-     "side": "A",
-     "rule": "shade",
-     "reason": "Sun is on the right (F) for 189 min; the left (A) side has front-lit views without glare.",
-     "golden_minutes": {
-      "A": 0,
-      "F": 0
-     },
-     "daylight_minutes": {
-      "A": 0,
-      "F": 189
-     }
-    },
-    {
-     "slot": "midday",
-     "departure_local": "2026-11-12T11:00:00-04:00",
-     "duration_min": 193,
-     "side": "F",
-     "rule": "shade",
-     "reason": "Sun is on the left (A) for 101 min; the right (F) side has front-lit views without glare.",
-     "golden_minutes": {
-      "A": 0,
-      "F": 0
-     },
-     "daylight_minutes": {
-      "A": 101,
-      "F": 0
-     }
-    },
-    {
-     "slot": "afternoon",
-     "departure_local": "2026-11-12T15:00:00-04:00",
-     "duration_min": 193,
-     "side": "A",
-     "rule": "golden",
-     "golden_start_min": 128,
-     "reason": "Sunset on the left (A): 45 min of golden light, starting 2h 08m after takeoff.",
-     "golden_minutes": {
-      "A": 45,
-      "F": 0
-     },
-     "daylight_minutes": {
-      "A": 128,
-      "F": 0
-     }
-    },
-    {
-     "slot": "evening",
-     "departure_local": "2026-11-12T19:00:00-04:00",
-     "duration_min": 193,
-     "side": null,
-     "rule": "dark",
-     "reason": "Sun is down the whole flight; pick by landmarks and city lights.",
-     "golden_minutes": {
-      "A": 0,
-      "F": 0
-     },
-     "daylight_minutes": {
-      "A": 0,
-      "F": 0
-     }
-    }
-   ]
+   "duration_min": 193,
+   "landmark_count": 0,
+   "track_source": "synthetic-great-circle"
   },
   {
    "id": "bos-sju",
    "origin": "BOS",
    "dest": "SJU",
-   "verified": true,
-   "source": "airportroutes.com observed ops, Jul 2026",
    "origin_city": "Boston",
    "dest_city": "San Juan",
+   "origin_tz": "America/New_York",
+   "verified": true,
+   "source": "airportroutes.com observed ops, Jul 2026",
    "distance_km": 2702,
-   "date": "2026-11-12",
-   "track_source": "synthetic-great-circle",
-   "slots": [
-    {
-     "slot": "morning",
-     "departure_local": "2026-11-12T07:00:00-05:00",
-     "duration_min": 203,
-     "side": "A",
-     "rule": "golden",
-     "golden_start_min": 0,
-     "reason": "Sunrise on the left (A): 8 min of golden light, from takeoff.",
-     "golden_minutes": {
-      "A": 8,
-      "F": 0
-     },
-     "daylight_minutes": {
-      "A": 157,
-      "F": 0
-     }
-    },
-    {
-     "slot": "midday",
-     "departure_local": "2026-11-12T11:00:00-05:00",
-     "duration_min": 203,
-     "side": "A",
-     "rule": "shade",
-     "reason": "Sun is on the right (F) for 150 min; the left (A) side has front-lit views without glare.",
-     "golden_minutes": {
-      "A": 0,
-      "F": 0
-     },
-     "daylight_minutes": {
-      "A": 0,
-      "F": 150
-     }
-    },
-    {
-     "slot": "afternoon",
-     "departure_local": "2026-11-12T15:00:00-05:00",
-     "duration_min": 203,
-     "side": "F",
-     "rule": "golden",
-     "golden_start_min": 57,
-     "reason": "Sunset on the right (F): 53 min of golden light, starting 0h 57m after takeoff.",
-     "golden_minutes": {
-      "A": 0,
-      "F": 53
-     },
-     "daylight_minutes": {
-      "A": 0,
-      "F": 57
-     }
-    },
-    {
-     "slot": "evening",
-     "departure_local": "2026-11-12T19:00:00-05:00",
-     "duration_min": 203,
-     "side": null,
-     "rule": "dark",
-     "reason": "Sun is down the whole flight; pick by landmarks and city lights.",
-     "golden_minutes": {
-      "A": 0,
-      "F": 0
-     },
-     "daylight_minutes": {
-      "A": 0,
-      "F": 0
-     }
-    }
-   ]
+   "duration_min": 203,
+   "landmark_count": 0,
+   "track_source": "synthetic-great-circle"
   },
   {
    "id": "sju-bos",
    "origin": "SJU",
    "dest": "BOS",
-   "verified": true,
-   "source": "airportroutes.com observed ops, Jul 2026",
    "origin_city": "San Juan",
    "dest_city": "Boston",
+   "origin_tz": "America/Puerto_Rico",
+   "verified": true,
+   "source": "airportroutes.com observed ops, Jul 2026",
    "distance_km": 2702,
-   "date": "2026-11-12",
-   "track_source": "synthetic-great-circle",
-   "slots": [
-    {
-     "slot": "morning",
-     "departure_local": "2026-11-12T07:00:00-04:00",
-     "duration_min": 203,
-     "side": "A",
-     "rule": "shade",
-     "reason": "Sun is on the right (F) for 204 min; the left (A) side has front-lit views without glare.",
-     "golden_minutes": {
-      "A": 0,
-      "F": 0
-     },
-     "daylight_minutes": {
-      "A": 0,
-      "F": 204
-     }
-    },
-    {
-     "slot": "midday",
-     "departure_local": "2026-11-12T11:00:00-04:00",
-     "duration_min": 203,
-     "side": "F",
-     "rule": "shade",
-     "reason": "Sun is on the left (A) for 94 min; the right (F) side has front-lit views without glare.",
-     "golden_minutes": {
-      "A": 0,
-      "F": 0
-     },
-     "daylight_minutes": {
-      "A": 94,
-      "F": 0
-     }
-    },
-    {
-     "slot": "afternoon",
-     "departure_local": "2026-11-12T15:00:00-04:00",
-     "duration_min": 203,
-     "side": "A",
-     "rule": "golden",
-     "golden_start_min": 121,
-     "reason": "Sunset on the left (A): 42 min of golden light, starting 2h 01m after takeoff.",
-     "golden_minutes": {
-      "A": 42,
-      "F": 0
-     },
-     "daylight_minutes": {
-      "A": 121,
-      "F": 0
-     }
-    },
-    {
-     "slot": "evening",
-     "departure_local": "2026-11-12T19:00:00-04:00",
-     "duration_min": 203,
-     "side": null,
-     "rule": "dark",
-     "reason": "Sun is down the whole flight; pick by landmarks and city lights.",
-     "golden_minutes": {
-      "A": 0,
-      "F": 0
-     },
-     "daylight_minutes": {
-      "A": 0,
-      "F": 0
-     }
-    }
-   ]
+   "duration_min": 203,
+   "landmark_count": 0,
+   "track_source": "synthetic-great-circle"
   },
   {
    "id": "jfk-fll",
    "origin": "JFK",
    "dest": "FLL",
-   "verified": true,
-   "source": "airportroutes.com observed ops, Jul 2026",
    "origin_city": "New York",
    "dest_city": "Fort Lauderdale",
+   "origin_tz": "America/New_York",
+   "verified": true,
+   "source": "airportroutes.com observed ops, Jul 2026",
    "distance_km": 1723,
-   "date": "2026-11-12",
-   "track_source": "synthetic-great-circle",
-   "slots": [
-    {
-     "slot": "morning",
-     "departure_local": "2026-11-12T07:00:00-05:00",
-     "duration_min": 129,
-     "side": "A",
-     "rule": "golden",
-     "golden_start_min": 0,
-     "reason": "Sunrise on the left (A): 17 min of golden light, from takeoff.",
-     "golden_minutes": {
-      "A": 17,
-      "F": 0
-     },
-     "daylight_minutes": {
-      "A": 113,
-      "F": 0
-     }
-    },
-    {
-     "slot": "midday",
-     "departure_local": "2026-11-12T11:00:00-05:00",
-     "duration_min": 129,
-     "side": "F",
-     "rule": "shade",
-     "reason": "Sun is on the left (A) for 52 min; the right (F) side has front-lit views without glare.",
-     "golden_minutes": {
-      "A": 0,
-      "F": 0
-     },
-     "daylight_minutes": {
-      "A": 52,
-      "F": 0
-     }
-    },
-    {
-     "slot": "afternoon",
-     "departure_local": "2026-11-12T15:00:00-05:00",
-     "duration_min": 129,
-     "side": "F",
-     "rule": "golden",
-     "golden_start_min": 115,
-     "reason": "Sunset on the right (F): 15 min of golden light, starting 1h 55m after takeoff.",
-     "golden_minutes": {
-      "A": 0,
-      "F": 15
-     },
-     "daylight_minutes": {
-      "A": 0,
-      "F": 115
-     }
-    },
-    {
-     "slot": "evening",
-     "departure_local": "2026-11-12T19:00:00-05:00",
-     "duration_min": 129,
-     "side": null,
-     "rule": "dark",
-     "reason": "Sun is down the whole flight; pick by landmarks and city lights.",
-     "golden_minutes": {
-      "A": 0,
-      "F": 0
-     },
-     "daylight_minutes": {
-      "A": 0,
-      "F": 0
-     }
-    }
-   ]
+   "duration_min": 129,
+   "landmark_count": 5,
+   "track_source": "synthetic-great-circle"
   },
   {
    "id": "fll-jfk",
    "origin": "FLL",
    "dest": "JFK",
-   "verified": true,
-   "source": "airportroutes.com observed ops, Jul 2026",
    "origin_city": "Fort Lauderdale",
    "dest_city": "New York",
+   "origin_tz": "America/New_York",
+   "verified": true,
+   "source": "airportroutes.com observed ops, Jul 2026",
    "distance_km": 1723,
-   "date": "2026-11-12",
-   "track_source": "synthetic-great-circle",
-   "slots": [
-    {
-     "slot": "morning",
-     "departure_local": "2026-11-12T07:00:00-05:00",
-     "duration_min": 129,
-     "side": "F",
-     "rule": "golden",
-     "golden_start_min": 0,
-     "reason": "Sunrise on the right (F): 10 min of golden light, from takeoff.",
-     "golden_minutes": {
-      "A": 0,
-      "F": 10
-     },
-     "daylight_minutes": {
-      "A": 0,
-      "F": 120
-     }
-    },
-    {
-     "slot": "midday",
-     "departure_local": "2026-11-12T11:00:00-05:00",
-     "duration_min": 129,
-     "side": "A",
-     "rule": "shade",
-     "reason": "Sun is on the right (F) for 54 min; the left (A) side has front-lit views without glare.",
-     "golden_minutes": {
-      "A": 0,
-      "F": 0
-     },
-     "daylight_minutes": {
-      "A": 0,
-      "F": 54
-     }
-    },
-    {
-     "slot": "afternoon",
-     "departure_local": "2026-11-12T15:00:00-05:00",
-     "duration_min": 129,
-     "side": "A",
-     "rule": "golden",
-     "golden_start_min": 85,
-     "reason": "Sunset on the left (A): 31 min of golden light, starting 1h 25m after takeoff.",
-     "golden_minutes": {
-      "A": 31,
-      "F": 0
-     },
-     "daylight_minutes": {
-      "A": 85,
-      "F": 0
-     }
-    },
-    {
-     "slot": "evening",
-     "departure_local": "2026-11-12T19:00:00-05:00",
-     "duration_min": 129,
-     "side": null,
-     "rule": "dark",
-     "reason": "Sun is down the whole flight; pick by landmarks and city lights.",
-     "golden_minutes": {
-      "A": 0,
-      "F": 0
-     },
-     "daylight_minutes": {
-      "A": 0,
-      "F": 0
-     }
-    }
-   ]
+   "duration_min": 129,
+   "landmark_count": 5,
+   "track_source": "synthetic-great-circle"
   },
   {
    "id": "jfk-lhr",
    "origin": "JFK",
    "dest": "LHR",
-   "verified": true,
-   "source": "flymag.com JetBlue Europe network, Apr 2026",
    "origin_city": "New York",
    "dest_city": "London",
+   "origin_tz": "America/New_York",
+   "verified": true,
+   "source": "flymag.com JetBlue Europe network, Apr 2026",
    "distance_km": 5540,
-   "date": "2026-11-12",
-   "track_source": "synthetic-great-circle",
-   "slots": [
-    {
-     "slot": "morning",
-     "departure_local": "2026-11-12T07:00:00-05:00",
-     "duration_min": 416,
-     "side": "F",
-     "rule": "golden",
-     "golden_start_min": 0,
-     "reason": "Sunset on the right (F): 55 min of golden light, from takeoff.",
-     "golden_minutes": {
-      "A": 0,
-      "F": 55
-     },
-     "daylight_minutes": {
-      "A": 0,
-      "F": 278
-     }
-    },
-    {
-     "slot": "midday",
-     "departure_local": "2026-11-12T11:00:00-05:00",
-     "duration_min": 416,
-     "side": "F",
-     "rule": "golden",
-     "golden_start_min": 165,
-     "reason": "Sunset on the right (F): 36 min of golden light, starting 2h 45m after takeoff.",
-     "golden_minutes": {
-      "A": 0,
-      "F": 36
-     },
-     "daylight_minutes": {
-      "A": 0,
-      "F": 150
-     }
-    },
-    {
-     "slot": "afternoon",
-     "departure_local": "2026-11-12T15:00:00-05:00",
-     "duration_min": 416,
-     "side": "A",
-     "rule": "golden",
-     "golden_start_min": 38,
-     "reason": "Sunset on the left (A): 30 min of golden light, starting 0h 38m after takeoff.",
-     "golden_minutes": {
-      "A": 30,
-      "F": 0
-     },
-     "daylight_minutes": {
-      "A": 0,
-      "F": 0
-     }
-    },
-    {
-     "slot": "evening",
-     "departure_local": "2026-11-12T19:00:00-05:00",
-     "duration_min": 416,
-     "side": null,
-     "rule": "dark",
-     "reason": "Sun is down the whole flight; pick by landmarks and city lights.",
-     "golden_minutes": {
-      "A": 0,
-      "F": 0
-     },
-     "daylight_minutes": {
-      "A": 0,
-      "F": 0
-     }
-    }
-   ]
+   "duration_min": 416,
+   "landmark_count": 11,
+   "track_source": "synthetic-great-circle"
   },
   {
    "id": "lhr-jfk",
    "origin": "LHR",
    "dest": "JFK",
-   "verified": true,
-   "source": "flymag.com JetBlue Europe network, Apr 2026",
    "origin_city": "London",
    "dest_city": "New York",
+   "origin_tz": "Europe/London",
+   "verified": true,
+   "source": "flymag.com JetBlue Europe network, Apr 2026",
    "distance_km": 5540,
-   "date": "2026-11-12",
-   "track_source": "synthetic-great-circle",
-   "slots": [
-    {
-     "slot": "morning",
-     "departure_local": "2026-11-12T07:00:00+00:00",
-     "duration_min": 416,
-     "side": "A",
-     "rule": "golden",
-     "golden_start_min": 13,
-     "reason": "Sunrise on the left (A): 250 min of golden light, starting 0h 13m after takeoff.",
-     "golden_minutes": {
-      "A": 250,
-      "F": 0
-     },
-     "daylight_minutes": {
-      "A": 154,
-      "F": 0
-     }
-    },
-    {
-     "slot": "midday",
-     "departure_local": "2026-11-12T11:00:00+00:00",
-     "duration_min": 416,
-     "side": "F",
-     "rule": "shade",
-     "reason": "Sun is on the left (A) for 417 min; the right (F) side has front-lit views without glare.",
-     "golden_minutes": {
-      "A": 0,
-      "F": 0
-     },
-     "daylight_minutes": {
-      "A": 417,
-      "F": 0
-     }
-    },
-    {
-     "slot": "afternoon",
-     "departure_local": "2026-11-12T15:00:00+00:00",
-     "duration_min": 416,
-     "side": "A",
-     "rule": "golden",
-     "golden_start_min": 67,
-     "reason": "Sunset on the left (A): 218 min of golden light, starting 1h 07m after takeoff.",
-     "golden_minutes": {
-      "A": 218,
-      "F": 60
-     },
-     "daylight_minutes": {
-      "A": 67,
-      "F": 0
-     }
-    },
-    {
-     "slot": "evening",
-     "departure_local": "2026-11-12T19:00:00+00:00",
-     "duration_min": 416,
-     "side": null,
-     "rule": "dark",
-     "reason": "Sun is down the whole flight; pick by landmarks and city lights.",
-     "golden_minutes": {
-      "A": 0,
-      "F": 0
-     },
-     "daylight_minutes": {
-      "A": 0,
-      "F": 0
-     }
-    }
-   ]
+   "duration_min": 416,
+   "landmark_count": 11,
+   "track_source": "synthetic-great-circle"
   },
   {
    "id": "bos-lhr",
    "origin": "BOS",
    "dest": "LHR",
-   "verified": true,
-   "source": "flymag.com JetBlue Europe network, Apr 2026",
    "origin_city": "Boston",
    "dest_city": "London",
+   "origin_tz": "America/New_York",
+   "verified": true,
+   "source": "flymag.com JetBlue Europe network, Apr 2026",
    "distance_km": 5240,
-   "date": "2026-11-12",
-   "track_source": "synthetic-great-circle",
-   "slots": [
-    {
-     "slot": "morning",
-     "departure_local": "2026-11-12T07:00:00-05:00",
-     "duration_min": 393,
-     "side": "F",
-     "rule": "golden",
-     "golden_start_min": 0,
-     "reason": "Sunset on the right (F): 52 min of golden light, from takeoff.",
-     "golden_minutes": {
-      "A": 0,
-      "F": 52
-     },
-     "daylight_minutes": {
-      "A": 0,
-      "F": 271
-     }
-    },
-    {
-     "slot": "midday",
-     "departure_local": "2026-11-12T11:00:00-05:00",
-     "duration_min": 393,
-     "side": "F",
-     "rule": "golden",
-     "golden_start_min": 154,
-     "reason": "Sunset on the right (F): 37 min of golden light, starting 2h 34m after takeoff.",
-     "golden_minutes": {
-      "A": 0,
-      "F": 37
-     },
-     "daylight_minutes": {
-      "A": 0,
-      "F": 149
-     }
-    },
-    {
-     "slot": "afternoon",
-     "departure_local": "2026-11-12T15:00:00-05:00",
-     "duration_min": 393,
-     "side": "A",
-     "rule": "golden",
-     "golden_start_min": 39,
-     "reason": "Sunset on the left (A): 19 min of golden light, starting 0h 39m after takeoff.",
-     "golden_minutes": {
-      "A": 19,
-      "F": 0
-     },
-     "daylight_minutes": {
-      "A": 0,
-      "F": 0
-     }
-    },
-    {
-     "slot": "evening",
-     "departure_local": "2026-11-12T19:00:00-05:00",
-     "duration_min": 393,
-     "side": null,
-     "rule": "dark",
-     "reason": "Sun is down the whole flight; pick by landmarks and city lights.",
-     "golden_minutes": {
-      "A": 0,
-      "F": 0
-     },
-     "daylight_minutes": {
-      "A": 0,
-      "F": 0
-     }
-    }
-   ]
+   "duration_min": 393,
+   "landmark_count": 8,
+   "track_source": "synthetic-great-circle"
   },
   {
    "id": "lhr-bos",
    "origin": "LHR",
    "dest": "BOS",
-   "verified": true,
-   "source": "flymag.com JetBlue Europe network, Apr 2026",
    "origin_city": "London",
    "dest_city": "Boston",
+   "origin_tz": "Europe/London",
+   "verified": true,
+   "source": "flymag.com JetBlue Europe network, Apr 2026",
    "distance_km": 5240,
-   "date": "2026-11-12",
-   "track_source": "synthetic-great-circle",
-   "slots": [
-    {
-     "slot": "morning",
-     "departure_local": "2026-11-12T07:00:00+00:00",
-     "duration_min": 393,
-     "side": "A",
-     "rule": "golden",
-     "golden_start_min": 13,
-     "reason": "Sunrise on the left (A): 251 min of golden light, starting 0h 13m after takeoff.",
-     "golden_minutes": {
-      "A": 251,
-      "F": 0
-     },
-     "daylight_minutes": {
-      "A": 130,
-      "F": 0
-     }
-    },
-    {
-     "slot": "midday",
-     "departure_local": "2026-11-12T11:00:00+00:00",
-     "duration_min": 393,
-     "side": "F",
-     "rule": "shade",
-     "reason": "Sun is on the left (A) for 394 min; the right (F) side has front-lit views without glare.",
-     "golden_minutes": {
-      "A": 0,
-      "F": 0
-     },
-     "daylight_minutes": {
-      "A": 394,
-      "F": 0
-     }
-    },
-    {
-     "slot": "afternoon",
-     "departure_local": "2026-11-12T15:00:00+00:00",
-     "duration_min": 393,
-     "side": "A",
-     "rule": "golden",
-     "golden_start_min": 67,
-     "reason": "Sunset on the left (A): 218 min of golden light, starting 1h 07m after takeoff.",
-     "golden_minutes": {
-      "A": 218,
-      "F": 47
-     },
-     "daylight_minutes": {
-      "A": 67,
-      "F": 0
-     }
-    },
-    {
-     "slot": "evening",
-     "departure_local": "2026-11-12T19:00:00+00:00",
-     "duration_min": 393,
-     "side": null,
-     "rule": "dark",
-     "reason": "Sun is down the whole flight; pick by landmarks and city lights.",
-     "golden_minutes": {
-      "A": 0,
-      "F": 0
-     },
-     "daylight_minutes": {
-      "A": 0,
-      "F": 0
-     }
-    }
-   ]
+   "duration_min": 393,
+   "landmark_count": 8,
+   "track_source": "synthetic-great-circle"
   },
   {
    "id": "bos-lax",
    "origin": "BOS",
    "dest": "LAX",
-   "verified": false,
-   "source": "TO VERIFY on jetblue.com route map",
    "origin_city": "Boston",
    "dest_city": "Los Angeles",
+   "origin_tz": "America/New_York",
+   "verified": false,
+   "source": "TO VERIFY on jetblue.com route map",
    "distance_km": 4193,
-   "date": "2026-11-12",
-   "track_source": "synthetic-great-circle",
-   "slots": [
-    {
-     "slot": "morning",
-     "departure_local": "2026-11-12T07:00:00-05:00",
-     "duration_min": 314,
-     "side": "A",
-     "rule": "golden",
-     "golden_start_min": 0,
-     "reason": "Sunrise on the left (A): 35 min of golden light, from takeoff.",
-     "golden_minutes": {
-      "A": 35,
-      "F": 0
-     },
-     "daylight_minutes": {
-      "A": 280,
-      "F": 0
-     }
-    },
-    {
-     "slot": "midday",
-     "departure_local": "2026-11-12T11:00:00-05:00",
-     "duration_min": 314,
-     "side": "F",
-     "rule": "shade",
-     "reason": "Sun is on the left (A) for 315 min; the right (F) side has front-lit views without glare.",
-     "golden_minutes": {
-      "A": 0,
-      "F": 0
-     },
-     "daylight_minutes": {
-      "A": 315,
-      "F": 0
-     }
-    },
-    {
-     "slot": "afternoon",
-     "departure_local": "2026-11-12T15:00:00-05:00",
-     "duration_min": 314,
-     "side": "A",
-     "rule": "golden",
-     "golden_start_min": 134,
-     "reason": "Sunset on the left (A): 84 min of golden light, starting 2h 14m after takeoff.",
-     "golden_minutes": {
-      "A": 84,
-      "F": 3
-     },
-     "daylight_minutes": {
-      "A": 127,
-      "F": 0
-     }
-    },
-    {
-     "slot": "evening",
-     "departure_local": "2026-11-12T19:00:00-05:00",
-     "duration_min": 314,
-     "side": null,
-     "rule": "dark",
-     "reason": "Sun is down the whole flight; pick by landmarks and city lights.",
-     "golden_minutes": {
-      "A": 0,
-      "F": 0
-     },
-     "daylight_minutes": {
-      "A": 0,
-      "F": 0
-     }
-    }
-   ]
+   "duration_min": 314,
+   "landmark_count": 19,
+   "track_source": "synthetic-great-circle"
   },
   {
    "id": "lax-bos",
    "origin": "LAX",
    "dest": "BOS",
-   "verified": false,
-   "source": "TO VERIFY on jetblue.com route map",
    "origin_city": "Los Angeles",
    "dest_city": "Boston",
+   "origin_tz": "America/Los_Angeles",
+   "verified": false,
+   "source": "TO VERIFY on jetblue.com route map",
    "distance_km": 4193,
-   "date": "2026-11-12",
-   "track_source": "synthetic-great-circle",
-   "slots": [
-    {
-     "slot": "morning",
-     "departure_local": "2026-11-12T07:00:00-08:00",
-     "duration_min": 314,
-     "side": "A",
-     "rule": "shade",
-     "reason": "Sun is on the right (F) for 315 min; the left (A) side has front-lit views without glare.",
-     "golden_minutes": {
-      "A": 0,
-      "F": 0
-     },
-     "daylight_minutes": {
-      "A": 0,
-      "F": 315
-     }
-    },
-    {
-     "slot": "midday",
-     "departure_local": "2026-11-12T11:00:00-08:00",
-     "duration_min": 314,
-     "side": "F",
-     "rule": "golden",
-     "golden_start_min": 189,
-     "reason": "Sunset on the right (F): 32 min of golden light, starting 3h 09m after takeoff.",
-     "golden_minutes": {
-      "A": 0,
-      "F": 32
-     },
-     "daylight_minutes": {
-      "A": 0,
-      "F": 187
-     }
-    },
-    {
-     "slot": "afternoon",
-     "departure_local": "2026-11-12T15:00:00-08:00",
-     "duration_min": 314,
-     "side": null,
-     "rule": "neutral",
-     "reason": "Sun stays ahead of or behind the plane (47 min); both sides get similar light, so landmarks decide.",
-     "golden_minutes": {
-      "A": 0,
-      "F": 0
-     },
-     "daylight_minutes": {
-      "A": 0,
-      "F": 0
-     }
-    },
-    {
-     "slot": "evening",
-     "departure_local": "2026-11-12T19:00:00-08:00",
-     "duration_min": 314,
-     "side": null,
-     "rule": "dark",
-     "reason": "Sun is down the whole flight; pick by landmarks and city lights.",
-     "golden_minutes": {
-      "A": 0,
-      "F": 0
-     },
-     "daylight_minutes": {
-      "A": 0,
-      "F": 0
-     }
-    }
-   ]
+   "duration_min": 314,
+   "landmark_count": 19,
+   "track_source": "synthetic-great-circle"
   },
   {
    "id": "jfk-las",
    "origin": "JFK",
    "dest": "LAS",
-   "verified": false,
-   "source": "TO VERIFY on jetblue.com route map",
    "origin_city": "New York",
    "dest_city": "Las Vegas",
+   "origin_tz": "America/New_York",
+   "verified": false,
+   "source": "TO VERIFY on jetblue.com route map",
    "distance_km": 3609,
-   "date": "2026-11-12",
-   "track_source": "synthetic-great-circle",
-   "slots": [
-    {
-     "slot": "morning",
-     "departure_local": "2026-11-12T07:00:00-05:00",
-     "duration_min": 271,
-     "side": "A",
-     "rule": "golden",
-     "golden_start_min": 0,
-     "reason": "Sunrise on the left (A): 51 min of golden light, from takeoff.",
-     "golden_minutes": {
-      "A": 51,
-      "F": 0
-     },
-     "daylight_minutes": {
-      "A": 221,
-      "F": 0
-     }
-    },
-    {
-     "slot": "midday",
-     "departure_local": "2026-11-12T11:00:00-05:00",
-     "duration_min": 271,
-     "side": "F",
-     "rule": "shade",
-     "reason": "Sun is on the left (A) for 272 min; the right (F) side has front-lit views without glare.",
-     "golden_minutes": {
-      "A": 0,
-      "F": 0
-     },
-     "daylight_minutes": {
-      "A": 272,
-      "F": 0
-     }
-    },
-    {
-     "slot": "afternoon",
-     "departure_local": "2026-11-12T15:00:00-05:00",
-     "duration_min": 271,
-     "side": "A",
-     "rule": "golden",
-     "golden_start_min": 172,
-     "reason": "Sunset on the left (A): 76 min of golden light, starting 2h 52m after takeoff.",
-     "golden_minutes": {
-      "A": 76,
-      "F": 0
-     },
-     "daylight_minutes": {
-      "A": 154,
-      "F": 0
-     }
-    },
-    {
-     "slot": "evening",
-     "departure_local": "2026-11-12T19:00:00-05:00",
-     "duration_min": 271,
-     "side": null,
-     "rule": "dark",
-     "reason": "Sun is down the whole flight; pick by landmarks and city lights.",
-     "golden_minutes": {
-      "A": 0,
-      "F": 0
-     },
-     "daylight_minutes": {
-      "A": 0,
-      "F": 0
-     }
-    }
-   ]
+   "duration_min": 271,
+   "landmark_count": 9,
+   "track_source": "synthetic-great-circle"
   },
   {
    "id": "las-jfk",
    "origin": "LAS",
    "dest": "JFK",
-   "verified": false,
-   "source": "TO VERIFY on jetblue.com route map",
    "origin_city": "Las Vegas",
    "dest_city": "New York",
+   "origin_tz": "America/Los_Angeles",
+   "verified": false,
+   "source": "TO VERIFY on jetblue.com route map",
    "distance_km": 3609,
-   "date": "2026-11-12",
-   "track_source": "synthetic-great-circle",
-   "slots": [
-    {
-     "slot": "morning",
-     "departure_local": "2026-11-12T07:00:00-08:00",
-     "duration_min": 271,
-     "side": "A",
-     "rule": "shade",
-     "reason": "Sun is on the right (F) for 272 min; the left (A) side has front-lit views without glare.",
-     "golden_minutes": {
-      "A": 0,
-      "F": 0
-     },
-     "daylight_minutes": {
-      "A": 0,
-      "F": 272
-     }
-    },
-    {
-     "slot": "midday",
-     "departure_local": "2026-11-12T11:00:00-08:00",
-     "duration_min": 271,
-     "side": "F",
-     "rule": "golden",
-     "golden_start_min": 179,
-     "reason": "Sunset on the right (F): 32 min of golden light, starting 2h 59m after takeoff.",
-     "golden_minutes": {
-      "A": 0,
-      "F": 32
-     },
-     "daylight_minutes": {
-      "A": 0,
-      "F": 179
-     }
-    },
-    {
-     "slot": "afternoon",
-     "departure_local": "2026-11-12T15:00:00-08:00",
-     "duration_min": 271,
-     "side": "F",
-     "rule": "golden",
-     "golden_start_min": 36,
-     "reason": "Sunset on the right (F): 30 min of golden light, starting 0h 36m after takeoff.",
-     "golden_minutes": {
-      "A": 0,
-      "F": 30
-     },
-     "daylight_minutes": {
-      "A": 0,
-      "F": 0
-     }
-    },
-    {
-     "slot": "evening",
-     "departure_local": "2026-11-12T19:00:00-08:00",
-     "duration_min": 271,
-     "side": null,
-     "rule": "dark",
-     "reason": "Sun is down the whole flight; pick by landmarks and city lights.",
-     "golden_minutes": {
-      "A": 0,
-      "F": 0
-     },
-     "daylight_minutes": {
-      "A": 0,
-      "F": 0
-     }
-    }
-   ]
+   "duration_min": 271,
+   "landmark_count": 9,
+   "track_source": "synthetic-great-circle"
   },
   {
    "id": "bos-den",
    "origin": "BOS",
    "dest": "DEN",
-   "verified": false,
-   "source": "TO VERIFY on jetblue.com route map",
    "origin_city": "Boston",
    "dest_city": "Denver",
+   "origin_tz": "America/New_York",
+   "verified": false,
+   "source": "TO VERIFY on jetblue.com route map",
    "distance_km": 2816,
-   "date": "2026-11-12",
-   "track_source": "synthetic-great-circle",
-   "slots": [
-    {
-     "slot": "morning",
-     "departure_local": "2026-11-12T07:00:00-05:00",
-     "duration_min": 211,
-     "side": "A",
-     "rule": "golden",
-     "golden_start_min": 0,
-     "reason": "Sunrise on the left (A): 37 min of golden light, from takeoff.",
-     "golden_minutes": {
-      "A": 37,
-      "F": 0
-     },
-     "daylight_minutes": {
-      "A": 175,
-      "F": 0
-     }
-    },
-    {
-     "slot": "midday",
-     "departure_local": "2026-11-12T11:00:00-05:00",
-     "duration_min": 211,
-     "side": "F",
-     "rule": "shade",
-     "reason": "Sun is on the left (A) for 212 min; the right (F) side has front-lit views without glare.",
-     "golden_minutes": {
-      "A": 0,
-      "F": 0
-     },
-     "daylight_minutes": {
-      "A": 212,
-      "F": 0
-     }
-    },
-    {
-     "slot": "afternoon",
-     "departure_local": "2026-11-12T15:00:00-05:00",
-     "duration_min": 211,
-     "side": "A",
-     "rule": "golden",
-     "golden_start_min": 129,
-     "reason": "Sunset on the left (A): 83 min of golden light, starting 2h 09m after takeoff.",
-     "golden_minutes": {
-      "A": 83,
-      "F": 0
-     },
-     "daylight_minutes": {
-      "A": 129,
-      "F": 0
-     }
-    },
-    {
-     "slot": "evening",
-     "departure_local": "2026-11-12T19:00:00-05:00",
-     "duration_min": 211,
-     "side": null,
-     "rule": "dark",
-     "reason": "Sun is down the whole flight; pick by landmarks and city lights.",
-     "golden_minutes": {
-      "A": 0,
-      "F": 0
-     },
-     "daylight_minutes": {
-      "A": 0,
-      "F": 0
-     }
-    }
-   ]
+   "duration_min": 211,
+   "landmark_count": 12,
+   "track_source": "synthetic-great-circle"
   },
   {
    "id": "den-bos",
    "origin": "DEN",
    "dest": "BOS",
-   "verified": false,
-   "source": "TO VERIFY on jetblue.com route map",
    "origin_city": "Denver",
    "dest_city": "Boston",
+   "origin_tz": "America/Denver",
+   "verified": false,
+   "source": "TO VERIFY on jetblue.com route map",
    "distance_km": 2816,
-   "date": "2026-11-12",
-   "track_source": "synthetic-great-circle",
-   "slots": [
-    {
-     "slot": "morning",
-     "departure_local": "2026-11-12T07:00:00-07:00",
-     "duration_min": 211,
-     "side": "F",
-     "rule": "golden",
-     "golden_start_min": 0,
-     "reason": "Sunrise on the right (F): 13 min of golden light, from takeoff.",
-     "golden_minutes": {
-      "A": 0,
-      "F": 13
-     },
-     "daylight_minutes": {
-      "A": 0,
-      "F": 199
-     }
-    },
-    {
-     "slot": "midday",
-     "departure_local": "2026-11-12T11:00:00-07:00",
-     "duration_min": 211,
-     "side": "F",
-     "rule": "golden",
-     "golden_start_min": 182,
-     "reason": "Sunset on the right (F): 27 min of golden light, starting 3h 02m after takeoff.",
-     "golden_minutes": {
-      "A": 0,
-      "F": 27
-     },
-     "daylight_minutes": {
-      "A": 0,
-      "F": 182
-     }
-    },
-    {
-     "slot": "afternoon",
-     "departure_local": "2026-11-12T15:00:00-07:00",
-     "duration_min": 211,
-     "side": "F",
-     "rule": "golden",
-     "golden_start_min": 39,
-     "reason": "Sunset on the right (F): 32 min of golden light, starting 0h 39m after takeoff.",
-     "golden_minutes": {
-      "A": 0,
-      "F": 32
-     },
-     "daylight_minutes": {
-      "A": 0,
-      "F": 23
-     }
-    },
-    {
-     "slot": "evening",
-     "departure_local": "2026-11-12T19:00:00-07:00",
-     "duration_min": 211,
-     "side": null,
-     "rule": "dark",
-     "reason": "Sun is down the whole flight; pick by landmarks and city lights.",
-     "golden_minutes": {
-      "A": 0,
-      "F": 0
-     },
-     "daylight_minutes": {
-      "A": 0,
-      "F": 0
-     }
-    }
-   ]
+   "duration_min": 211,
+   "landmark_count": 12,
+   "track_source": "synthetic-great-circle"
   }
  ]
 }

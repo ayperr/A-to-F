@@ -14,12 +14,17 @@ jobs:
         with:
           python-version: "3.13"
       - run: pip install -r pipeline/requirements.txt -r mcp_server/requirements.txt
-      - name: Geometry tests
+      - name: Download Natural Earth layers (landmarks, basemap)
+        run: |
+          python pipeline/landmarks.py --download
+          python pipeline/basemap.py --download
+      - name: Geometry and landmark tests
         run: python -m pytest pipeline -q
       - name: Data is up to date with the engine
         run: |
           python pipeline/build_data.py
-          git diff --exit-code -- web/public/data || (echo "::error::web/public/data is stale. Run python pipeline/build_data.py and commit." && exit 1)
+          python pipeline/basemap.py
+          git diff --exit-code -- web/public/data web/lib/engine/fixtures || (echo "::error::web/public/data is stale. Run python pipeline/build_data.py and commit." && exit 1)
       - name: MCP server smoke test (STDIO, progress notifications)
         run: python mcp_server/smoke_test.py
 
@@ -36,5 +41,7 @@ jobs:
           cache: npm
           cache-dependency-path: web/package-lock.json
       - run: npm ci
+      - name: TypeScript engine matches the Python engine
+        run: npm test
       - run: npm run lint
       - run: npm run build

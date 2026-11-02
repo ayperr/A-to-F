@@ -1,0 +1,70 @@
+.wrap { max-width: 760px; }
+
+.heads, .row {
+  display: grid;
+  grid-template-columns: 1fr 76px 1fr;
+  align-items: center;
+}
+.heads { color: var(--cream-dim); font-size: 0.85rem; padding-bottom: 10px; border-bottom: 1px solid var(--line); }
+.heads span:last-child { text-align: right; }
+
+.list { list-style: none; margin: 0; padding: 0; }
+
+.row {
+  position: relative;
+  width: 100%;
+  min-height: 56px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: inherit;
+  cursor: pointer;
+}
+.row:hover .label b { text-decoration: underline; text-underline-offset: 3px; }
+
+.lane { align-self: stretch; display: flex; align-items: center; padding: 8px 0; }
+.left { justify-content: flex-end; text-align: right; padding-right: 14px; }
+.right { justify-content: flex-start; padding-left: 14px; }
+.glow.left { background: linear-gradient(to left, rgb(255 122 69 / 0.22), transparent 85%); }
+.glow.right { background: linear-gradient(to right, rgb(255 122 69 / 0.22), transparent 85%); }
+
+.spine {
+  align-self: stretch;
+  display: grid; place-items: center;
+  position: relative;
+  font-variant-numeric: tabular-nums;
+  font-size: 0.85rem;
+  color: var(--cream-dim);
+}
+.spine::before {
+  content: ""; position: absolute; top: 0; bottom: 0; left: 50%; width: 4px; margin-left: -2px;
+  background: var(--cream-dim); opacity: 0.5;
+}
+.spine.night::before { background: var(--line-strong); opacity: 1; }
+.spine time { position: relative; background: var(--ground); padding: 2px 4px; border-radius: 4px; }
+
+/* Things directly under the plane sit on the centre line: time on top, name below it. */
+.both { min-height: 92px; }
+.both .spine { place-items: start center; padding-top: 12px; }
+.center {
+  position: absolute; left: 50%; top: 42px; transform: translateX(-50%);
+  width: max-content; max-width: min(78vw, 320px);
+  text-align: center;
+  background: var(--ground);
+  padding: 2px 10px;
+}
+
+.label { display: grid; gap: 1px; }
+.label b { font-weight: 600; }
+.label small { color: var(--cream-dim); font-size: 0.8rem; }
+.lightEvent .label b { color: var(--coral); }
+.soft .label { opacity: 0.5; }
+
+.active .spine time { background: var(--cream); color: var(--ground); font-weight: 600; }
+
+@media (max-width: 520px) {
+  .heads, .row { grid-template-columns: 1fr 62px 1fr; }
+  .label small { font-size: 0.75rem; }
+}

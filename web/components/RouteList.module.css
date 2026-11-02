@@ -1,0 +1,15 @@
+.section { margin-top: 96px; padding-top: 28px; border-top: 1px solid var(--line); }
+.section h2 { font-size: 1.4rem; font-weight: 800; margin: 0 0 24px; }
+.groups { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 230px), 1fr)); gap: 32px 40px; }
+.groups h3 { font-size: 1rem; font-weight: 600; color: var(--cream-dim); margin: 0 0 8px; }
+.groups ul { list-style: none; margin: 0; padding: 0; }
+.groups li { border-bottom: 1px solid var(--line); }
+.groups a {
+  display: grid; grid-template-columns: 3.4em 1fr auto; align-items: baseline; gap: 10px;
+  padding: 11px 0; text-decoration: none; min-height: 44px;
+}
+.groups a:hover .city { text-decoration: underline; text-underline-offset: 3px; }
+.code { font-weight: 800; letter-spacing: 0.02em; }
+.city { color: var(--cream); }
+.time { color: var(--cream-dim); font-variant-numeric: tabular-nums; font-size: 0.9rem; }
+.flag { display: block; color: var(--coral); font-size: 0.78rem; margin: -6px 0 8px 4.5em; }

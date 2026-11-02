@@ -24,6 +24,7 @@ from mcp.server.fastmcp import Context, FastMCP  # noqa: E402
 
 from airports import AIRPORTS, all_routes  # noqa: E402
 from fetch_tracks import synthetic_track  # noqa: E402
+from landmarks import along_route  # noqa: E402
 from sun_geometry import recommend, sun_at  # noqa: E402
 
 HTTP = "--http" in sys.argv
@@ -71,13 +72,16 @@ async def recommend_side(route_id: str, flight_date: str, departure_local: str, 
     track = synthetic_track(o.lat, o.lon, d.lat, d.lon, dep.astimezone(ZoneInfo("UTC")))
     samples = []
     for i, p in enumerate(track):
-        samples.append(sun_at(p))
+        samples.append(sun_at(p, i))
         if i % 30 == 0:  # progress notifications while computing the route
             await ctx.report_progress(i, len(track), f"sun geometry {i}/{len(track)} min")
-    await ctx.report_progress(len(track), len(track), "done")
-    rec = recommend(samples)
+    await ctx.report_progress(len(track), len(track), "sun done, finding landmarks")
+    lms = along_route(track, (o.lat, o.lon), (d.lat, d.lon))
+    await ctx.info(f"{len(lms)} landmarks along the route")
+    rec = recommend(samples, lms)
     return {**route, "departure_local": dep.isoformat(), "duration_min": len(track) - 1,
-            "track_source": "synthetic-great-circle", **rec}
+            "track_source": "synthetic-great-circle", **rec,
+            "landmarks": [{k: h[k] for k in ("name", "side", "minute", "dist_km", "wikidata")} for h in lms]}
 
 
 if __name__ == "__main__":

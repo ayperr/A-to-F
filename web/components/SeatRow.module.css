@@ -1,0 +1,17 @@
+.row { display: flex; align-items: end; gap: 6px; }
+.half { display: flex; gap: 6px; }
+.aisle { width: 22px; }
+
+.seat {
+  width: 44px; height: 50px;
+  display: grid; place-items: center;
+  border: 2px solid var(--line-strong);
+  border-radius: 12px 12px 6px 6px;
+  color: var(--cream-dim);
+  font: inherit; font-weight: 600; font-size: 0.95rem;
+  background: transparent;
+}
+button.seat { cursor: pointer; border-color: var(--cream-dim); color: var(--cream); }
+button.seat:hover { border-color: var(--cream); }
+.best { background: var(--coral); border-color: var(--coral) !important; color: var(--ground) !important; }
+.viewing { box-shadow: 0 0 0 3px var(--ground), 0 0 0 5px var(--cream); }
