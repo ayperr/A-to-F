@@ -72,8 +72,8 @@ export default function Postcard({ detail, backHref }: { detail: RouteDetail; ba
       ctx.fillRect(0, 0, W, H);
       ctx.textBaseline = "alphabetic";
 
-      // ── Row 1, left: the hero window. The traveller's photo, or a sky with the low A to F sun.
-      const hx = 70, hy = 70, hw = 540, hh = 720; // 3:4, the logo window's shape
+      // ── Row 2, left: the hero window. The traveller's photo, or a sky with the low A to F sun.
+      const hx = 70, hy = 240, hw = 480, hh = 640; // 3:4, the logo window's shape
       ctx.save();
       windowPath(ctx, hx, hy, hw, hh);
       ctx.clip();
@@ -107,40 +107,58 @@ export default function Postcard({ detail, backHref }: { detail: RouteDetail; ba
       windowPath(ctx, hx, hy, hw, hh);
       ctx.stroke();
 
-      // ── Row 1, right: route codes stacked with the seat letter between them, then city, date, seat.
-      const cx = 650, cw = W - 70 - cx;
-      let codePx = 150;
-      const widest = () => {
+      // ── Header: JFK <-> LAX, with the seat letter small above the arrow.
+      const o = detail.origin.iata, d = detail.dest.iata;
+      let codePx = 124;
+      const headW = () => {
         ctx.font = `800 ${codePx}px Manrope`;
-        return Math.max(...[detail.origin.iata, side, detail.dest.iata].map((t) => ctx.measureText(t).width));
+        return ctx.measureText(o).width + ctx.measureText(d).width + codePx * 1.65;
       };
-      while (codePx > 90 && widest() > cw) codePx -= 4;
+      while (codePx > 80 && headW() > W - 140) codePx -= 4;
+      const letterPx = Math.round(codePx * 0.5);
+      const base = 64 + letterPx * 0.72 + 28 + codePx * 0.36;
+      const arrowY = base - codePx * 0.36;
       ctx.font = `800 ${codePx}px Manrope`;
-      const y0 = hy + codePx * 0.97, step = codePx * 1.07;
       ctx.fillStyle = C.cream;
-      ctx.fillText(detail.origin.iata, cx - 6, y0);
+      ctx.fillText(o, 70, base);
+      const ax0 = 70 + ctx.measureText(o).width + codePx * 0.25;
+      const ax1 = ax0 + codePx * 1.15;
+      ctx.fillText(d, ax1 + codePx * 0.25, base);
+      ctx.strokeStyle = C.cream;
+      ctx.lineWidth = codePx * 0.07;
+      ctx.lineCap = "round";
+      ctx.lineJoin = "round";
+      const head = codePx * 0.17;
+      ctx.beginPath();
+      ctx.moveTo(ax0, arrowY); ctx.lineTo(ax1, arrowY);
+      ctx.moveTo(ax0 + head, arrowY - head); ctx.lineTo(ax0, arrowY); ctx.lineTo(ax0 + head, arrowY + head);
+      ctx.moveTo(ax1 - head, arrowY - head); ctx.lineTo(ax1, arrowY); ctx.lineTo(ax1 - head, arrowY + head);
+      ctx.stroke();
+      ctx.font = `800 ${letterPx}px Manrope`;
       ctx.fillStyle = C.coral;
-      ctx.fillText(side, cx - 6, y0 + step);
-      ctx.fillStyle = C.cream;
-      ctx.fillText(detail.dest.iata, cx - 6, y0 + 2 * step);
+      ctx.textAlign = "center";
+      ctx.fillText(side, (ax0 + ax1) / 2, arrowY - 28);
+      ctx.textAlign = "left";
 
+      // ── Row 2, right: cities, date and seat, then the light fact and what's out my window.
+      const cx = hx + hw + 50, cw = W - 70 - cx;
       const when = new Date(`${date}T12:00:00Z`);
-      const weekday = new Intl.DateTimeFormat("en-GB", { weekday: "long", timeZone: "UTC" }).format(when);
-      const day = new Intl.DateTimeFormat("en-GB", { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" }).format(when);
+      const day = new Intl.DateTimeFormat("en-GB", { weekday: "long", day: "numeric", month: "long", year: "numeric", timeZone: "UTC" })
+        .format(when).replace(",", "");
       ctx.font = "500 30px Manrope";
       const cities = `${detail.origin.city} to ${detail.dest.city}`;
       // Too long for one line: break after "to" so no city name is split.
       const cityLines = ctx.measureText(cities).width <= cw ? [cities] : [`${detail.origin.city} to`, detail.dest.city];
-      const info = [...cityLines, weekday, day];
-      let ty = y0 + 2 * step + 64;
+      const info = [...cityLines, ...(ctx.measureText(day).width <= cw ? [day] : wrap(ctx, day, cw))];
+      let ty = hy + 44;
       ctx.fillStyle = C.dim;
-      for (const ln of info) { ctx.fillText(ln, cx, ty); ty += 38; }
+      for (const ln of info) { ctx.fillText(ln, cx, ty); ty += 40; }
       ctx.font = "700 30px Manrope";
       ctx.fillStyle = C.coral;
       ctx.fillText(`Seat ${side}, ${side === "A" ? "left" : "right"} window`, cx, ty);
 
-      // ── Row 2, left: a small map of the flight.
-      const mx = 70, my = 840, mw = 540, mh = 370;
+      // ── Row 3: a wide, short map of the flight.
+      const mx = 70, my = 930, mw = 940, mh = 290;
       ctx.save();
       ctx.beginPath();
       ctx.roundRect(mx, my, mw, mh, 24);
@@ -226,9 +244,9 @@ export default function Postcard({ detail, backHref }: { detail: RouteDetail; ba
       }
       ctx.restore();
 
-      // ── Row 2, right: one light fact, then what's out my window.
+      // Light fact and landmarks continue the right column of row 2.
       const fx = cx, fw = cw;
-      let fy = my + 36;
+      let fy = ty + 96;
       ctx.fillStyle = C.cream;
       ctx.font = "800 38px Manrope";
       const light = firstGolden
@@ -239,7 +257,9 @@ export default function Postcard({ detail, backHref }: { detail: RouteDetail; ba
       ctx.fillStyle = C.dim;
       const lightNote = firstGolden ? `${goldenOnSide} minutes of golden light, ${detail.origin.city} time` : `${duration(detail.duration_min)} in the air`;
       fy -= 6;
-      for (const ln of wrap(ctx, lightNote, fw).slice(0, 2)) { ctx.fillText(ln, fx, fy); fy += 34; }
+      // Break at the comma rather than inside a city name.
+      const noteLines = ctx.measureText(lightNote).width <= fw ? [lightNote] : lightNote.includes(", ") ? lightNote.replace(", ", ",\n").split("\n") : wrap(ctx, lightNote, fw);
+      for (const ln of noteLines.slice(0, 2)) { ctx.fillText(ln, fx, fy); fy += 34; }
       fy += 30;
       ctx.font = "600 24px Manrope";
       ctx.fillText("Out my window", fx, fy);
@@ -249,7 +269,7 @@ export default function Postcard({ detail, backHref }: { detail: RouteDetail; ba
       const names = seen.length ? seen.map((l) => l.name) : ["Mostly open sky and sea"];
       for (const name of names) {
         const lines = wrap(ctx, name, fw);
-        if (fy + (lines.length - 1) * 38 > my + mh) break; // keep inside the row; drop, never squeeze
+        if (fy + (lines.length - 1) * 38 > hy + hh) break; // keep inside the row; drop, never squeeze
         for (const ln of lines) { ctx.fillText(ln, fx, fy); fy += 38; }
         fy += 4;
       }

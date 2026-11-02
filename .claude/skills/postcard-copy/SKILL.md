@@ -6,13 +6,14 @@ description: Rules for A to F postcard and social-share text (the postcard canva
 A postcard is something the passenger posts as themselves, so it speaks in the first person ("out my window").
 
 Layout of the 1080 x 1350 card (web/components/Postcard.tsx): the passenger's photo is the hero.
-Top row: big window (540 x 720) on the left, route stacked on the right. Bottom row: small map left, facts right.
-1. Hero window: the passenger's photo, cover-fitted, with the navy frame and pulled-down shade from the logo.
-   No photo: a pale sky with the low blue sun, never an empty box.
-2. Route codes stacked with the seat letter between them (JFK / A / LAX). The letter is the brand; keep it in
-   the accent blue (#1F5FD6). Under it: cities ("New York to Los Angeles"; break after "to", never inside a
-   city name), weekday, date ("12 November 2026"), then "Seat A, left window" in accent blue.
-3. Small map. Labels are placed without overlap; it's fine to drop a label, never to overlap two.
+Header: the route across the top. Middle row: big window (480 x 640) left, details right. Bottom: a wide map strip.
+1. Header: "JFK <-> LAX" in navy, with the seat letter small above the double arrow in accent blue (#1F5FD6).
+   The letter is the brand. Never stack the codes or put the letter full size between them.
+2. Hero window: the passenger's photo, cover-fitted, with the navy frame and pulled-down shade from the logo.
+   No photo: a pale sky with the low blue sun, never an empty box. Beside it: cities ("New York to Los Angeles";
+   break after "to", never inside a city name), the date ("Thursday 12 November 2026"), then "Seat A, left window"
+   in accent blue, then items 4 and 5.
+3. Map strip. Labels are placed without overlap; it's fine to drop a label, never to overlap two.
 4. One light fact ("Sunset on my side at 17:55") with the minutes and the time zone underneath.
 5. "Out my window" and up to five landmark names, one per line, the most notable first, then in flight order.
    Drop names that don't fit the row; never shrink them.
