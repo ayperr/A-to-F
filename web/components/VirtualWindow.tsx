@@ -9,6 +9,8 @@ import { clock, localToUtcMs } from "@/lib/engine/time";
 import type { RouteDetail } from "@/lib/engine/types";
 import { duration } from "@/lib/routes";
 import styles from "./VirtualWindow.module.css";
+import WhatsThat from "./WhatsThat";
+import LandmarkAbout from "./LandmarkAbout";
 
 import { aimNight, interpolate, ionWorks, type LightMode, lightFromSun, loadCesium, PITCH_DEG, setLightMode, TOKEN } from "@/lib/cesium";
 import { samplesFor } from "@/lib/engine/geometry";
@@ -225,6 +227,7 @@ export default function VirtualWindow({ detail, backHref }: { detail: RouteDetai
   const samples = useMemo(() => samplesFor(detail.track, departureMs), [detail.track, departureMs]);
   const dark = !gps && !samples[m].visible;
   const word = side === "A" ? "left" : "right";
+  const mapped = /^[a-z]{3}-[a-z]{3}$/.test(detail.id) && detail.landmarks.length > 0; // the Claude features need a mapped route
   const upcoming = detail.landmarks
     .filter((l) => (l.side === side || l.side === "below") && l.minute >= m - 1 && l.minute <= m + 15)
     .sort((a, b) => a.minute - b.minute)[0];
@@ -253,6 +256,9 @@ export default function VirtualWindow({ detail, backHref }: { detail: RouteDetai
         </p>
         <h1>Blind down? Middle seat? This is the {word} window.</h1>
         <p className={styles.callout} aria-live="polite">{callout ?? " "}</p>
+        {upcoming && mapped && (
+          <div className={styles.about}><LandmarkAbout routeId={detail.id} wikidata={upcoming.wikidata} side={side} label={`Tell me about ${upcoming.name}`} /></div>
+        )}
 
         <div className={styles.controls}>
           <div className={styles.toggle} role="group" aria-label="Window side">
@@ -295,6 +301,13 @@ export default function VirtualWindow({ detail, backHref }: { detail: RouteDetai
             </>
           )}
         </div>
+
+        {mapped && (
+          <div className={styles.snap}>
+            <WhatsThat routeId={detail.id} date={date} time={time} side={side} minute={gps ? null : m}
+              postcardHref={`/postcard/${detail.id}?d=${date}&t=${time}&s=${side}`} />
+          </div>
+        )}
 
         <div className={styles.gps}>
           <button type="button" onClick={startGps} className={styles.linkish}>Use my phone&rsquo;s GPS instead</button>

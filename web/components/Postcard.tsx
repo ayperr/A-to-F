@@ -7,6 +7,7 @@ import { clock, localToUtcMs } from "@/lib/engine/time";
 import type { RouteDetail } from "@/lib/engine/types";
 import { duration } from "@/lib/routes";
 import styles from "./Postcard.module.css";
+import WhatsThat, { type Identified, PHOTO_HANDOFF } from "./WhatsThat";
 
 const W = 1080, H = 1350;
 const C = { ground: "#FFFFFF", deep: "#EEF3FA", cream: "#0B2350", dim: "#4B5F80", coral: "#1F5FD6", accentSoft: "#E4EEFC", land: "#D3DEEC", line: "#B5C5DD" };
@@ -27,6 +28,7 @@ export default function Postcard({ detail, backHref }: { detail: RouteDetail; ba
   const [photo, setPhoto] = useState<HTMLImageElement | null>(null);
   const [basemap, setBasemap] = useState<Basemap | null>(null);
   const [note, setNote] = useState("");
+  const [identified, setIdentified] = useState<Identified | null>(null);
 
   useEffect(() => {
     const q = new URLSearchParams(window.location.search);
@@ -36,6 +38,16 @@ export default function Postcard({ detail, backHref }: { detail: RouteDetail; ba
     if (q.get("s") === "A" || q.get("s") === "F") setSide(q.get("s") as "A" | "F");
     /* eslint-enable react-hooks/set-state-in-effect */
     fetch("/data/basemap.json").then((r) => r.json()).then(setBasemap).catch(() => setNote("Map outline unavailable."));
+    // A photo identified on the window or plan page comes along with its caption.
+    try {
+      const handoff = JSON.parse(sessionStorage.getItem(PHOTO_HANDOFF) ?? "null");
+      sessionStorage.removeItem(PHOTO_HANDOFF);
+      if (handoff?.photo) {
+        const img = new Image();
+        img.onload = () => { setPhoto(img); if (handoff.result) setIdentified(handoff.result); };
+        img.src = handoff.photo;
+      }
+    } catch { /* storage off */ }
   }, []);
 
   const departureMs = useMemo(() => localToUtcMs(date, time, detail.origin.tz), [date, time, detail.origin.tz]);
@@ -266,7 +278,10 @@ export default function Postcard({ detail, backHref }: { detail: RouteDetail; ba
       fy += 42;
       ctx.fillStyle = C.cream;
       ctx.font = "700 30px Manrope";
-      const names = seen.length ? seen.map((l) => l.name) : ["Mostly open sky and sea"];
+      // A landmark identified in the photo (checked against this side's list) goes first.
+      const inPhoto = identified?.match ?? null;
+      const names = [...(inPhoto ? [inPhoto] : []), ...seen.map((l) => l.name).filter((n) => n !== inPhoto)].slice(0, 5);
+      if (!names.length) names.push("Mostly open sky and sea");
       for (const name of names) {
         const lines = wrap(ctx, name, fw);
         if (fy + (lines.length - 1) * 38 > hy + hh) break; // keep inside the row; drop, never squeeze
@@ -287,7 +302,7 @@ export default function Postcard({ detail, backHref }: { detail: RouteDetail; ba
       ctx.fillText(credit, W - 70 - ctx.measureText(credit).width, 1298);
     })();
     return () => { cancelled = true; };
-  }, [basemap, photo, side, date, detail, samples, seen, rec.rule, firstGolden, setting, goldenOnSide, departureMs]);
+  }, [basemap, photo, side, date, detail, samples, seen, rec.rule, firstGolden, setting, goldenOnSide, departureMs, identified]);
 
   const blob = () => new Promise<Blob>((res, rej) => canvas.current!.toBlob((b) => (b ? res(b) : rej(new Error("no image"))), "image/png"));
   const fileName = `a-to-f-${detail.id}-${date}.png`;
@@ -305,7 +320,7 @@ export default function Postcard({ detail, backHref }: { detail: RouteDetail; ba
     const file = new File([await blob()], fileName, { type: "image/png" });
     if (navigator.canShare?.({ files: [file] })) {
       try {
-        await navigator.share({ files: [file], title: `${detail.origin.iata} to ${detail.dest.iata}`, text: "Every seat gets the view" });
+        await navigator.share({ files: [file], title: `${detail.origin.iata} to ${detail.dest.iata}`, text: identified?.caption ?? "Every seat gets the view" });
       } catch { /* closed the share sheet */ }
     } else {
       await download();
@@ -316,7 +331,7 @@ export default function Postcard({ detail, backHref }: { detail: RouteDetail; ba
   const onPhoto = (f: File | undefined) => {
     if (!f) return;
     const img = new Image();
-    img.onload = () => setPhoto(img);
+    img.onload = () => { setPhoto(img); setIdentified(null); };
     img.src = URL.createObjectURL(f);
   };
 
@@ -327,7 +342,7 @@ export default function Postcard({ detail, backHref }: { detail: RouteDetail; ba
       <div className={styles.panel}>
         <h1>Your postcard</h1>
         <p className={styles.lead}>
-          Made on your phone from the flight path. Nothing is uploaded, including your photo.
+          Made on your phone from the flight path. Your photo stays on your phone unless you ask what&rsquo;s in it.
         </p>
         <div className={styles.toggle} role="group" aria-label="Seat">
           {(["A", "F"] as const).map((s) => (
@@ -340,6 +355,10 @@ export default function Postcard({ detail, backHref }: { detail: RouteDetail; ba
           Add your window photo
           <input type="file" accept="image/*" onChange={(e) => onPhoto(e.target.files?.[0])} />
         </label>
+        {photo && detail.landmarks.length > 0 && /^[a-z]{3}-[a-z]{3}$/.test(detail.id) && (
+          <WhatsThat key={photo.src} routeId={detail.id} date={date} time={time} side={side} minute={null} photo={photo}
+            label="What's in my photo?" onResult={(r) => setIdentified(r)} />
+        )}
         <div className={styles.actions}>
           <button type="button" className={styles.primary} onClick={share}>Share postcard</button>
           <button type="button" className={styles.secondary} onClick={download}>Download PNG</button>

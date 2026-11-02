@@ -6,6 +6,7 @@
     "context context"
     "answer view"
     "moments moments"
+    "snap snap"
     "strip strip";
   column-gap: 56px;
   padding-top: 32px;
@@ -87,13 +88,13 @@
 .moments h2 { font-size: 1.4rem; margin: 0; font-weight: 800; }
 .moments .fine { margin: 6px 0 14px; }
 .moments ol { list-style: none; margin: 0; padding: 0; display: grid; gap: 0; max-width: 760px; }
-.moments li button {
+.moments li .seek {
   width: 100%; display: grid; grid-template-columns: 5.2em 4.6em 1fr; gap: 14px; align-items: baseline;
   padding: 12px 6px; border: 0; border-bottom: 1px solid var(--line); background: none; text-align: left;
   font: inherit; color: var(--ink); cursor: pointer; min-height: 48px;
 }
-.moments li button:hover { background: var(--bg-soft); }
-.moments li button[aria-current="true"] { background: var(--accent-soft); }
+.moments li .seek:hover { background: var(--bg-soft); }
+.moments li .seek[aria-current="true"] { background: var(--accent-soft); }
 .when { font-weight: 800; font-variant-numeric: tabular-nums; display: grid; }
 .when small { font-weight: 500; color: var(--ink-soft); font-size: 0.78rem; }
 .photo, .video {
@@ -103,7 +104,7 @@
 .video { background: var(--accent); color: var(--bg); }
 .what { display: grid; gap: 2px; }
 .what small { color: var(--ink-soft); font-size: 0.85rem; }
-@media (max-width: 560px) { .moments li button { grid-template-columns: 4.4em 1fr; } .photo, .video { grid-column: 1; grid-row: 2; } .what { grid-column: 2; grid-row: 1 / span 2; } }
+@media (max-width: 560px) { .moments li .seek { grid-template-columns: 4.4em 1fr; } .photo, .video { grid-column: 1; grid-row: 2; } .what { grid-column: 2; grid-row: 1 / span 2; } }
 
 .strip { grid-area: strip; margin-top: 64px; }
 .strip h2 { font-size: 1.4rem; margin: 0 0 18px; font-weight: 800; }
@@ -111,7 +112,7 @@
 .fine a { color: var(--accent); }
 
 @media (max-width: 860px) {
-  .planner { grid-template-columns: 1fr; grid-template-areas: "summary" "context" "answer" "view" "moments" "strip"; }
+  .planner { grid-template-columns: 1fr; grid-template-areas: "summary" "context" "answer" "view" "moments" "snap" "strip"; }
   .view { margin-top: 40px; }
   .answer { gap: 18px; }
 }
@@ -124,3 +125,9 @@
 }
 
 .dayLink { color: var(--accent); font-weight: 600; font-size: 0.9rem; text-underline-offset: 4px; padding: 6px 0; }
+
+.momentRow { display: grid; grid-template-columns: 1fr auto; align-items: center; column-gap: 10px; border-bottom: 1px solid var(--line); }
+.momentRow .seek { border-bottom: 0 !important; }
+.snap { grid-area: snap; margin-top: 56px; }
+.snap h2 { font-size: 1.4rem; margin: 0; font-weight: 800; }
+.snap .fine { margin: 6px 0 14px; }

@@ -27,5 +27,9 @@ Rules
 - If there's no golden light, say so honestly: "A night flight" or "Daylight all the way".
 - JetBlue is only named in the not-affiliated line. No JetBlue logos, fonts or exact brand colours; our own white and blue palette.
 
-Share caption template (Web Share text field):
-"<ORIGIN> to <DEST>, seat <LETTER>. <one light fact>. Every seat gets the view."
+Share caption (Web Share text field)
+- Default: "<ORIGIN> to <DEST>, seat <LETTER>. <one light fact>. Every seat gets the view."
+- When the passenger asked "What's in my photo?", use the caption from /api/identify. Claude writes it, but the
+  server only keeps it if it names nothing but the engine-matched landmark, has no wrong-side word and stays
+  under 160 characters; otherwise it falls back to "<ORIGIN> to <DEST>, seat <LETTER>. <Landmark> out my window.
+  Every seat gets the view." The matched landmark then leads the "Out my window" list.

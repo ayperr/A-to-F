@@ -7,6 +7,7 @@ export interface Moment {
   kind: "photo" | "video";
   title: string;
   detail: string;
+  wikidata?: string; // landmark moments: for "Tell me about it"
 }
 
 const TAKEOFF_MIN = 2;      // a couple of minutes after wheels-up, still low over the city
@@ -61,7 +62,7 @@ export function cameraMoments(
     .sort((a, b) => b.score - a.score)
     .slice(0, MAX_LANDMARKS);
   for (const l of seen) {
-    out.push({ minute: l.minute, kind: "photo", prio: 2, title: l.name,
+    out.push({ minute: l.minute, kind: "photo", prio: 2, title: l.name, wikidata: l.wikidata,
       detail: l.side === "below" ? "The plane flies right over it; look down and back." : `About ${l.dist_km} km out on your side.` });
   }
 
@@ -77,7 +78,7 @@ export function cameraMoments(
   const kept: Moment[] = [];
   for (const mo of [...out].sort((a, b) => a.prio - b.prio || a.minute - b.minute)) {
     if (kept.every((k) => Math.abs(k.minute - mo.minute) >= MIN_GAP)) {
-      kept.push({ minute: mo.minute, kind: mo.kind, title: mo.title, detail: mo.detail });
+      kept.push({ minute: mo.minute, kind: mo.kind, title: mo.title, detail: mo.detail, ...(mo.wikidata ? { wikidata: mo.wikidata } : {}) });
     }
   }
   return kept.sort((a, b) => a.minute - b.minute);

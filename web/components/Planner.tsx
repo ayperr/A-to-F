@@ -10,6 +10,8 @@ import SeatRow from "./SeatRow";
 import Timeline from "./Timeline";
 import CesiumWindow from "./CesiumWindow";
 import WindowView from "./WindowView";
+import WhatsThat from "./WhatsThat";
+import LandmarkAbout from "./LandmarkAbout";
 import styles from "./Planner.module.css";
 
 const TIMES = Array.from({ length: 48 }, (_, i) => `${String(Math.floor(i / 2)).padStart(2, "0")}:${i % 2 ? "30" : "00"}`);
@@ -99,6 +101,14 @@ export default function Planner({ detail, adhoc }: { detail: RouteDetail; adhoc?
   const params = `d=${date}&t=${time}&s=${side}&m=${startMinute}`;
   const windowHref = adhoc ? `/flight/window?${adhoc.query}&${params}` : `/window/${detail.id}?${params}`;
   const postcardHref = adhoc ? `/flight/postcard?${adhoc.query}&${params}` : `/postcard/${detail.id}?${params}`;
+  // During the flight itself, the photo was taken "now": use the live minute after takeoff.
+  const [liveMinute, setLiveMinute] = useState<number | null>(null);
+  useEffect(() => {
+    const tick = () => { const x = (Date.now() - departureMs) / 60_000; setLiveMinute(x >= 0 && x <= last ? x : null); };
+    tick();
+    const id = setInterval(tick, 60_000);
+    return () => clearInterval(id);
+  }, [departureMs, last]);
   const moments = useMemo(() => cameraMoments(samples, detail.landmarks, side, detail.dest.city),
     [samples, detail.landmarks, side, detail.dest.city]);
   const pickSeat = (s: string) => { setSeat(s); setViewing(SIDE_OF_SEAT[s]); };
@@ -200,8 +210,8 @@ export default function Planner({ detail, adhoc }: { detail: RouteDetail; adhoc?
         </p>
         <ol>
           {moments.map((mo) => (
-            <li key={`${mo.minute}${mo.title}`}>
-              <button type="button" onClick={() => { setPlaying(false); setMinute(mo.minute); }} aria-current={m === mo.minute || undefined}>
+            <li key={`${mo.minute}${mo.title}`} className={styles.momentRow}>
+              <button type="button" className={styles.seek} onClick={() => { setPlaying(false); setMinute(mo.minute); }} aria-current={m === mo.minute || undefined}>
                 <span className={styles.when}>
                   {clock(departureMs + mo.minute * 60_000, detail.origin.tz)}
                   <small>{mo.minute === 0 ? "takeoff" : `+${duration(mo.minute)}`}</small>
@@ -212,10 +222,20 @@ export default function Planner({ detail, adhoc }: { detail: RouteDetail; adhoc?
                   <small>{mo.detail}</small>
                 </span>
               </button>
+              {mo.wikidata && !adhoc && <LandmarkAbout routeId={detail.id} wikidata={mo.wikidata} side={side} />}
             </li>
           ))}
         </ol>
       </section>
+
+      {!adhoc && detail.landmarks.length > 0 && (
+        <section className={styles.snap}>
+          <h2>What&rsquo;s out there?</h2>
+          <p className={styles.fine}>Take a photo out of the window, or pick one you took, and we&rsquo;ll tell you what it shows.</p>
+          <WhatsThat routeId={detail.id} date={date} time={time} side={side} postcardHref={postcardHref}
+            minute={liveMinute ?? (m > 0 ? m : null)} />
+        </section>
+      )}
 
       <section className={styles.strip}>
         <h2>What passes each side</h2>
