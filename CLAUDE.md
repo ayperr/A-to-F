@@ -1,7 +1,8 @@
 # A to F — project memory for Claude Code
 
 "Every seat gets the view." A website (PWA) for JetBlue flyers: which side of the plane (A = left, F = right)
-has the sunset, sunrise and landmarks, plus a Virtual Window for middle and aisle seats.
+has the sunset, sunrise and landmarks, plus a Virtual Window for anyone who can't see out (middle or aisle seat, blind down,
+night flight) and camera moments: when to get the phone out.
 Independent student project for the ieNYC × DataCamp "Be a Master in Claude" challenge. Deadline 12 Nov 2026, 23:59 ET.
 Plan, status and what's left: `BUILD_GUIDE.md`.
 

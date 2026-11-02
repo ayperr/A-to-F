@@ -3,7 +3,7 @@
 # A to F — Every seat gets the view
 
 Which side of the plane has the view? **A to F** tells JetBlue flyers whether to sit on the left (A) or the right (F)
-for the sunset, the sunrise and the landmarks on their route, and gives middle and aisle seats a Virtual Window.
+for the sunset, the sunrise and the landmarks on their route, gives anyone who can't see out (middle or aisle seat, blind down, night flight) a Virtual Window, and lists the camera moments: when to film or take a photo.
 
 > Independent student project for JetBlue flyers. **Not affiliated with or endorsed by JetBlue Airways.**
 

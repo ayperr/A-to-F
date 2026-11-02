@@ -5,6 +5,7 @@ import { recommend, samplesFor } from "@/lib/engine/geometry";
 import { clock, localToUtcMs, todayIn } from "@/lib/engine/time";
 import type { RouteDetail } from "@/lib/engine/types";
 import { duration } from "@/lib/routes";
+import { cameraMoments } from "@/lib/moments";
 import SeatRow from "./SeatRow";
 import Timeline from "./Timeline";
 import CesiumWindow from "./CesiumWindow";
@@ -98,6 +99,8 @@ export default function Planner({ detail, adhoc }: { detail: RouteDetail; adhoc?
   const params = `d=${date}&t=${time}&s=${side}&m=${startMinute}`;
   const windowHref = adhoc ? `/flight/window?${adhoc.query}&${params}` : `/window/${detail.id}?${params}`;
   const postcardHref = adhoc ? `/flight/postcard?${adhoc.query}&${params}` : `/postcard/${detail.id}?${params}`;
+  const moments = useMemo(() => cameraMoments(samples, detail.landmarks, side, detail.dest.city),
+    [samples, detail.landmarks, side, detail.dest.city]);
   const pickSeat = (s: string) => { setSeat(s); setViewing(SIDE_OF_SEAT[s]); };
   const seatNote = seat && seat !== "A" && seat !== "F"
     ? `Seat ${seat} has no window of its own. You're on the ${SIDE_OF_SEAT[seat] === "A" ? "left" : "right"}, so your view is seat ${SIDE_OF_SEAT[seat]}'s window, or the Virtual Window below.`
@@ -159,12 +162,13 @@ export default function Planner({ detail, adhoc }: { detail: RouteDetail; adhoc?
           {seatNote && <p className={styles.seatNote}>{seatNote}</p>}
           <div className={styles.actions}>
             <Link href={windowHref} className={styles.primary}>
-              {seat && seat !== "A" && seat !== "F" ? `Open the window for seat ${seat}` : "Watch it from a middle seat"}
+              Open the Virtual Window
             </Link>
             <Link href={postcardHref} className={styles.secondary}>
               Make a postcard
             </Link>
           </div>
+          <p className={styles.hint}>Middle seat, aisle seat, blind down or a night flight: you still get the view.</p>
         </div>
       </section>
 
@@ -184,6 +188,30 @@ export default function Planner({ detail, adhoc }: { detail: RouteDetail; adhoc?
             {m === 0 ? "takeoff" : `${duration(m)} after takeoff`}
           </p>
         </div>
+      </section>
+
+      <section className={styles.moments}>
+        <h2>Camera moments, seat {side}</h2>
+        <p className={styles.fine}>
+          {moments.length} times to get your phone out, in {detail.origin.city} time. Tap one to see it in the window.
+        </p>
+        <ol>
+          {moments.map((mo) => (
+            <li key={`${mo.minute}${mo.title}`}>
+              <button type="button" onClick={() => { setPlaying(false); setMinute(mo.minute); }} aria-current={m === mo.minute || undefined}>
+                <span className={styles.when}>
+                  {clock(departureMs + mo.minute * 60_000, detail.origin.tz)}
+                  <small>{mo.minute === 0 ? "takeoff" : `+${duration(mo.minute)}`}</small>
+                </span>
+                <span className={mo.kind === "video" ? styles.video : styles.photo}>{mo.kind === "video" ? "Video" : "Photo"}</span>
+                <span className={styles.what}>
+                  <b>{mo.title}</b>
+                  <small>{mo.detail}</small>
+                </span>
+              </button>
+            </li>
+          ))}
+        </ol>
       </section>
 
       <section className={styles.strip}>

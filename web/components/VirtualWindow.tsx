@@ -246,7 +246,7 @@ export default function VirtualWindow({ detail, backHref }: { detail: RouteDetai
         <p className={styles.kicker}>
           {detail.origin.iata} to {detail.dest.iata}, {date}, leaving {time}
         </p>
-        <h1>You&rsquo;re in the middle seat. This is the {word} window.</h1>
+        <h1>Blind down? Middle seat? This is the {word} window.</h1>
         <p className={styles.callout} aria-live="polite">{callout ?? " "}</p>
 
         <div className={styles.controls}>
