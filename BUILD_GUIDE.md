@@ -69,7 +69,7 @@ Facts were checked on 1 Nov 2026; sources at the end.
 | 6 | Subagents | `route-analyst`, `storyteller`, independent read-only `landmark-verifier` |
 | 7 | Claude Code in Action | Hooks (guard generated data; check claims and engine after edits), headless `claude -p` in `regenerate.sh`, weekly routine |
 | 8 | Software Development | CI (tests, data freshness, parity), Claude Code Action PR review, Vercel deploys |
-| 9 | Claude API | `messages.create` with system prompts, structured outputs, Batches API, adaptive extended thinking, Haiku live feature |
+| 9 | Claude API | `pipeline/narrate.py`: system prompt from the window-narrator skill, structured outputs (JSON schema), Message Batches, adaptive extended thinking, model choice by task (Haiku lines, Sonnet tips), every line validated by `check_claims.py` |
 | 10 | MCP Advanced | Progress, logging, sampling with server-side check, roots, resource templates, STDIO vs stateless StreamableHTTP + `json_response` on Vercel |
 
 ## 5. Verified facts (1 Nov 2026)
