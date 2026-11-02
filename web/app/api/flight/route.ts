@@ -11,7 +11,7 @@ export async function GET(req: Request) {
   const url = new URL(req.url);
   const number = normaliseFlight(url.searchParams.get("number") ?? "");
   const date = url.searchParams.get("date") ?? "";
-  if (!number) return Response.json({ error: "That doesn't look like a JetBlue flight number. Try something like B6 23." }, { status: 400 });
+  if (!number) return Response.json({ error: "That doesn't look like a JetBlue flight number. Try something like B6 615." }, { status: 400 });
   if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) return Response.json({ error: "Pick the date of your flight." }, { status: 400 });
 
   const key = process.env.AERODATABOX_RAPIDAPI_KEY;

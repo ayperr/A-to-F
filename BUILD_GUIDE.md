@@ -28,11 +28,9 @@ Facts were checked on 1 Nov 2026; sources at the end.
 
 ## 2. What only you can do (≈20 minutes)
 
-1. **Cesium ion:** add `https://a-to-f.vercel.app` to the token's Allowed URLs (the site moved to the short domain).
-   Until then the Virtual Window shows the low-detail globe and says why.
-1b. **Flight-number lookup (AeroDataBox, free 600 units/month):** sign up at rapidapi.com, subscribe to
-   AeroDataBox's free Basic plan, copy the key, and add it in Vercel as `AERODATABOX_RAPIDAPI_KEY` (Sensitive,
-   Production). Redeploy. Until then the flight-number tab says it isn't switched on and offers the route picker.
+1. ~~**Cesium ion** token and allowed URL~~ — done (token accepted on a-to-f.vercel.app).
+1b. ~~**Flight-number lookup (AeroDataBox via RapidAPI, free Basic plan)**~~ — done 2 Nov: key in Vercel
+   (Production), live test B6 615 on 3 Nov → JFK–SFO 17:55. Keys from aerodatabox.com itself need a paid plan.
 2. **Anthropic key** (console.anthropic.com): set a **$5 monthly spend limit** first, then create a key and add it in two places,
    never in chat:
    - Vercel → project a-to-f → Settings → Environment Variables: `ANTHROPIC_API_KEY`, type Sensitive, Production. Redeploy.

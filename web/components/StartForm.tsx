@@ -75,7 +75,7 @@ export default function StartForm() {
           <span className={styles.label}>JetBlue flight number</span>
           <span className={styles.field}>
             <span className={styles.prefix} aria-hidden="true">B6</span>
-            <input inputMode="numeric" autoComplete="off" placeholder="123" maxLength={8} value={number}
+            <input inputMode="numeric" autoComplete="off" placeholder="615" maxLength={8} value={number}
               onChange={(e) => setNumber(e.target.value)} required autoFocus />
           </span>
         </label>
