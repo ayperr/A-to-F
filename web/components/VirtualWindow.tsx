@@ -10,7 +10,8 @@ import type { RouteDetail } from "@/lib/engine/types";
 import { duration } from "@/lib/routes";
 import styles from "./VirtualWindow.module.css";
 
-import { EARTH_AT_NIGHT_ASSET, interpolate, ionWorks, lightFromSun, loadCesium, PITCH_DEG, TOKEN } from "@/lib/cesium";
+import { EARTH_AT_NIGHT_ASSET, interpolate, ionWorks, lightFromSun, loadCesium, PITCH_DEG, setDayMode, TOKEN } from "@/lib/cesium";
+import { samplesFor } from "@/lib/engine/geometry";
 
 const SPEEDS = [1, 60, 300];
 const CRUISE_M = 10_700;
@@ -24,6 +25,7 @@ export default function VirtualWindow({ detail, backHref }: { detail: RouteDetai
   const watchId = useRef<number | null>(null);
   const minuteRef = useRef(0);
   const depRef = useRef(0);
+  const dayRef = useRef(false);
 
   const [side, setSide] = useState<"A" | "F">("A");
   const [date, setDate] = useState("2026-11-12");
@@ -33,6 +35,7 @@ export default function VirtualWindow({ detail, backHref }: { detail: RouteDetai
   const [speed, setSpeed] = useState(60);
   const [status, setStatus] = useState("Loading the 3D view");
   const [gps, setGps] = useState<string | null>(null);
+  const [dayMode, setDayModeOn] = useState(false);
   const [lines, setLines] = useState<Record<string, string>>({});
 
   // Pre-generated narration (pipeline/narrate.py), already checked against the geometry. Optional.
@@ -51,6 +54,7 @@ export default function VirtualWindow({ detail, backHref }: { detail: RouteDetai
     if (q.get("s") === "F" || q.get("s") === "A") { setSide(q.get("s") as "A" | "F"); sideRef.current = q.get("s") as "A" | "F"; }
     const startAt = Number(q.get("m"));
     if (Number.isFinite(startAt) && startAt > 0) { setMinute(startAt); minuteRef.current = startAt; }
+    if (q.get("light") === "day") { setDayModeOn(true); dayRef.current = true; }
     /* eslint-enable react-hooks/set-state-in-effect */
   }, []);
 
@@ -107,6 +111,7 @@ export default function VirtualWindow({ detail, backHref }: { detail: RouteDetai
             /* night lights are a bonus */
           }
         }
+        setDayMode(v, dayRef.current);
 
         for (const l of detail.landmarks) {
           v.entities.add({
@@ -158,6 +163,12 @@ export default function VirtualWindow({ detail, backHref }: { detail: RouteDetai
       if (watchId.current !== null) navigator.geolocation.clearWatch(watchId.current);
     };
   }, [detail.landmarks, last, placeCamera]);
+
+  // Day mode or the real light. `status` changes once the viewer exists, so this also runs after setup.
+  useEffect(() => {
+    dayRef.current = dayMode;
+    if (viewerRef.current) setDayMode(viewerRef.current, dayMode);
+  }, [dayMode, status]);
 
   // Flight time, speed and play state drive the Cesium clock.
   useEffect(() => {
@@ -219,6 +230,8 @@ export default function VirtualWindow({ detail, backHref }: { detail: RouteDetai
   };
 
   const m = Math.min(Math.floor(minute), last);
+  const samples = useMemo(() => samplesFor(detail.track, departureMs), [detail.track, departureMs]);
+  const dark = !gps && !samples[m].visible;
   const word = side === "A" ? "left" : "right";
   const upcoming = detail.landmarks
     .filter((l) => (l.side === side || l.side === "below") && l.minute >= m - 1 && l.minute <= m + 15)
@@ -257,6 +270,15 @@ export default function VirtualWindow({ detail, backHref }: { detail: RouteDetai
               </button>
             ))}
           </div>
+          <div className={styles.toggle} role="group" aria-label="Light">
+            <button type="button" aria-pressed={!dayMode} onClick={() => setDayModeOn(false)}>Real light</button>
+            <button type="button" aria-pressed={dayMode} onClick={() => setDayModeOn(true)}>Day mode</button>
+          </div>
+          <p className={styles.lightNote}>
+            {dayMode
+              ? `Day mode: the ground as if it were noon, so you can tell what's down there.${dark ? " Outside it's dark right now." : ""}`
+              : dark ? "It's dark out there right now. Day mode shows the ground as if it were noon." : " "}
+          </p>
           {!gps && (
             <>
               <button type="button" className={styles.play} onClick={() => { if (m >= last) seek(0); setPlaying((p) => !p); }}>

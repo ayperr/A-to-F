@@ -28,6 +28,23 @@ export function lightFromSun(globe: CesiumNS.Globe) {
   globe.nightFadeInDistance = 1;
 }
 
+/**
+ * Day mode: show the ground and sky as if it were noon, whatever the clock says, so a night flight
+ * can still tell what's below. Turning globe lighting off also switches the sky to its fully lit look
+ * (Cesium derives the sky's lighting from the globe flags). Stars and the city-lights layer are hidden.
+ * Off: back to the real sun with lightFromSun().
+ */
+export function setDayMode(viewer: CesiumNS.Viewer, on: boolean) {
+  const globe = viewer.scene.globe;
+  if (on) globe.enableLighting = false;
+  else lightFromSun(globe);
+  if (viewer.scene.skyBox) viewer.scene.skyBox.show = !on;
+  for (let i = 0; i < viewer.imageryLayers.length; i++) {
+    const layer = viewer.imageryLayers.get(i);
+    if (layer.dayAlpha === 0 && layer.nightAlpha > 0) layer.show = !on; // Earth at Night
+  }
+}
+
 export function loadCesium(): Promise<typeof CesiumNS> {
   if (window.Cesium) return Promise.resolve(window.Cesium);
   window.CESIUM_BASE_URL = "/cesium/";

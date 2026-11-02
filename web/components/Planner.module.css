@@ -122,3 +122,5 @@
 @media (max-width: 420px) {
   .answer { flex-direction: column; }
 }
+
+.dayLink { color: var(--accent); font-weight: 600; font-size: 0.9rem; text-underline-offset: 4px; padding: 6px 0; }

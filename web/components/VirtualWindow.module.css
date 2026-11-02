@@ -68,3 +68,5 @@
   .page { grid-template-columns: 1fr; gap: 28px; }
   .frame { border-width: 16px; }
 }
+
+.lightNote { margin: -4px 0 0; color: var(--ink-soft); font-size: 0.85rem; max-width: 42ch; min-height: 1.3em; }

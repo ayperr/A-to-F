@@ -187,6 +187,9 @@ export default function Planner({ detail, adhoc }: { detail: RouteDetail; adhoc?
             Seat {seat ?? side}{seat && seat !== side ? ` looking out of ${side}` : ""}, {clock(departureMs + m * 60_000, detail.origin.tz)} {detail.origin.city} time,{" "}
             {m === 0 ? "takeoff" : `${duration(m)} after takeoff`}
           </p>
+          {!samples[m].visible && (
+            <Link href={`${windowHref}&light=day`} className={styles.dayLink}>Dark outside? See it in day mode</Link>
+          )}
         </div>
       </section>
 
