@@ -9,7 +9,7 @@ import { duration } from "@/lib/routes";
 import styles from "./Postcard.module.css";
 
 const W = 1080, H = 1350;
-const C = { ground: "#211B1D", deep: "#2b2326", cream: "#FFF4EC", dim: "#C4B6AD", coral: "#FF7A45", land: "#3a2f32", line: "#54464a" };
+const C = { ground: "#FFFFFF", deep: "#EEF3FA", cream: "#0B2350", dim: "#4B5F80", coral: "#1F5FD6", land: "#D3DEEC", line: "#B5C5DD" };
 
 type Basemap = { land: number[][]; lakes: number[][]; borders: number[][] };
 

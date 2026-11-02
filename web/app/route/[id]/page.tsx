@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Planner from "@/components/Planner";
-import RouteList from "@/components/RouteList";
 import { loadRoute } from "@/lib/detail";
 import { getRoute, routes } from "@/lib/routes";
 
@@ -19,10 +18,5 @@ export async function generateMetadata({ params }: PageProps<"/route/[id]">): Pr
 export default async function RoutePage({ params }: PageProps<"/route/[id]">) {
   const detail = loadRoute((await params).id);
   if (!detail) notFound();
-  return (
-    <>
-      <Planner detail={detail} />
-      <RouteList />
-    </>
-  );
+  return <Planner detail={detail} />;
 }

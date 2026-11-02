@@ -1,13 +1,11 @@
 "use client";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { recommend, samplesFor } from "@/lib/engine/geometry";
 import { clock, localToUtcMs, todayIn } from "@/lib/engine/time";
 import type { RouteDetail } from "@/lib/engine/types";
-import { destinationsFrom, duration, getRoute, origins, routeId } from "@/lib/routes";
+import { duration } from "@/lib/routes";
 import BestSeat from "./BestSeat";
-import FlightFinder from "./FlightFinder";
 import SeatRow from "./SeatRow";
 import Timeline from "./Timeline";
 import CesiumWindow from "./CesiumWindow";
@@ -15,7 +13,6 @@ import WindowView from "./WindowView";
 import styles from "./Planner.module.css";
 
 const TIMES = Array.from({ length: 48 }, (_, i) => `${String(Math.floor(i / 2)).padStart(2, "0")}:${i % 2 ? "30" : "00"}`);
-const FALLBACK_DATE = "2026-11-12";
 
 const prettyDate = (iso: string) =>
   new Intl.DateTimeFormat("en-GB", { weekday: "short", day: "numeric", month: "short", timeZone: "UTC" }).format(
@@ -34,11 +31,11 @@ export interface Adhoc {
 const SIDE_OF_SEAT: Record<string, "A" | "F"> = { A: "A", B: "A", C: "A", D: "F", E: "F", F: "F" };
 
 export default function Planner({ detail, adhoc }: { detail: RouteDetail; adhoc?: Adhoc }) {
-  const router = useRouter();
-  const [date, setDate] = useState(adhoc?.date ?? FALLBACK_DATE);
-  const [time, setTime] = useState(adhoc?.time ?? "15:00");
+  const [date, setDate] = useState(adhoc?.date ?? "");
+  const [time, setTime] = useState(adhoc?.time ?? "");
   const [flight, setFlight] = useState<string | null>(adhoc?.flight ?? null);
-  const [mode, setMode] = useState<"flight" | "route">("flight");
+  // null = still reading the URL; false = we need the date and time first; true = show the answer
+  const [ready, setReady] = useState<boolean | null>(adhoc ? true : null);
   const [seat, setSeat] = useState<string | null>(null);
   const [minute, setMinute] = useState(0);
   const [viewing, setViewing] = useState<"A" | "F" | null>(null);
@@ -50,21 +47,23 @@ export default function Planner({ detail, adhoc }: { detail: RouteDetail; adhoc?
     if (adhoc) return;
     const q = new URLSearchParams(window.location.search);
     const d = q.get("d"), t = q.get("t"), f = q.get("f");
+    const okD = !!d && /^\d{4}-\d{2}-\d{2}$/.test(d), okT = !!t && /^\d{2}:\d{2}$/.test(t);
     /* eslint-disable react-hooks/set-state-in-effect -- one-time sync from the URL after hydration */
-    setDate(d && /^\d{4}-\d{2}-\d{2}$/.test(d) ? d : todayIn(detail.origin.tz));
-    if (t && /^\d{2}:\d{2}$/.test(t)) setTime(t);
+    setDate(okD ? d! : todayIn(detail.origin.tz));
+    if (okT) setTime(t!);
     if (f) setFlight(f);
-    if (d && t && !f) setMode("route");
+    setReady(okD && okT);
     /* eslint-enable react-hooks/set-state-in-effect */
   }, [detail.origin.tz, adhoc]);
 
   useEffect(() => {
-    if (adhoc) return;
+    if (adhoc || !ready) return;
     const url = `/route/${detail.id}?d=${date}&t=${time}${flight ? `&f=${encodeURIComponent(flight)}` : ""}`;
     if (window.location.pathname + window.location.search !== url) window.history.replaceState(null, "", url);
-  }, [detail.id, date, time, flight, adhoc]);
+  }, [detail.id, date, time, flight, adhoc, ready]);
 
-  const departureMs = useMemo(() => localToUtcMs(date, time, detail.origin.tz), [date, time, detail.origin.tz]);
+  const departureMs = useMemo(
+    () => localToUtcMs(date || "2026-01-01", time || "12:00", detail.origin.tz), [date, time, detail.origin.tz]);
   const samples = useMemo(() => samplesFor(detail.track, departureMs), [detail.track, departureMs]);
   const rec = useMemo(() => recommend(samples, detail.landmarks), [samples, detail.landmarks]);
   const side = (seat ? SIDE_OF_SEAT[seat] : viewing) ?? rec.side ?? "A";
@@ -90,20 +89,12 @@ export default function Planner({ detail, adhoc }: { detail: RouteDetail; adhoc?
     return () => { if (raf.current) cancelAnimationFrame(raf.current); };
   }, [playing, last]);
 
-  const go = (o: string, d: string) => {
-    const dests = destinationsFrom(o);
-    const dest = dests.includes(d) ? d : dests[0];
-    setFlight(null);
-    router.push(`/route/${routeId(o, dest)}?d=${date}&t=${time}`, { scroll: false });
-  };
-
   const nearby = detail.landmarks
     .filter((l) => (l.side === side || l.side === "below") && Math.abs(l.minute - m) <= 6)
     .sort((a, b) => Math.abs(a.minute - m) - Math.abs(b.minute - m))[0];
   const nearbyLabel = nearby
     ? nearby.side === "below" ? `${nearby.name}, below you` : `${nearby.name}, ${nearby.dist_km} km out`
     : undefined;
-  const summary = getRoute(detail.id);
   const startMinute = rec.golden_start_min !== undefined ? Math.max(0, rec.golden_start_min - 10) : Math.min(30, last);
   const params = `d=${date}&t=${time}&s=${side}&m=${startMinute}`;
   const windowHref = adhoc ? `/flight/window?${adhoc.query}&${params}` : `/window/${detail.id}?${params}`;
@@ -113,57 +104,53 @@ export default function Planner({ detail, adhoc }: { detail: RouteDetail; adhoc?
     ? `Seat ${seat} has no window of its own. You're on the ${SIDE_OF_SEAT[seat] === "A" ? "left" : "right"}, so your view is seat ${SIDE_OF_SEAT[seat]}'s window, or the Virtual Window below.`
     : null;
 
+  const changeHref = adhoc || flight
+    ? `/?f=${encodeURIComponent(flight ?? "")}&d=${date}`
+    : `/?route=${detail.id}&d=${date}${time ? `&t=${time}` : ""}`;
+
+  if (ready === null) return <div className={styles.loading} aria-busy="true" />;
+
+  if (!ready) {
+    return (
+      <form className={styles.gate} onSubmit={(e) => { e.preventDefault(); if (date && time) setReady(true); }}>
+        <h1>When do you fly from {detail.origin.city} to {detail.dest.city}?</h1>
+        <div className={styles.gateFields}>
+          <label className={styles.dateField}>
+            <span>Date</span>
+            <span className={styles.dateShown} aria-hidden="true">{prettyDate(date)}</span>
+            <input type="date" value={date} required onChange={(e) => e.target.value && setDate(e.target.value)}
+              onClick={(e) => e.currentTarget.showPicker?.()} />
+          </label>
+          <label>
+            <span>Departs (local)</span>
+            <select value={time} required onChange={(e) => setTime(e.target.value)}>
+              <option value="" disabled>Time</option>
+              {TIMES.map((t) => <option key={t}>{t}</option>)}
+            </select>
+          </label>
+          <button type="submit" className={styles.go}>Show my side</button>
+        </div>
+        <p className={styles.context}>
+          <Link href="/">Have a flight number instead?</Link>
+        </p>
+      </form>
+    );
+  }
+
   return (
     <div className={styles.planner}>
-      {!adhoc && <FlightFinder mode={mode} onMode={setMode} />}
-      {flight && (
+      <div className={styles.summary}>
         <p className={styles.flightLine}>
-          Flight {flight}, {detail.origin.city} to {detail.dest.city}, {prettyDate(date)} at {time}.
-          {!adhoc && <> <button type="button" className={styles.change} onClick={() => { setFlight(null); setMode("flight"); }}>Change</button></>}
-          {adhoc && <> <Link className={styles.change} href="/">Change</Link></>}
+          {flight ? <>Flight {flight}: </> : null}
+          {detail.origin.city} to {detail.dest.city}
+          {ready && <>, {prettyDate(date)} at {time}</>}
         </p>
-      )}
-      {!adhoc && mode === "route" && !flight && (
-      <form className={styles.sentence} onSubmit={(e) => e.preventDefault()} aria-label="Your flight">
-        <span>Flying</span>
-        <label>
-          <span className="sr-only">From</span>
-          <select value={detail.origin.iata} onChange={(e) => go(e.target.value, detail.dest.iata)}>
-            {origins.map((o) => <option key={o}>{o}</option>)}
-          </select>
-        </label>
-        <span>to</span>
-        <label>
-          <span className="sr-only">To</span>
-          <select value={detail.dest.iata} onChange={(e) => go(detail.origin.iata, e.target.value)}>
-            {destinationsFrom(detail.origin.iata).map((d) => <option key={d}>{d}</option>)}
-          </select>
-        </label>
-        <span>on</span>
-        <label className={styles.dateField}>
-          <span className="sr-only">Date</span>
-          <span aria-hidden="true">{prettyDate(date)}</span>
-          <input type="date" value={date} onChange={(e) => e.target.value && setDate(e.target.value)}
-            onClick={(e) => e.currentTarget.showPicker?.()} />
-        </label>
-        <span>at</span>
-        <label>
-          <span className="sr-only">Departure time, local</span>
-          <select value={time} onChange={(e) => setTime(e.target.value)}>
-            {TIMES.map((t) => <option key={t}>{t}</option>)}
-          </select>
-        </label>
-      </form>
-      )}
+        <Link className={styles.change} href={changeHref}>Change</Link>
+      </div>
       <p className={styles.context}>
-        {!flight && mode === "flight" && !adhoc
-          ? `Example below: ${detail.origin.city} to ${detail.dest.city}, ${prettyDate(date)} at ${time}. `
-          : `${detail.origin.city} to ${detail.dest.city}, about ${duration(detail.duration_min)} in the air. `}
-        Times are local to {detail.origin.city}.
-        {summary && !summary.verified && !adhoc && " This route still needs checking against JetBlue's current schedule."}
+        About {duration(detail.duration_min)} in the air. Times are local to {detail.origin.city}.
         {adhoc && " We haven't mapped landmarks along this route yet, so the answer is about the sun."}
       </p>
-
       <section className={styles.answer} aria-live="polite">
         <div className={styles.letter} aria-hidden="true">{rec.side ?? "A/F"}</div>
         <div className={styles.verdict}>

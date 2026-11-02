@@ -19,9 +19,12 @@ Plan, status and what's left: `BUILD_GUIDE.md`.
    westbound. Never present them as real flight times.
 6. **Generated files are not hand-edited** (`web/public/data/routes*`, `insights.json`, `basemap.json`,
    `evaluation.json`, golden fixtures). A PreToolUse hook blocks it. Change the pipeline and rerun it.
-7. **Brand/legal.** "for JetBlue flyers", never "by JetBlue". No JetBlue logo, fonts or colours, no blue.
-   Palette: ground #211B1D, cream #FFF4EC, coral #FF7A45. Font: Manrope. Footer disclaimer on every page.
-8. **Cost.** Visitors cost $0 except "Best seat for you" (Haiku, rate-limited). Keys only in Vercel env vars
+7. **Brand/legal.** "for JetBlue flyers", never "by JetBlue". White and blue, but our own blues and our own
+   A to F logo: never JetBlue's logo, fonts or exact brand colours. Tokens in `web/app/globals.css`: bg #ffffff,
+   ink #0b2350, accent #1f5fd6, accent-soft #e4eefc. Font: Manrope. "Not affiliated" footer on every page.
+8. **First page stays simple.** Only the B6 flight-number form, with "No flight number?" for route and time.
+   Results unlock after one of them is filled in; a bare route link asks for date and time first.
+9. **Cost.** Visitors cost $0 except "Best seat for you" (Haiku, rate-limited). Keys only in Vercel env vars
    or GitHub secrets, never in code or chat.
 
 ## Commands

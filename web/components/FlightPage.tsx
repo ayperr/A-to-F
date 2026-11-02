@@ -41,7 +41,7 @@ export default function FlightPage({ view }: { view: View }) {
       .catch(() => setState({ error: "No connection." }));
   }, [view]);
 
-  if (!state) return <p style={{ paddingTop: 48, color: "var(--cream-dim)" }}>Finding your flight…</p>;
+  if (!state) return <p style={{ paddingTop: 48, color: "var(--ink-soft)" }}>Finding your flight…</p>;
   if ("error" in state) {
     return (
       <div style={{ paddingTop: 48 }}>

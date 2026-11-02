@@ -6,6 +6,6 @@
   padding: 12px 0; border-bottom: 1px solid var(--line); text-decoration: none; min-height: 44px;
 }
 .list a:hover .what { text-decoration: underline; text-underline-offset: 3px; }
-.min { font-weight: 800; font-size: 1.5rem; color: var(--coral); font-variant-numeric: tabular-nums; }
+.min { font-weight: 800; font-size: 1.5rem; color: var(--accent); font-variant-numeric: tabular-nums; }
 .what { display: grid; }
-.what small { color: var(--cream-dim); font-size: 0.85rem; }
+.what small { color: var(--ink-soft); font-size: 0.85rem; }

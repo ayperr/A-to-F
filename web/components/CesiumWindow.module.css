@@ -6,21 +6,21 @@
 .under :global(svg) { width: 100%; height: 100%; }
 .under :global(figcaption) { display: none; }
 .globe {
-  clip-path: inset(7.06% 9.23% round 37.7% / 28.8%);
+  clip-path: inset(4.7% 6.15% round 40% / 30.6%);
   opacity: 0;
   transition: opacity 0.6s ease;
-  background: var(--ground-deep);
+  background: var(--ink);
 }
 .globe.on { opacity: 1; }
 .globe :global(.cesium-viewer), .globe :global(.cesium-widget), .globe :global(canvas) { width: 100%; height: 100%; }
 .globe :global(.cesium-viewer-bottom) { display: none; }
 .overlay { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
 
-.caption { color: var(--cream-dim); font-size: 0.9rem; min-height: 1.4em; text-align: center; }
-.note { margin: 0; color: var(--cream-dim); font-size: 0.8rem; text-align: center; max-width: 34ch; }
-.credits { font-size: 0.65rem; color: var(--cream-dim); min-height: 16px; }
+.caption { color: var(--ink-soft); font-size: 0.9rem; min-height: 1.4em; text-align: center; }
+.note { margin: 0; color: var(--ink-soft); font-size: 0.8rem; text-align: center; max-width: 34ch; }
+.credits { font-size: 0.65rem; color: var(--ink-soft); min-height: 16px; }
 .credits :global(.cesium-widget-credits) { position: static; display: flex; gap: 6px; align-items: center; flex-wrap: wrap; justify-content: center; }
-.credits :global(img) { filter: grayscale(1) brightness(1.6); max-height: 14px; }
-.credits :global(a) { color: var(--cream-dim); }
+.credits :global(img) { filter: invert(1) grayscale(1); max-height: 14px; }
+.credits :global(a) { color: var(--ink-soft); }
 
 @media (prefers-reduced-motion: reduce) { .globe { transition: none; } }

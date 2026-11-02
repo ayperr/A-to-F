@@ -47,34 +47,34 @@ export default function WindowView({ side, sample, row, landmarks, minute, nearb
       )
     : [];
 
-  const shade = 64;
+  const shade = 54;
   return (
     <figure className={styles.figure}>
       <svg viewBox={`0 0 ${W} ${H}`} role="img"
         aria-label={`View from seat ${side} at ${minute} minutes: sun ${sample.el.toFixed(0)} degrees ${sample.el >= 0 ? "above" : "below"} the horizon`}>
         <defs>
-          <clipPath id="pane"><rect x="24" y="24" width="212" height="292" rx="98" /></clipPath>
+          <clipPath id="pane"><rect x="16" y="16" width="228" height="308" rx="104" /></clipPath>
           <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
             <stop offset="0" stopColor={sky.top} />
             <stop offset="1" stopColor={sky.horizon} />
           </linearGradient>
           <radialGradient id="glow">
-            <stop offset="0" stopColor="#ff7a45" stopOpacity="0.75" />
-            <stop offset="1" stopColor="#ff7a45" stopOpacity="0" />
+            <stop offset="0" stopColor="#ffb347" stopOpacity="0.7" />
+            <stop offset="1" stopColor="#ffb347" stopOpacity="0" />
           </radialGradient>
         </defs>
         <g clipPath="url(#pane)">
           <rect x="0" y="0" width={W} height={HORIZON_Y} fill="url(#sky)" />
           {sunVisible && sample.golden && <circle cx={sunX} cy={sunY} r="70" fill="url(#glow)" />}
-          {sunVisible && <circle cx={sunX} cy={sunY} r={sample.golden ? 15 : 11} fill={sample.golden ? "#ff7a45" : "#fff4ec"} />}
+          {sunVisible && <circle cx={sunX} cy={sunY} r={sample.golden ? 15 : 11} fill={sample.golden ? "#ffb347" : "#fffbe8"} />}
           <rect x="0" y={HORIZON_Y} width={W} height={H - HORIZON_Y} fill={groundColour(elAbove)} />
           {lights.map((p, i) => (
-            <circle key={i} cx={p.x} cy={p.y} r={p.r} fill={i % 4 ? "#ffd2a8" : "#fff4ec"} />
+            <circle key={i} cx={p.x} cy={p.y} r={p.r} fill={i % 4 ? "#ffe2a8" : "#fffbe8"} />
           ))}
-          <rect x="0" y="0" width={W} height={shade} fill="#fff4ec" />
+          <rect x="0" y="0" width={W} height={shade} fill="#0b2350" />
         </g>
-        <rect x="10" y="10" width="240" height="320" rx="110" fill="none" stroke="#fff4ec" strokeWidth="14" />
-        <rect x="116" y={shade - 6} width="28" height="10" rx="5" fill="#fff4ec" />
+        <rect x="10" y="10" width="240" height="320" rx="110" fill="none" stroke="#0b2350" strokeWidth="14" />
+        <rect x="116" y={shade - 6} width="28" height="10" rx="5" fill="#0b2350" />
       </svg>
       <figcaption className={styles.caption}>
         {nearbyLabel ?? (dark ? "Dark outside" : sample.golden ? "Golden light" : "Daylight")}

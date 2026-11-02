@@ -43,9 +43,9 @@ ROUTE_PAIRS: list[tuple[str, str, bool, str]] = [
     ("JFK", "FLL", True, "airportroutes.com observed ops, Jul 2026"),
     ("JFK", "LHR", True, "flymag.com JetBlue Europe network, Apr 2026"),
     ("BOS", "LHR", True, "flymag.com JetBlue Europe network, Apr 2026"),
-    ("BOS", "LAX", False, "TO VERIFY on jetblue.com route map"),
-    ("JFK", "LAS", False, "TO VERIFY on jetblue.com route map"),
-    ("BOS", "DEN", False, "TO VERIFY on jetblue.com route map"),
+    ("BOS", "LAX", True, "nonstop confirmed via JetBlue/Expedia listings, checked 2 Nov 2026"),
+    ("JFK", "LAS", True, "nonstop confirmed via JetBlue/Expedia listings, checked 2 Nov 2026"),
+    ("BOS", "DEN", True, "nonstop confirmed via JetBlue/Expedia listings, checked 2 Nov 2026"),
 ]
 
 DEPARTURE_SLOTS = {"morning": "07:00", "midday": "11:00", "afternoon": "15:00", "evening": "19:00"}

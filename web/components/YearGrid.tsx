@@ -43,8 +43,8 @@ export default function YearGrid({ data }: { data: Insights }) {
         <li><span className={`${styles.swatch} ${styles.A}`}>A</span>Left side wins</li>
         <li><span className={`${styles.swatch} ${styles.F}`}>F</span>Right side wins</li>
         <li><span className={`${styles.swatch} ${styles.A} ${styles.mixed}`}>A</span>Wins on most sampled days, not all</li>
-        <li><span className={`${styles.swatch} ${styles.none}`} />Either side</li>
-        <li><span className={styles.dot} />Golden light on most days</li>
+        <li><span className={`${styles.swatch} ${styles.none}`}>–</span>Either side</li>
+        <li><span className={styles.dot} />Sunset or sunrise light on most days</li>
       </ul>
 
       <div className={styles.scroll}>
@@ -69,7 +69,7 @@ export default function YearGrid({ data }: { data: Insights }) {
                     <td key={h}>
                       <button type="button" className={cls} onMouseEnter={() => setHover({ m, h })} onFocus={() => setHover({ m, h })}
                         aria-label={`${MONTH_LONG[m]}, ${data.hours[h]}:00 departures: left ${c.A}, right ${c.F}, either ${c.none} of ${n} days; golden light on ${c.golden}`}>
-                        {v.side === "-" ? "" : v.side}
+                        {v.side === "-" ? "–" : v.side}
                         {c.golden * 2 > n && <i className={styles.goldDot} aria-hidden="true" />}
                       </button>
                     </td>

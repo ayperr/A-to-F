@@ -1,13 +1,16 @@
 :root {
-  --ground: #211b1d;
-  --ground-deep: #171214;
-  --line: #3b3134;
-  --line-strong: #5a4b4f;
-  --cream: #fff4ec;
-  --cream-dim: #c4b6ad;
-  --coral: #ff7a45;
+  /* White and blue. Our own blues, not JetBlue's brand colours. */
+  --bg: #ffffff;
+  --bg-soft: #f2f6fc;
+  --bg-deep: #0b2350;
+  --line: #dce5f2;
+  --line-strong: #b5c5dd;
+  --ink: #0b2350;
+  --ink-soft: #4b5f80;
+  --accent: #1f5fd6;
+  --accent-soft: #e4eefc;
   --max: 1120px;
-  color-scheme: dark;
+  color-scheme: light;
 }
 
 * { box-sizing: border-box; }
@@ -15,8 +18,8 @@ html, body { margin: 0; padding: 0; }
 html { -webkit-text-size-adjust: 100%; }
 
 body {
-  background: var(--ground);
-  color: var(--cream);
+  background: var(--bg);
+  color: var(--ink);
   font-family: "Manrope", system-ui, sans-serif;
   font-weight: 500;
   font-size: 1.0625rem;
@@ -25,7 +28,7 @@ body {
 }
 
 a { color: inherit; text-underline-offset: 3px; }
-:focus-visible { outline: 2px solid var(--coral); outline-offset: 3px; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
 
 .sr-only {
   position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
@@ -43,7 +46,7 @@ a { color: inherit; text-underline-offset: 3px; }
 .site-nav a:hover { text-decoration: underline; }
 @media (max-width: 520px) { .site-nav { gap: 14px; font-size: 0.9rem; } }
 
-.site-footer { margin-top: 96px; color: var(--cream-dim); font-size: 0.85rem; }
+.site-footer { margin-top: 96px; color: var(--ink-soft); font-size: 0.85rem; }
 .site-footer .wrap { padding-top: 22px; padding-bottom: 36px; border-top: 1px solid var(--line); display: flex; flex-wrap: wrap; gap: 8px 24px; justify-content: space-between; }
 
 @media (prefers-reduced-motion: reduce) {

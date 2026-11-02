@@ -58,11 +58,11 @@ export default function CesiumWindow({ detail, departureMs, minute, side, placeh
         for (const l of detail.landmarks) {
           v.entities.add({
             position: C.Cartesian3.fromDegrees(l.lon, l.lat),
-            point: { pixelSize: 6, color: C.Color.fromCssColorString("#ff7a45"), disableDepthTestDistance: Number.POSITIVE_INFINITY,
+            point: { pixelSize: 6, color: C.Color.fromCssColorString("#1f5fd6"), disableDepthTestDistance: Number.POSITIVE_INFINITY,
               heightReference: ion ? C.HeightReference.CLAMP_TO_GROUND : C.HeightReference.NONE },
             label: {
               text: l.name, font: "600 13px Manrope, sans-serif",
-              fillColor: C.Color.fromCssColorString("#fff4ec"), outlineColor: C.Color.fromCssColorString("#211b1d"),
+              fillColor: C.Color.fromCssColorString("#ffffff"), outlineColor: C.Color.fromCssColorString("#0b2350"),
               outlineWidth: 4, style: C.LabelStyle.FILL_AND_OUTLINE, pixelOffset: new C.Cartesian2(0, -14),
               heightReference: ion ? C.HeightReference.CLAMP_TO_GROUND : C.HeightReference.NONE,
               distanceDisplayCondition: new C.DistanceDisplayCondition(0, 260_000), disableDepthTestDistance: Number.POSITIVE_INFINITY,
@@ -112,10 +112,10 @@ export default function CesiumWindow({ detail, departureMs, minute, side, placeh
         <div ref={host} className={`${styles.globe} ${ready ? styles.on : ""}`}
           role="img" aria-label={`3D view out of seat ${side}, ${Math.floor(minute)} minutes after takeoff`} />
         <svg className={styles.overlay} viewBox="0 0 260 340" aria-hidden="true">
-          <defs><clipPath id="cw-pane"><rect x="24" y="24" width="212" height="292" rx="98" /></clipPath></defs>
-          <rect x="0" y="0" width="260" height="64" fill="#fff4ec" clipPath="url(#cw-pane)" />
-          <rect x="10" y="10" width="240" height="320" rx="110" fill="none" stroke="#fff4ec" strokeWidth="14" />
-          <rect x="116" y="58" width="28" height="10" rx="5" fill="#fff4ec" />
+          <defs><clipPath id="cw-pane"><rect x="16" y="16" width="228" height="308" rx="104" /></clipPath></defs>
+          <rect x="0" y="0" width="260" height="54" fill="#0b2350" clipPath="url(#cw-pane)" />
+          <rect x="10" y="10" width="240" height="320" rx="110" fill="none" stroke="#0b2350" strokeWidth="14" />
+          <rect x="116" y="48" width="28" height="10" rx="5" fill="#0b2350" />
         </svg>
       </div>
       <figcaption className={styles.caption}>{caption}</figcaption>

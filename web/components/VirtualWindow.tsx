@@ -23,6 +23,7 @@ export default function VirtualWindow({ detail, backHref }: { detail: RouteDetai
   const gpsRef = useRef<{ lat: number; lon: number; alt: number; heading: number } | null>(null);
   const watchId = useRef<number | null>(null);
   const minuteRef = useRef(0);
+  const depRef = useRef(0);
 
   const [side, setSide] = useState<"A" | "F">("A");
   const [date, setDate] = useState("2026-11-12");
@@ -55,6 +56,7 @@ export default function VirtualWindow({ detail, backHref }: { detail: RouteDetai
 
   const departureMs = useMemo(() => localToUtcMs(date, time, detail.origin.tz), [date, time, detail.origin.tz]);
   const last = detail.track.length - 1;
+  useEffect(() => { depRef.current = departureMs; }, [departureMs]);
 
   const placeCamera = useCallback((C: typeof CesiumNS, v: CesiumNS.Viewer, m: number) => {
     const p = gpsRef.current ?? interpolate(detail.track, m);
@@ -111,12 +113,12 @@ export default function VirtualWindow({ detail, backHref }: { detail: RouteDetai
         for (const l of detail.landmarks) {
           v.entities.add({
             position: C.Cartesian3.fromDegrees(l.lon, l.lat),
-            point: { pixelSize: 7, color: C.Color.fromCssColorString("#ff7a45"),
+            point: { pixelSize: 7, color: C.Color.fromCssColorString("#1f5fd6"),
               heightReference: ion ? C.HeightReference.CLAMP_TO_GROUND : C.HeightReference.NONE,
               disableDepthTestDistance: Number.POSITIVE_INFINITY },
             label: {
               text: l.name, font: "600 15px Manrope, sans-serif",
-              fillColor: C.Color.fromCssColorString("#fff4ec"), outlineColor: C.Color.fromCssColorString("#211b1d"),
+              fillColor: C.Color.fromCssColorString("#ffffff"), outlineColor: C.Color.fromCssColorString("#0b2350"),
               outlineWidth: 4, style: C.LabelStyle.FILL_AND_OUTLINE, pixelOffset: new C.Cartesian2(0, -16),
               heightReference: ion ? C.HeightReference.CLAMP_TO_GROUND : C.HeightReference.NONE,
               distanceDisplayCondition: new C.DistanceDisplayCondition(0, 260_000),
@@ -125,6 +127,13 @@ export default function VirtualWindow({ detail, backHref }: { detail: RouteDetai
           });
         }
 
+        // Start the clock at the requested minute before the first tick can overwrite it.
+        const t0 = C.JulianDate.fromDate(new Date(depRef.current));
+        v.clock.startTime = t0;
+        v.clock.stopTime = C.JulianDate.addMinutes(t0, last, new C.JulianDate());
+        v.clock.currentTime = C.JulianDate.addMinutes(t0, Math.min(minuteRef.current, last), new C.JulianDate());
+        v.clock.clockRange = C.ClockRange.CLAMPED;
+        v.clock.shouldAnimate = false;
         let lastUi = 0;
         removeTick = v.clock.onTick.addEventListener((clk) => {
           const start = v.clock.startTime;

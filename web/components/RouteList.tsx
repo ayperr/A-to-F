@@ -6,8 +6,7 @@ import styles from "./RouteList.module.css";
 export default function RouteList() {
   const byOrigin = Object.groupBy(routes, (r) => r.origin);
   return (
-    <section className={styles.section} id="routes">
-      <h2>Routes</h2>
+    <section className={styles.section} id="routes" aria-label="Routes">
       <div className={styles.groups}>
         {Object.entries(byOrigin).map(([origin, list]) => (
           <div key={origin}>
@@ -20,7 +19,6 @@ export default function RouteList() {
                     <span className={styles.city}>{r.dest_city}</span>
                     <span className={styles.time}>{duration(r.duration_min)}</span>
                   </Link>
-                  {!r.verified && <span className={styles.flag}>route to confirm</span>}
                 </li>
               ))}
             </ul>

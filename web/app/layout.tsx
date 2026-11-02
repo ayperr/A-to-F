@@ -12,7 +12,7 @@ export const metadata: Metadata = {
     "Left or right window? Sunsets, sunrises and landmarks for JetBlue flyers, worked out from the flight path. Independent student project.",
 };
 
-export const viewport: Viewport = { themeColor: "#211B1D" };
+export const viewport: Viewport = { themeColor: "#ffffff" };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
@@ -26,7 +26,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
             </Link>
             <Link href="/" className="brand">A to F</Link>
             <nav className="site-nav" aria-label="Main">
-              <Link href="/#routes">Routes</Link>
+              <Link href="/routes">Routes</Link>
               <Link href="/insights">Insights</Link>
               <Link href="/about">How it works</Link>
             </nav>

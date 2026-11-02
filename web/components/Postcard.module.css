@@ -1,26 +1,26 @@
 .page { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 0.9fr); gap: 48px; padding-top: 32px; align-items: start; }
 .card { width: 100%; max-width: 540px; height: auto; border-radius: 18px; display: block; box-shadow: 0 0 0 1px var(--line); }
 .panel h1 { font-size: clamp(1.8rem, 4vw, 2.4rem); margin: 0 0 8px; font-weight: 800; }
-.lead { color: var(--cream-dim); margin: 0 0 26px; max-width: 40ch; }
+.lead { color: var(--ink-soft); margin: 0 0 26px; max-width: 40ch; }
 
 .toggle { display: inline-flex; border: 2px solid var(--line-strong); border-radius: 999px; padding: 3px; gap: 3px; }
 .toggle button {
-  font: inherit; font-weight: 600; font-size: 0.95rem; background: none; border: 0; color: var(--cream-dim);
+  font: inherit; font-weight: 600; font-size: 0.95rem; background: none; border: 0; color: var(--ink-soft);
   padding: 8px 14px; border-radius: 999px; min-height: 40px; cursor: pointer;
 }
-.toggle button[aria-pressed="true"] { background: var(--cream); color: var(--ground); }
+.toggle button[aria-pressed="true"] { background: var(--ink); color: var(--bg); }
 
 .upload {
   display: block; margin-top: 22px; font-weight: 600; cursor: pointer;
   text-decoration: underline; text-underline-offset: 4px; min-height: 44px; padding: 10px 0;
 }
-.upload input { display: block; margin-top: 8px; font: inherit; font-size: 0.85rem; color: var(--cream-dim); max-width: 100%; }
+.upload input { display: block; margin-top: 8px; font: inherit; font-size: 0.85rem; color: var(--ink-soft); max-width: 100%; }
 
 .actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 18px; }
 .primary, .secondary { font: inherit; font-weight: 700; border-radius: 999px; padding: 12px 20px; min-height: 44px; cursor: pointer; }
-.primary { background: var(--coral); color: var(--ground); border: 0; }
-.secondary { background: none; color: var(--cream); border: 2px solid var(--cream-dim); }
-.note { color: var(--cream-dim); font-size: 0.9rem; }
+.primary { background: var(--accent); color: var(--bg); border: 0; }
+.secondary { background: none; color: var(--ink); border: 2px solid var(--ink-soft); }
+.note { color: var(--ink-soft); font-size: 0.9rem; }
 .back { margin-top: 28px; }
 
 @media (max-width: 860px) { .page { grid-template-columns: 1fr; gap: 28px; } .card { max-width: 100%; } }
