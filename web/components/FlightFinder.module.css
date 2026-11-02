@@ -1,0 +1,43 @@
+.wrap { grid-area: finder; padding-top: 36px; }
+
+.tabs { display: inline-flex; border: 2px solid var(--line-strong); border-radius: 999px; padding: 3px; gap: 3px; margin-bottom: 22px; }
+.tabs button {
+  font: inherit; font-weight: 600; font-size: 0.95rem; background: none; border: 0; color: var(--cream-dim);
+  padding: 8px 16px; border-radius: 999px; min-height: 40px; cursor: pointer;
+}
+.tabs button[aria-selected="true"] { background: var(--cream); color: var(--ground); }
+
+.form {
+  display: flex; flex-wrap: wrap; align-items: end; gap: 14px 20px;
+  font-size: clamp(1.4rem, 3.8vw, 2.2rem); font-weight: 500;
+}
+.form label { display: grid; gap: 4px; }
+.form label > span:first-child { font-size: 0.9rem; color: var(--cream-dim); font-weight: 600; }
+.num { grid-template-columns: auto 1fr; column-gap: 6px; align-items: baseline; }
+.num > span:first-child { grid-column: 1 / -1; }
+.prefix { font-weight: 800; color: var(--cream-dim); }
+.form input {
+  font: inherit; font-weight: 800; color: var(--cream); background: transparent;
+  border: 0; border-bottom: 3px solid var(--coral); padding: 0 2px 2px; border-radius: 0; color-scheme: dark;
+}
+.num input { width: 3.6em; }
+.date { position: relative; }
+.dateShown { font-weight: 800; border-bottom: 3px solid var(--coral); padding: 0 2px 2px; cursor: pointer; }
+.date input { position: absolute; left: 0; right: 0; bottom: 0; height: 1.5em; opacity: 0; cursor: pointer; }
+.date:focus-within .dateShown { outline: 2px solid var(--cream); outline-offset: 4px; }
+.form input::placeholder { color: var(--line-strong); }
+.form input:focus-visible { outline: 2px solid var(--cream); outline-offset: 4px; }
+.form button {
+  font: inherit; font-size: 1rem; font-weight: 700; background: var(--coral); color: var(--ground);
+  border: 0; border-radius: 999px; padding: 12px 22px; min-height: 48px; cursor: pointer; margin-bottom: 4px;
+}
+.form button:disabled { opacity: 0.7; cursor: progress; }
+.hint { flex-basis: 100%; margin: 0; font-size: 0.85rem; color: var(--cream-dim); font-weight: 500; }
+
+.error { color: var(--coral); font-weight: 600; margin: 14px 0 0; }
+.choices { list-style: none; padding: 0; margin: 14px 0 0; display: grid; gap: 8px; }
+.choices button {
+  font: inherit; color: var(--cream); background: none; border: 2px solid var(--line-strong); border-radius: 12px;
+  padding: 10px 14px; text-align: left; cursor: pointer; min-height: 44px;
+}
+.choices button:hover { border-color: var(--cream-dim); }

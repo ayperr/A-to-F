@@ -7,6 +7,7 @@ import { clock, localToUtcMs, todayIn } from "@/lib/engine/time";
 import type { RouteDetail } from "@/lib/engine/types";
 import { destinationsFrom, duration, getRoute, origins, routeId } from "@/lib/routes";
 import BestSeat from "./BestSeat";
+import FlightFinder from "./FlightFinder";
 import SeatRow from "./SeatRow";
 import Timeline from "./Timeline";
 import WindowView from "./WindowView";
@@ -22,10 +23,22 @@ const prettyDate = (iso: string) =>
 
 const ANSWER: Record<string, string> = { A: "Sit on the left.", F: "Sit on the right." };
 
-export default function Planner({ detail }: { detail: RouteDetail }) {
+export interface Adhoc {
+  flight: string;      // "B6 1234"
+  date: string;
+  time: string;
+  query: string;       // airport params for the window and postcard pages
+}
+
+const SIDE_OF_SEAT: Record<string, "A" | "F"> = { A: "A", B: "A", C: "A", D: "F", E: "F", F: "F" };
+
+export default function Planner({ detail, adhoc }: { detail: RouteDetail; adhoc?: Adhoc }) {
   const router = useRouter();
-  const [date, setDate] = useState(FALLBACK_DATE);
-  const [time, setTime] = useState("15:00");
+  const [date, setDate] = useState(adhoc?.date ?? FALLBACK_DATE);
+  const [time, setTime] = useState(adhoc?.time ?? "15:00");
+  const [flight, setFlight] = useState<string | null>(adhoc?.flight ?? null);
+  const [mode, setMode] = useState<"flight" | "route">("flight");
+  const [seat, setSeat] = useState<string | null>(null);
   const [minute, setMinute] = useState(0);
   const [viewing, setViewing] = useState<"A" | "F" | null>(null);
   const [playing, setPlaying] = useState(false);
@@ -33,23 +46,27 @@ export default function Planner({ detail }: { detail: RouteDetail }) {
 
   // Date and time live in the URL so a plan can be shared; read them once on load.
   useEffect(() => {
+    if (adhoc) return;
     const q = new URLSearchParams(window.location.search);
-    const d = q.get("d"), t = q.get("t");
+    const d = q.get("d"), t = q.get("t"), f = q.get("f");
     /* eslint-disable react-hooks/set-state-in-effect -- one-time sync from the URL after hydration */
     setDate(d && /^\d{4}-\d{2}-\d{2}$/.test(d) ? d : todayIn(detail.origin.tz));
     if (t && /^\d{2}:\d{2}$/.test(t)) setTime(t);
+    if (f) setFlight(f);
+    if (d && t && !f) setMode("route");
     /* eslint-enable react-hooks/set-state-in-effect */
-  }, [detail.origin.tz]);
+  }, [detail.origin.tz, adhoc]);
 
   useEffect(() => {
-    const url = `/route/${detail.id}?d=${date}&t=${time}`;
+    if (adhoc) return;
+    const url = `/route/${detail.id}?d=${date}&t=${time}${flight ? `&f=${encodeURIComponent(flight)}` : ""}`;
     if (window.location.pathname + window.location.search !== url) window.history.replaceState(null, "", url);
-  }, [detail.id, date, time]);
+  }, [detail.id, date, time, flight, adhoc]);
 
   const departureMs = useMemo(() => localToUtcMs(date, time, detail.origin.tz), [date, time, detail.origin.tz]);
   const samples = useMemo(() => samplesFor(detail.track, departureMs), [detail.track, departureMs]);
   const rec = useMemo(() => recommend(samples, detail.landmarks), [samples, detail.landmarks]);
-  const side = viewing ?? rec.side ?? "A";
+  const side = (seat ? SIDE_OF_SEAT[seat] : viewing) ?? rec.side ?? "A";
   const last = samples.length - 1;
   const m = Math.min(minute, last);
 
@@ -62,6 +79,7 @@ export default function Planner({ detail }: { detail: RouteDetail }) {
   const go = (o: string, d: string) => {
     const dests = destinationsFrom(o);
     const dest = dests.includes(d) ? d : dests[0];
+    setFlight(null);
     router.push(`/route/${routeId(o, dest)}?d=${date}&t=${time}`, { scroll: false });
   };
 
@@ -74,9 +92,24 @@ export default function Planner({ detail }: { detail: RouteDetail }) {
   const summary = getRoute(detail.id);
   const startMinute = rec.golden_start_min !== undefined ? Math.max(0, rec.golden_start_min - 10) : Math.min(30, last);
   const params = `d=${date}&t=${time}&s=${side}&m=${startMinute}`;
+  const windowHref = adhoc ? `/flight/window?${adhoc.query}&${params}` : `/window/${detail.id}?${params}`;
+  const postcardHref = adhoc ? `/flight/postcard?${adhoc.query}&${params}` : `/postcard/${detail.id}?${params}`;
+  const pickSeat = (s: string) => { setSeat(s); setViewing(SIDE_OF_SEAT[s]); };
+  const seatNote = seat && seat !== "A" && seat !== "F"
+    ? `Seat ${seat} has no window of its own. You're on the ${SIDE_OF_SEAT[seat] === "A" ? "left" : "right"}, so your view is seat ${SIDE_OF_SEAT[seat]}'s window, or the Virtual Window below.`
+    : null;
 
   return (
     <div className={styles.planner}>
+      {!adhoc && <FlightFinder mode={mode} onMode={setMode} />}
+      {flight && (
+        <p className={styles.flightLine}>
+          Flight {flight}, {detail.origin.city} to {detail.dest.city}, {prettyDate(date)} at {time}.
+          {!adhoc && <> <button type="button" className={styles.change} onClick={() => { setFlight(null); setMode("flight"); }}>Change</button></>}
+          {adhoc && <> <Link className={styles.change} href="/">Change</Link></>}
+        </p>
+      )}
+      {!adhoc && mode === "route" && !flight && (
       <form className={styles.sentence} onSubmit={(e) => e.preventDefault()} aria-label="Your flight">
         <span>Flying</span>
         <label>
@@ -107,10 +140,14 @@ export default function Planner({ detail }: { detail: RouteDetail }) {
           </select>
         </label>
       </form>
+      )}
       <p className={styles.context}>
-        {detail.origin.city} to {detail.dest.city}, about {duration(detail.duration_min)} in the air.
-        Departure time is local to {detail.origin.city}.
-        {summary && !summary.verified && " This route still needs checking against JetBlue's current schedule."}
+        {!flight && mode === "flight" && !adhoc
+          ? `Example below: ${detail.origin.city} to ${detail.dest.city}, ${prettyDate(date)} at ${time}. `
+          : `${detail.origin.city} to ${detail.dest.city}, about ${duration(detail.duration_min)} in the air. `}
+        Times are local to {detail.origin.city}.
+        {summary && !summary.verified && !adhoc && " This route still needs checking against JetBlue's current schedule."}
+        {adhoc && " We haven't mapped landmarks along this route yet, so the answer is about the sun."}
       </p>
 
       <section className={styles.answer} aria-live="polite">
@@ -118,16 +155,17 @@ export default function Planner({ detail }: { detail: RouteDetail }) {
         <div className={styles.verdict}>
           <h1>{rec.side ? ANSWER[rec.side] : "Either side works."}</h1>
           <p>{rec.reason}</p>
-          <SeatRow recommended={rec.side} viewing={side} onView={setViewing} />
+          <SeatRow recommended={rec.side} viewing={side} selected={seat} onPick={pickSeat} />
+          {seatNote && <p className={styles.seatNote}>{seatNote}</p>}
           <div className={styles.actions}>
-            <Link href={`/window/${detail.id}?${params}`} className={styles.primary}>
-              Watch it from a middle seat
+            <Link href={windowHref} className={styles.primary}>
+              {seat && seat !== "A" && seat !== "F" ? `Open the window for seat ${seat}` : "Watch it from a middle seat"}
             </Link>
-            <Link href={`/postcard/${detail.id}?${params}`} className={styles.secondary}>
+            <Link href={postcardHref} className={styles.secondary}>
               Make a postcard
             </Link>
           </div>
-          <BestSeat routeId={detail.id} date={date} time={time} />
+          {!adhoc && <BestSeat routeId={detail.id} date={date} time={time} />}
         </div>
       </section>
 
@@ -142,7 +180,7 @@ export default function Planner({ detail }: { detail: RouteDetail }) {
           <input type="range" min={0} max={last} value={m} onChange={(e) => { setPlaying(false); setMinute(+e.target.value); }}
             aria-label="Minutes after takeoff" />
           <p>
-            Seat {side}, {clock(departureMs + m * 60_000, detail.origin.tz)} {detail.origin.city} time,{" "}
+            Seat {seat ?? side}{seat && seat !== side ? ` looking out of ${side}` : ""}, {clock(departureMs + m * 60_000, detail.origin.tz)} {detail.origin.city} time,{" "}
             {m === 0 ? "takeoff" : `${duration(m)} after takeoff`}
           </p>
         </div>

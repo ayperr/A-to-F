@@ -12,7 +12,7 @@ from pathlib import Path
 
 RAW = Path(__file__).resolve().parent / "raw" / "naturalearth"
 OUT = Path(__file__).resolve().parents[1] / "web" / "public" / "data" / "basemap.json"
-BBOX = (-130.0, 8.0, 8.0, 62.0)  # lon0, lat0, lon1, lat1: North America, Caribbean, North Atlantic, UK
+BBOX = (-130.0, -15.0, 16.0, 62.0)  # lon0, lat0, lon1, lat1: the Americas to northern Peru, Atlantic, western Europe
 
 
 def _lines(geom: dict) -> list:

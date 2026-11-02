@@ -19,7 +19,7 @@ function windowPath(ctx: CanvasRenderingContext2D, x: number, y: number, w: numb
   ctx.roundRect(x, y, w, h, [r, r, r, r]);
 }
 
-export default function Postcard({ detail }: { detail: RouteDetail }) {
+export default function Postcard({ detail, backHref }: { detail: RouteDetail; backHref?: string }) {
   const canvas = useRef<HTMLCanvasElement>(null);
   const [date, setDate] = useState("2026-11-12");
   const [time, setTime] = useState("15:00");
@@ -277,7 +277,7 @@ export default function Postcard({ detail }: { detail: RouteDetail }) {
           <button type="button" className={styles.secondary} onClick={download}>Download PNG</button>
         </div>
         {note && <p className={styles.note}>{note}</p>}
-        <p className={styles.back}><Link href={`/route/${detail.id}?d=${date}&t=${time}`}>Back to the plan</Link></p>
+        <p className={styles.back}><Link href={backHref ?? `/route/${detail.id}?d=${date}&t=${time}`}>Back to the plan</Link></p>
       </div>
     </div>
   );

@@ -10,8 +10,9 @@
   color: var(--cream-dim);
   font: inherit; font-weight: 600; font-size: 0.95rem;
   background: transparent;
+  cursor: pointer;
 }
-button.seat { cursor: pointer; border-color: var(--cream-dim); color: var(--cream); }
-button.seat:hover { border-color: var(--cream); }
+.seat:hover { border-color: var(--cream-dim); color: var(--cream); }
+.window { border-color: var(--cream-dim); color: var(--cream); }
 .best { background: var(--coral); border-color: var(--coral) !important; color: var(--ground) !important; }
 .viewing { box-shadow: 0 0 0 3px var(--ground), 0 0 0 5px var(--cream); }

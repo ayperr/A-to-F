@@ -11,6 +11,7 @@ export default function Privacy() {
       <ul className={styles.limits}>
         <li>Planning a flight, playing the window and making a postcard all run in your browser. Your postcard photo is never uploaded.</li>
         <li>&ldquo;Use my phone&rsquo;s GPS&rdquo; reads your location in the browser to move the 3D view. It is not sent anywhere.</li>
+        <li>Looking up a flight number sends the number and date to AeroDataBox, a flight-schedule service, to find the airports and departure time. Nothing else is sent.</li>
         <li>&ldquo;Choosing for something else?&rdquo; sends the route, date, time and the option you picked to our server, which asks Anthropic&rsquo;s Claude for an answer. No personal details are sent.</li>
         <li>The 3D view loads map tiles from Cesium ion, which sees your IP address like any map service.</li>
         <li>The A to F MCP server and the Claude plugin receive the route, date and time you ask about, and nothing else.</li>

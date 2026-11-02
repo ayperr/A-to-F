@@ -2,16 +2,25 @@
   display: grid;
   grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
   grid-template-areas:
+    "finder finder"
+    "flight flight"
     "sentence sentence"
     "context context"
     "answer view"
     "strip strip";
   column-gap: 56px;
-  padding-top: 36px;
+  padding-top: 0;
 }
+.flightLine { grid-area: flight; font-size: clamp(1.3rem, 3.4vw, 1.9rem); font-weight: 700; margin: 22px 0 0; letter-spacing: -0.01em; }
+.change {
+  font: inherit; font-size: 0.55em; font-weight: 600; color: var(--cream-dim); background: none; border: 0;
+  text-decoration: underline; text-underline-offset: 4px; cursor: pointer; padding: 8px 4px; vertical-align: middle;
+}
+.seatNote { margin: 16px 0 0; color: var(--cream-dim); font-size: 0.9rem; max-width: 44ch; }
 
 .sentence {
   grid-area: sentence;
+  margin-top: 4px;
   display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 12px;
   font-size: clamp(1.5rem, 4.2vw, 2.4rem);
   font-weight: 500;
@@ -76,7 +85,7 @@
 .fine { color: var(--cream-dim); font-size: 0.85rem; max-width: 70ch; margin-top: 22px; }
 
 @media (max-width: 860px) {
-  .planner { grid-template-columns: 1fr; grid-template-areas: "sentence" "context" "answer" "view" "strip"; }
+  .planner { grid-template-columns: 1fr; grid-template-areas: "finder" "flight" "sentence" "context" "answer" "view" "strip"; }
   .view { margin-top: 40px; }
   .answer { gap: 18px; }
 }

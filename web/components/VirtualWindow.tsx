@@ -43,6 +43,16 @@ function loadCesium(): Promise<typeof CesiumNS> {
   });
 }
 
+/** Is the ion token usable from this web address? (Tokens can be restricted to certain URLs.) */
+async function ionWorks(token: string): Promise<boolean> {
+  try {
+    const r = await fetch(`https://api.cesium.com/v1/assets/1/endpoint?access_token=${encodeURIComponent(token)}`);
+    return r.ok;
+  } catch {
+    return false;
+  }
+}
+
 function interpolate(track: RouteDetail["track"], minute: number) {
   const i = Math.max(0, Math.min(track.length - 2, Math.floor(minute)));
   const t = Math.max(0, Math.min(1, minute - i));
@@ -55,7 +65,7 @@ function interpolate(track: RouteDetail["track"], minute: number) {
   };
 }
 
-export default function VirtualWindow({ detail }: { detail: RouteDetail }) {
+export default function VirtualWindow({ detail, backHref }: { detail: RouteDetail; backHref?: string }) {
   const host = useRef<HTMLDivElement>(null);
   const credits = useRef<HTMLDivElement>(null);
   const viewerRef = useRef<CesiumNS.Viewer | null>(null);
@@ -117,8 +127,10 @@ export default function VirtualWindow({ detail }: { detail: RouteDetail }) {
           sceneModePicker: false, navigationHelpButton: false, fullscreenButton: false, infoBox: false,
           selectionIndicator: false, creditContainer: credits.current ?? undefined,
         };
-        if (TOKEN) {
-          C.Ion.defaultAccessToken = TOKEN;
+        const ion = TOKEN ? await ionWorks(TOKEN) : false;
+        if (cancelled || !host.current) return;
+        if (ion) {
+          C.Ion.defaultAccessToken = TOKEN!;
           options.terrain = C.Terrain.fromWorldTerrain();
         } else {
           options.baseLayer = C.ImageryLayer.fromProviderAsync(
@@ -135,7 +147,7 @@ export default function VirtualWindow({ detail }: { detail: RouteDetail }) {
         scene.screenSpaceCameraController.enableInputs = false;
         (v.camera.frustum as CesiumNS.PerspectiveFrustum).fov = C.Math.toRadians(62);
 
-        if (TOKEN) {
+        if (ion) {
           try {
             const night = C.ImageryLayer.fromProviderAsync(C.IonImageryProvider.fromAssetId(EARTH_AT_NIGHT_ASSET));
             night.dayAlpha = 0;
@@ -150,13 +162,13 @@ export default function VirtualWindow({ detail }: { detail: RouteDetail }) {
           v.entities.add({
             position: C.Cartesian3.fromDegrees(l.lon, l.lat),
             point: { pixelSize: 7, color: C.Color.fromCssColorString("#ff7a45"),
-              heightReference: TOKEN ? C.HeightReference.CLAMP_TO_GROUND : C.HeightReference.NONE,
+              heightReference: ion ? C.HeightReference.CLAMP_TO_GROUND : C.HeightReference.NONE,
               disableDepthTestDistance: Number.POSITIVE_INFINITY },
             label: {
               text: l.name, font: "600 15px Manrope, sans-serif",
               fillColor: C.Color.fromCssColorString("#fff4ec"), outlineColor: C.Color.fromCssColorString("#211b1d"),
               outlineWidth: 4, style: C.LabelStyle.FILL_AND_OUTLINE, pixelOffset: new C.Cartesian2(0, -16),
-              heightReference: TOKEN ? C.HeightReference.CLAMP_TO_GROUND : C.HeightReference.NONE,
+              heightReference: ion ? C.HeightReference.CLAMP_TO_GROUND : C.HeightReference.NONE,
               distanceDisplayCondition: new C.DistanceDisplayCondition(0, 260_000),
               disableDepthTestDistance: Number.POSITIVE_INFINITY,
             },
@@ -176,7 +188,9 @@ export default function VirtualWindow({ detail }: { detail: RouteDetail }) {
             if (!gpsRef.current && m >= last) setPlaying(false);
           }
         });
-        setStatus(TOKEN ? "" : "Low-detail globe: add a Cesium token for terrain and city lights");
+        setStatus(ion ? "" : TOKEN
+          ? `Low-detail globe: the Cesium token isn't allowed on ${window.location.host} yet, so terrain and city lights are off.`
+          : "Low-detail globe: add a Cesium token for terrain and city lights.");
       })
       .catch((e: Error) => setStatus(e.message));
     return () => {
@@ -311,7 +325,7 @@ export default function VirtualWindow({ detail }: { detail: RouteDetail }) {
           <p>{gps ?? "GPS works in airplane mode. Your location stays on your phone."}</p>
         </div>
         <p className={styles.back}>
-          <Link href={`/route/${detail.id}?d=${date}&t=${time}`}>Back to the plan</Link>
+          <Link href={backHref ?? `/route/${detail.id}?d=${date}&t=${time}`}>Back to the plan</Link>
         </p>
       </div>
     </div>
