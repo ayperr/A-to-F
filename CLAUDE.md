@@ -19,13 +19,13 @@ Plan, status and what's left: `BUILD_GUIDE.md`.
 5. **Label approximations.** Tracks are `synthetic-great-circle` until OpenSky tracks load; durations are short
    westbound. Never present them as real flight times.
 6. **Generated files are not hand-edited** (`web/public/data/routes*`, `insights.json`, `basemap.json`,
-   `evaluation.json`, golden fixtures). A PreToolUse hook blocks it. Change the pipeline and rerun it.
+   `narration.json`, golden fixtures). A PreToolUse hook blocks it. Change the pipeline and rerun it.
 7. **Brand/legal.** "for JetBlue flyers", never "by JetBlue". White and blue, but our own blues and our own
    A to F logo: never JetBlue's logo, fonts or exact brand colours. Tokens in `web/app/globals.css`: bg #ffffff,
    ink #0b2350, accent #1f5fd6, accent-soft #e4eefc. Font: Manrope. "Not affiliated" footer on every page.
 8. **First page stays simple.** Only the B6 flight-number form, with "No flight number?" for route and time.
    Results unlock after one of them is filled in; a bare route link asks for date and time first.
-9. **Cost.** Visitors cost $0: the site makes no Claude calls. Claude runs in the pipeline (evaluation, narration),
+9. **Cost.** Visitors cost $0: the site makes no Claude calls. Claude runs in the pipeline (narration),
    CI review, the MCP server and the plugin. Keys only in Vercel env vars or GitHub secrets, never in code or chat.
 
 ## Commands
@@ -37,7 +37,7 @@ python pipeline/landmarks.py --download && python pipeline/basemap.py --download
 python -m pytest pipeline -q                   # engine + landmark tests
 ./scripts/regenerate.sh                        # rebuild all data, then headless Claude verification
 python pipeline/check_claims.py --strict       # narration vs geometry
-python pipeline/evaluate.py --dry-run          # evaluation (needs ANTHROPIC_API_KEY to run for real)
+python pipeline/narrate.py                     # window narration (needs ANTHROPIC_API_KEY)
 
 # MCP server
 python mcp_server/server.py                    # STDIO: progress, logging, sampling, roots (.mcp.json)
@@ -52,7 +52,7 @@ npm test && npm run lint && npm run build
 ## Layout
 - `pipeline/` Python. `solar.py` (NOAA sun), `sun_geometry.py` (sides + recommend), `landmarks.py` (Natural Earth
   corridor search), `fetch_tracks.py`, `build_data.py`, `stats.py` (year grid), `view_of_week.py`, `basemap.py`,
-  `evaluate.py`, `narrate.py`, `check_claims.py`, `tests/`.
+  `narrate.py`, `check_claims.py`, `tests/`.
 - `web/` Next.js 16 (App Router, `cacheComponents`), Vercel root `web`. Pages: `/`, `/route/[id]`, `/window/[id]`
   (CesiumJS), `/postcard/[id]` (canvas), `/insights`, `/about`, `/privacy`; APIs `/api/flight` (AeroDataBox), `/api/cesium-check`.
   Engine port in `web/lib/engine`. Next's docs: `web/node_modules/next/dist/docs/`.
@@ -60,7 +60,7 @@ npm test && npm run lint && npm run build
 - `.claude/` skills (route-analysis, window-narrator, postcard-copy), agents (route-analyst, storyteller,
   landmark-verifier), hooks (guard generated files, check claims/engine after edits).
 - `plugin/a-to-f-trip-planner/` Cowork plugin (skills + hosted MCP).
-- `.github/workflows/` CI, Claude Code PR review, "Generate Claude data" (evaluate/narrate with a repo secret).
+- `.github/workflows/` CI, Claude Code PR review, "Generate Claude data" (narration with a repo secret).
 
 ## Working style
 Explore → plan → code → test → commit. Small commits. Run tests and `npm run build` before every commit.

@@ -7,23 +7,13 @@ import styles from "./insights.module.css";
 
 export const metadata: Metadata = { title: "Insights" };
 
-type Eval = {
-  generated: string; n: number; models: string[]; batch: boolean;
-  truth_split: { A: number; F: number };
-  results: Record<string, { model: string; condition: "alone" | "engine"; correct: number; n: number; accuracy: number; unparsed: number;
-    examples_wrong: { case: string; truth: string; got: string; said: string }[] }>;
-};
-
 const read = <T,>(f: string): T | null => {
   const p = join(process.cwd(), "public", "data", f);
   return existsSync(p) ? (JSON.parse(readFileSync(p, "utf8")) as T) : null;
 };
 
-const MODEL_NAME: Record<string, string> = { "claude-haiku-5-5": "Claude Haiku 5.5", "claude-sonnet-5-5": "Claude Sonnet 5.5" };
-
 export default function InsightsPage() {
   const data = read<Insights>("insights.json")!;
-  const evaluation = read<Eval>("evaluation.json");
 
   // Headlines: the routes whose answer is most consistent for winter-afternoon departures, counted over
   // every simulated day (Jan, Feb, Nov, Dec x 13:00, 15:00, 17:00 local).
@@ -74,40 +64,6 @@ export default function InsightsPage() {
         <YearGrid data={data} />
       </section>
 
-      <section className={styles.section} id="evaluation">
-        <h2>Can a chatbot tell you which side?</h2>
-        <p className={styles.lead}>
-          We asked Claude about flights where exactly one side gets sunset or sunrise light, once with just the route
-          and time, and once with the two numbers the engine computes: the plane&rsquo;s heading and the sun&rsquo;s
-          direction. The engine&rsquo;s answer is the reference.
-        </p>
-        {evaluation ? (
-          <>
-            <div className={styles.bars} role="table" aria-label="Accuracy by model and condition">
-              {Object.values(evaluation.results).map((r) => (
-                <div key={`${r.model}${r.condition}`} className={styles.bar} role="row">
-                  <span role="rowheader">
-                    {MODEL_NAME[r.model] ?? r.model}, {r.condition === "alone" ? "on its own" : "with the engine's numbers"}
-                  </span>
-                  <span className={styles.track} role="cell">
-                    <span className={r.condition === "alone" ? styles.fillAlone : styles.fillEngine} style={{ width: `${r.accuracy * 100}%` }} />
-                  </span>
-                  <span role="cell" className={styles.value}>{Math.round(r.accuracy * 100)}%</span>
-                </div>
-              ))}
-            </div>
-            <p className={styles.fine}>
-              {evaluation.n} flights ({evaluation.truth_split.A} left, {evaluation.truth_split.F} right), so a coin flip
-              scores about 50%. Run on {evaluation.generated}
-              {evaluation.batch ? " with the Message Batches API" : ""}. Unanswered or unreadable replies count as wrong.
-            </p>
-          </>
-        ) : (
-          <p className={styles.pending}>
-            Results appear here after the evaluation runs (<code>python pipeline/evaluate.py</code>).
-          </p>
-        )}
-      </section>
     </article>
   );
 }

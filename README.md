@@ -29,7 +29,7 @@ This project answers it with geometry, not guesswork — and then makes sure eve
 
 | Folder | What |
 |---|---|
-| `pipeline/` | Python engine, landmarks, data builders, evaluation, narration, claim checker, tests |
+| `pipeline/` | Python engine, landmarks, data builders, narration, claim checker, tests |
 | `web/` | Next.js site: planner, Virtual Window (CesiumJS), postcard, insights; TypeScript engine port |
 | `mcp_server/` | MCP server: progress, logging, sampling, roots; `main.py` hosts it on Vercel |
 | `.claude/` | Skills, subagents and hooks used to build and check the project with Claude Code |

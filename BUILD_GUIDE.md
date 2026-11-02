@@ -17,8 +17,7 @@ Facts were checked on 1 Nov 2026; sources at the end.
 | Any JetBlue flight | Flight number + date → AeroDataBox → airports and time; pre-built routes get everything, other routes get the sun answer with a browser-computed track (tested equal to the pipeline's) | `/api/flight`, `/flight`, `/flight/window`, `/flight/postcard` |
 | Virtual Window | CesiumJS side camera, real sun lighting, terrain + night lights (ion token), 1×/60×/300×, phone GPS | `/window/[id]` |
 | Postcard | 1080×1350 canvas: map, golden stretch, landmarks on your side, your photo in the window, share/download | `/postcard/[id]` |
-| Insights | Year grid per route (months × departure times), headline facts, evaluation section | `/insights` |
-| Evaluation | Claude alone vs Claude + engine numbers, 120 golden-light cases, Batches API | `pipeline/evaluate.py` (needs key) |
+| Insights | Year grid per route (months × departure times), headline facts | `/insights` |
 | Narration | Batches (Haiku lines, Sonnet adaptive-thinking tips), claim check rejects wrong sides | `pipeline/narrate.py`, `check_claims.py` |
 | MCP | STDIO: progress, logging, sampling (with side check), roots; hosted stateless HTTP + JSON | `mcp_server/smoke_test.py`; live endpoint |
 | Claude Code | 3 skills, 3 subagents, PreToolUse + PostToolUse hooks, CLAUDE.md, `.mcp.json` | Hooks tested: block generated edits, catch wrong side |
@@ -33,8 +32,9 @@ Facts were checked on 1 Nov 2026; sources at the end.
 2. **Anthropic key** (console.anthropic.com): set a **$5 monthly spend limit** first, then create a key and add it as a GitHub secret,
    never in chat: GitHub → A-to-F → Settings → Secrets and variables → Actions: `ANTHROPIC_API_KEY`.
    (The website itself no longer calls Claude; "Choosing for something else?" was removed on 2 Nov.)
-3. **Run the evaluation and narration:** GitHub → Actions → "Generate Claude data" → Run workflow → `both`.
-   It commits `evaluation.json` + `narration.json` and the site redeploys with results. Expected cost: well under $1.
+3. **Run the narration:** GitHub → Actions → "Generate Claude data" → Run workflow.
+   It commits `narration.json` (checked against the geometry) and the site redeploys. Expected cost: a few cents.
+   (The "Claude alone vs engine" evaluation was removed on 2 Nov.)
 4. **Install the Claude GitHub App for PR reviews** (if not already): open a small PR to see the review run.
 5. ~~**Routes**~~ — done: all 10 pairs confirmed.
 6. **OpenSky** (optional, for real tracks): register → My OpenSky → Request Data Access (MSc research, non-commercial).
@@ -47,7 +47,7 @@ Facts were checked on 1 Nov 2026; sources at the end.
 |---|---|
 | Mon 2 Nov | Section 2 above. Phone check of the live site (GPS mode needs HTTPS: the live site, not localhost). |
 | Tue 3 Nov | If OpenSky approved: `opensky_track()` in `fetch_tracks.py` (filter on `day`/`hour` partitions), one real track per direction, `track_source: "opensky"`. Else: typical durations from schedules so the timeline isn't short. |
-| Wed 4 Nov | Read evaluation results; add 2–3 sentences of analysis to Insights. Spot-check narration with the `storyteller` + `landmark-verifier` subagents. |
+| Wed 4 Nov | Spot-check narration with the `storyteller` + `landmark-verifier` subagents. |
 | Thu 5 Nov | Polish pass on phone: Virtual Window frame size, postcard on iOS share sheet. Lighthouse accessibility run. |
 | Fri 6 Nov | PWA offline shell (service worker for the planner; 3D stays online). Optional: swap card. |
 | Sat 7 Nov | Record screen captures: MCP smoke test (progress, sampling accept/reject, roots refuse), hook catching a wrong side, PR review. |
@@ -61,8 +61,8 @@ Facts were checked on 1 Nov 2026; sources at the end.
 
 | # | Course | In A to F |
 |---|---|---|
-| 1 | Claude 101 | 4D framing in the write-up: Delegation (engine vs Claude), Description (CLAUDE.md, skills), Discernment (evaluation), Diligence (claim checker, hooks, verifier) |
-| 2 | Analyzing Data | Pipeline: inspect before/verify after, Natural Earth joins, year grid, validated palette, evaluation stats |
+| 1 | Claude 101 | 4D framing in the write-up: Delegation (engine vs Claude), Description (CLAUDE.md, skills), Discernment (claim checker), Diligence (claim checker, hooks, verifier) |
+| 2 | Analyzing Data | Pipeline: inspect before/verify after, Natural Earth joins, year grid, validated palette |
 | 3 | Cowork Plugins | `plugin/a-to-f-trip-planner` (skills + hosted MCP), validated with `claude plugin validate` |
 | 4 | Claude Code 101 | Whole build: CLAUDE.md, explore → plan → code → test → commit |
 | 5 | Agent Skills | `route-analysis`, `window-narrator`, `postcard-copy` (plus 2 plugin skills) |
@@ -91,6 +91,6 @@ vercel.com/docs/functions/runtimes/python · code.claude.com/docs/en/hooks · ll
 | Risk | Fallback |
 |---|---|
 | OpenSky not approved | Synthetic tracks, labelled; mention in limits |
-| No API key in time | Evaluation and narration stay "pending"; site works without them |
+| No API key in time | Narration stays off; the window uses plain landmark callouts |
 | Cesium quota | Built-in low-detail globe kicks in automatically without a token |
-| Running late | Cut: PWA offline → swap card → narration polish. Never cut the evaluation. |
+| Running late | Cut: PWA offline → swap card → narration polish. |

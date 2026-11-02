@@ -1,15 +1,10 @@
 name: Generate Claude data
 
 # Run by hand from the Actions tab. Uses the repo secret ANTHROPIC_API_KEY and commits the results,
-# which redeploys the site. Both jobs use the Message Batches API (half price).
+# which redeploys the site. Narration uses the Message Batches API (half price), and every line is
+# checked against the geometry before it is committed.
 on:
   workflow_dispatch:
-    inputs:
-      job:
-        description: "What to generate"
-        type: choice
-        options: [evaluate, narrate, both]
-        default: both
 
 permissions:
   contents: write
@@ -24,14 +19,7 @@ jobs:
         with:
           python-version: "3.13"
       - run: pip install -r pipeline/requirements.txt
-      - name: Evaluation (Claude alone vs Claude + engine)
-        if: ${{ inputs.job != 'narrate' }}
-        env:
-          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
-        working-directory: pipeline
-        run: python evaluate.py
       - name: Narration lines and trade-off tips
-        if: ${{ inputs.job != 'evaluate' }}
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
         working-directory: pipeline
@@ -42,6 +30,6 @@ jobs:
         run: |
           git config user.name "a-to-f-bot"
           git config user.email "a-to-f-bot@users.noreply.github.com"
-          git add web/public/data/evaluation.json web/public/data/narration.json 2>/dev/null || true
-          git diff --cached --quiet || git commit -m "Update Claude-generated data (${{ inputs.job }})"
+          git add web/public/data/narration.json 2>/dev/null || true
+          git diff --cached --quiet || git commit -m "Update Claude narration"
           git push

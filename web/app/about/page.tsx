@@ -70,7 +70,7 @@ export default function About() {
           <p>
             Claude writes and reviews the code and the words: the window narration, the trip-planner plugin and the MCP server.
             It never decides which side something is on: the geometry does, and a separate checker rejects any
-            sentence the geometry doesn&rsquo;t support. The <Link href="/insights#evaluation">evaluation</Link> shows why.
+            sentence the geometry doesn&rsquo;t support.
           </p>
         </li>
       </ol>
