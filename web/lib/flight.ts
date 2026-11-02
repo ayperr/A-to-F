@@ -1,11 +1,41 @@
 import { clock } from "./engine/time";
 import { routes } from "./routes";
 
+/**
+ * What someone typed as a flight number -> the digits after "B6", or a plain message saying what's wrong.
+ * Shared by the start form (checks before any lookup) and /api/flight (checks again).
+ */
+export function checkFlightInput(raw: string): { digits: string } | { error: string } {
+  const s = raw.toUpperCase().replace(/JETBLUE|AIRWAYS|\s|-/g, "").replace(/^(B6|JBU)/, "");
+  if (!s) return { error: "Type your flight number. It's the digits after B6 on your booking." };
+  if (/^([A-Z]{2,3}|[A-Z]\d|\d[A-Z])\d{1,4}$/.test(s)) {
+    return { error: "That looks like another airline's flight. This site only knows JetBlue (B6) flights." };
+  }
+  if (!/^\d+$/.test(s)) return { error: "Use only the digits after B6, like 615." };
+  const digits = s.replace(/^0+/, "");
+  if (!digits) return { error: "B6 0 isn't a flight number. Check the digits after B6 on your booking." };
+  if (digits.length > 4) return { error: "JetBlue flight numbers have 1 to 4 digits, like 615 or 1234." };
+  return { digits };
+}
+
 /** "b6 23", "JetBlue 23", "JBU0023", "B623" -> "B623" */
 export function normaliseFlight(raw: string): string | null {
-  const s = raw.toUpperCase().replace(/JETBLUE|AIRWAYS|\s|-/g, "");
-  const m = s.match(/^(B6|JBU)?0*(\d{1,4})$/);
-  return m ? `B6${m[2]}` : null;
+  const c = checkFlightInput(raw);
+  return "digits" in c ? `B6${c.digits}` : null;
+}
+
+/** "2026-11-03" -> true; "2026-02-30" or "11/03/2026" -> false. */
+export function isIsoDate(s: string): boolean {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(s)) return false;
+  const d = new Date(`${s}T12:00:00Z`);
+  return Number.isFinite(d.getTime()) && d.toISOString().slice(0, 10) === s;
+}
+
+/** "2026-11-03" -> "Tue 3 Nov 2026", for messages. */
+export function dayLabel(iso: string): string {
+  if (!isIsoDate(iso)) return iso;
+  return new Intl.DateTimeFormat("en-GB", { weekday: "short", day: "numeric", month: "short", year: "numeric", timeZone: "UTC" })
+    .format(new Date(`${iso}T12:00:00Z`)).replace(",", "");
 }
 
 export type FlightAirport = { iata: string; name: string; city: string; lat: number; lon: number; tz: string };
@@ -59,4 +89,34 @@ export function parseFlights(data: unknown, number: string) {
       };
     })
     .filter((x): x is NonNullable<typeof x> => x !== null);
+}
+
+export type FlightLeg = ReturnType<typeof parseFlights>[number];
+export type Lookup = { legs: FlightLeg[] } | { error: string; setup?: boolean };
+
+const isAirport = (a: unknown) => {
+  const o = a as Partial<FlightAirport> | null;
+  return !!o && typeof o.iata === "string" && typeof o.city === "string" && Number.isFinite(o.lat) && Number.isFinite(o.lon) && typeof o.tz === "string";
+};
+
+/**
+ * What the browser got back from /api/flight -> the legs to show, or one plain message.
+ * Every outcome that isn't at least one usable leg becomes a message, so the form never goes quiet.
+ * `body` is null when the reply wasn't JSON.
+ */
+export function readLookup(status: number, body: unknown, flight: string, date: string): Lookup {
+  const b = (body && typeof body === "object" ? body : {}) as { error?: unknown; setup?: unknown; flights?: unknown };
+  if (status < 200 || status >= 300) {
+    if (b.setup) return { error: "Looking up flight numbers isn't switched on yet. Use your route and time below.", setup: true };
+    if (typeof b.error === "string" && b.error) return { error: b.error };
+    if (status === 429) return { error: "Too many lookups right now. Try again in a minute, or use your route and time below." };
+    if (status >= 500) return { error: "The flight lookup didn't answer. Try again, or use your route and time below." };
+    return { error: `Couldn't look up ${flight} on ${dayLabel(date)}. Check the number and the date.` };
+  }
+  const legs = (Array.isArray(b.flights) ? b.flights : []).filter((l): l is FlightLeg => {
+    const x = l as Partial<FlightLeg> | null;
+    return !!x && typeof x.number === "string" && isAirport(x.origin) && isAirport(x.dest) && typeof x.date === "string" && typeof x.time === "string";
+  });
+  if (!legs.length) return { error: `No ${flight} on ${dayLabel(date)}. Check the number and the date.` };
+  return { legs };
 }

@@ -4,6 +4,7 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { adhocDetail, adhocQuery } from "@/lib/adhoc";
+import { checkFlightInput, readLookup } from "@/lib/flight";
 import type { RouteDetail } from "@/lib/engine/types";
 import Planner, { type Adhoc } from "./Planner";
 import Postcard from "./Postcard";
@@ -25,20 +26,23 @@ export default function FlightPage({ view }: { view: View }) {
       return;
     }
     const n = q.get("n") ?? "", date = q.get("date") ?? "";
-    fetch(`/api/flight?number=${encodeURIComponent(n)}&date=${date}`)
-      .then(async (r) => ({ ok: r.ok, j: await r.json() }))
-      .then(({ ok, j }) => {
-        if (!ok) return setState({ error: j.error ?? "Couldn't find that flight." });
-        const leg = j.flights[0];
+    const input = checkFlightInput(n);
+    if ("error" in input) { setState({ error: input.error }); return; }
+    fetch(`/api/flight?number=${input.digits}&date=${encodeURIComponent(date)}`)
+      .then(async (r) => readLookup(r.status, await r.json().catch(() => null), `B6 ${input.digits}`, date))
+      .then((found) => {
+        if ("error" in found) return setState({ error: found.error });
+        const leg = found.legs[0];
         if (leg.route_id) {
           window.location.replace(`/route/${leg.route_id}?d=${leg.date}&t=${leg.time}&f=${encodeURIComponent(leg.number)}`);
           return;
         }
         const query = adhocQuery(leg.origin, leg.dest, { f: leg.number });
-        const detail = adhocDetail(new URLSearchParams(query))!;
+        const detail = adhocDetail(new URLSearchParams(query));
+        if (!detail) return setState({ error: `Couldn't map ${leg.number}: the lookup didn't give both airports.` });
         setState({ detail, adhoc: { flight: leg.number, date: leg.date, time: leg.time, query } });
       })
-      .catch(() => setState({ error: "No connection." }));
+      .catch(() => setState({ error: "No connection. Try again in a moment." }));
   }, [view]);
 
   if (!state) return <p style={{ paddingTop: 48, color: "var(--ink-soft)" }}>Finding your flight…</p>;

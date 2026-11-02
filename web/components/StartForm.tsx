@@ -2,12 +2,11 @@
 // The whole first page: a JetBlue flight number (and date), or, behind "No flight number?",
 // the route and departure time. Nothing else shows until one of them is filled in.
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { todayIn } from "@/lib/engine/time";
+import { checkFlightInput, type FlightLeg, isIsoDate, readLookup } from "@/lib/flight";
 import { destinationsFrom, getRoute, origins, routeId, routes } from "@/lib/routes";
 import styles from "./StartForm.module.css";
-
-type Leg = { number: string; origin: { city: string }; dest: { city: string }; date: string; time: string; route_id: string | null };
 
 const TIMES = Array.from({ length: 48 }, (_, i) => `${String(Math.floor(i / 2)).padStart(2, "0")}:${i % 2 ? "30" : "00"}`);
 const city = (iata: string) => routes.find((r) => r.origin === iata)?.origin_city ?? iata;
@@ -24,7 +23,11 @@ export default function StartForm() {
   const [time, setTime] = useState("");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [choices, setChoices] = useState<Leg[]>([]);
+  const [choices, setChoices] = useState<FlightLeg[]>([]);
+  const errorRef = useRef<HTMLParagraphElement>(null);
+
+  // Bring a new message into view: on a phone the keyboard can cover everything under the number.
+  useEffect(() => { if (error) errorRef.current?.scrollIntoView({ block: "nearest", behavior: "smooth" }); }, [error]);
 
   // Today's date (and any "Change" values passed back from a result page) are only known in the browser.
   useEffect(() => {
@@ -38,28 +41,35 @@ export default function StartForm() {
     /* eslint-enable react-hooks/set-state-in-effect */
   }, []);
 
-  const open = (leg: Leg) =>
+  const open = (leg: FlightLeg) =>
     router.push(leg.route_id
       ? `/route/${leg.route_id}?d=${leg.date}&t=${leg.time}&f=${encodeURIComponent(leg.number)}`
       : `/flight?n=${encodeURIComponent(leg.number)}&date=${date}`);
 
   const findFlight = async (e: React.FormEvent) => {
     e.preventDefault();
-    setBusy(true); setError(null); setChoices([]);
+    setError(null); setChoices([]);
+    const input = checkFlightInput(number);
+    if ("error" in input) return setError(input.error);
+    if (!isIsoDate(date)) return setError("Pick the date of your flight.");
+    setBusy(true);
     try {
-      const r = await fetch(`/api/flight?number=${encodeURIComponent(number)}&date=${date}`);
-      const j = await r.json();
-      if (!r.ok) {
-        setError(j.setup ? "Looking up flight numbers isn't switched on yet. Use your route and time below." : j.error);
-        if (j.setup) setShowRoute(true);
-      } else if (j.flights.length === 1) open(j.flights[0]);
-      else setChoices(j.flights);
+      const r = await fetch(`/api/flight?number=${input.digits}&date=${date}`);
+      const body: unknown = await r.json().catch(() => null);
+      const found = readLookup(r.status, body, `B6 ${input.digits}`, date);
+      if ("error" in found) {
+        setError(found.error);
+        if (found.setup) setShowRoute(true);
+      } else if (found.legs.length === 1) open(found.legs[0]);
+      else setChoices(found.legs);
     } catch {
       setError("No connection. Try again, or use your route and time below.");
     } finally {
       setBusy(false);
     }
   };
+  // A message about the last try goes as soon as the input changes.
+  const edited = () => { setError(null); setChoices([]); };
 
   const findRoute = (e: React.FormEvent) => {
     e.preventDefault();
@@ -70,38 +80,42 @@ export default function StartForm() {
     <section className={styles.start}>
       <h1 className={styles.title}>Which window gets the view?</h1>
 
-      <form className={styles.flight} onSubmit={findFlight}>
+      <form className={styles.flight} onSubmit={findFlight} noValidate>
         <label className={styles.number}>
           <span className={styles.label}>JetBlue flight number</span>
           <span className={styles.field}>
             <span className={styles.prefix} aria-hidden="true">B6</span>
             <input inputMode="numeric" autoComplete="off" placeholder="615" maxLength={8} value={number}
-              onChange={(e) => setNumber(e.target.value)} required autoFocus />
+              onChange={(e) => { setNumber(e.target.value); edited(); }} required autoFocus
+              aria-invalid={error ? true : undefined} aria-describedby="flight-message" />
           </span>
         </label>
+        <div id="flight-message" aria-live="polite">
+          {error && <p ref={errorRef} className={styles.error}>{error}</p>}
+          {choices.length > 1 && (
+            <>
+              <p className={styles.pick}>That number flies more than once that day. Pick yours.</p>
+              <ul className={styles.choices}>
+                {choices.map((c) => (
+                  <li key={`${c.origin.iata}${c.dest.iata}${c.departure_utc_ms}`}>
+                    <button type="button" onClick={() => open(c)}>{c.number}: {c.origin.city} to {c.dest.city}, {c.time}</button>
+                  </li>
+                ))}
+              </ul>
+            </>
+          )}
+        </div>
         <div className={styles.row}>
           <label className={styles.date}>
             <span className={styles.label}>Date</span>
             <span className={styles.dateShown} aria-hidden="true">{date ? pretty(date) : "Pick a date"}</span>
-            <input type="date" value={date} onChange={(e) => e.target.value && setDate(e.target.value)}
+            <input type="date" value={date} onChange={(e) => { if (e.target.value) { setDate(e.target.value); edited(); } }}
               onClick={(e) => e.currentTarget.showPicker?.()} required />
           </label>
           <button type="submit" className={styles.go} disabled={busy}>{busy ? "Looking up…" : "Find my side"}</button>
         </div>
       </form>
 
-      <div aria-live="polite">
-        {error && <p className={styles.error}>{error}</p>}
-        {choices.length > 1 && (
-          <ul className={styles.choices}>
-            {choices.map((c) => (
-              <li key={`${c.origin.city}${c.dest.city}${c.time}`}>
-                <button type="button" onClick={() => open(c)}>{c.number}: {c.origin.city} to {c.dest.city}, {c.time}</button>
-              </li>
-            ))}
-          </ul>
-        )}
-      </div>
 
       <button type="button" className={styles.toggle} aria-expanded={showRoute} onClick={() => setShowRoute((v) => !v)}>
         No flight number?
