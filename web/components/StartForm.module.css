@@ -93,3 +93,4 @@
   .go { width: 100%; }
   .row { flex-direction: column; align-items: stretch; }
 }
+.routeError { grid-column: 1 / -1; margin: 0; }

@@ -4,7 +4,7 @@
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { todayIn } from "@/lib/engine/time";
-import { checkFlightInput, type FlightLeg, isIsoDate, readLookup } from "@/lib/flight";
+import { checkFlightDate, checkFlightInput, dateWindow, type FlightLeg, readLookup } from "@/lib/flight";
 import { destinationsFrom, getRoute, origins, routeId, routes } from "@/lib/routes";
 import styles from "./StartForm.module.css";
 
@@ -23,6 +23,9 @@ export default function StartForm() {
   const [time, setTime] = useState("");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [routeError, setRouteError] = useState<string | null>(null);
+  // Today's window is only known in the browser; null on the server render.
+  const [win, setWin] = useState<{ min: string; max: string } | null>(null);
   const [choices, setChoices] = useState<FlightLeg[]>([]);
   const errorRef = useRef<HTMLParagraphElement>(null);
 
@@ -35,6 +38,7 @@ export default function StartForm() {
     const r = getRoute(q.get("route") ?? "");
     /* eslint-disable react-hooks/set-state-in-effect -- one-time sync after hydration */
     setDate(q.get("d") ?? todayIn("America/New_York"));
+    setWin(dateWindow());
     if (q.get("f")) setNumber((q.get("f") ?? "").replace(/^B6\s*/i, ""));
     if (r) { setShowRoute(true); setFrom(r.origin); setTo(r.dest); }
     if (q.get("t")) setTime(q.get("t") ?? "");
@@ -51,7 +55,8 @@ export default function StartForm() {
     setError(null); setChoices([]);
     const input = checkFlightInput(number);
     if ("error" in input) return setError(input.error);
-    if (!isIsoDate(date)) return setError("Pick the date of your flight.");
+    const badDate = checkFlightDate(date);
+    if (badDate) return setError(badDate);
     setBusy(true);
     try {
       const r = await fetch(`/api/flight?number=${input.digits}&date=${date}`);
@@ -73,6 +78,9 @@ export default function StartForm() {
 
   const findRoute = (e: React.FormEvent) => {
     e.preventDefault();
+    const badDate = checkFlightDate(date);
+    setRouteError(badDate);
+    if (badDate) return;
     router.push(`/route/${routeId(from, to)}?d=${date}&t=${time}`);
   };
 
@@ -109,7 +117,8 @@ export default function StartForm() {
           <label className={styles.date}>
             <span className={styles.label}>Date</span>
             <span className={styles.dateShown} aria-hidden="true">{date ? pretty(date) : "Pick a date"}</span>
-            <input type="date" value={date} onChange={(e) => { if (e.target.value) { setDate(e.target.value); edited(); } }}
+            <input type="date" value={date} min={win?.min} max={win?.max}
+              onChange={(e) => { if (e.target.value) { setDate(e.target.value); edited(); setRouteError(null); } }}
               onClick={(e) => e.currentTarget.showPicker?.()} required />
           </label>
           <button type="submit" className={styles.go} disabled={busy}>{busy ? "Looking up…" : "Find my side"}</button>
@@ -140,7 +149,8 @@ export default function StartForm() {
           <label className={styles.date}>
             <span className={styles.label}>Date</span>
             <span className={styles.dateShown} aria-hidden="true">{date ? pretty(date) : "Pick a date"}</span>
-            <input type="date" value={date} onChange={(e) => e.target.value && setDate(e.target.value)}
+            <input type="date" value={date} min={win?.min} max={win?.max}
+              onChange={(e) => { if (e.target.value) { setDate(e.target.value); edited(); setRouteError(null); } }}
               onClick={(e) => e.currentTarget.showPicker?.()} required />
           </label>
           <label>
@@ -151,6 +161,7 @@ export default function StartForm() {
             </select>
           </label>
           <button type="submit" className={styles.go}>Show my side</button>
+          {routeError && <p className={`${styles.error} ${styles.routeError}`} role="alert">{routeError}</p>}
           <p className={styles.hint}>Departure time is local to the airport you leave from.</p>
         </form>
       )}

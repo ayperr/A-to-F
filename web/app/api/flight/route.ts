@@ -1,7 +1,7 @@
 // Flight number + date -> airports and scheduled departure, via AeroDataBox (RapidAPI, free tier).
 // The key lives only in Vercel env vars (AERODATABOX_RAPIDAPI_KEY). Results are cached per instance
 // so a class demo doesn't burn the free monthly quota.
-import { checkFlightInput, dayLabel, isIsoDate, normaliseFlight, parseFlights } from "@/lib/flight";
+import { checkFlightDate, checkFlightInput, dayLabel, normaliseFlight, parseFlights } from "@/lib/flight";
 
 const HOST = "aerodatabox.p.rapidapi.com";
 const cache = new Map<string, { at: number; body: unknown; status: number }>();
@@ -13,7 +13,8 @@ export async function GET(req: Request) {
   const input = checkFlightInput(url.searchParams.get("number") ?? "");
   const date = url.searchParams.get("date") ?? "";
   if ("error" in input) return Response.json({ error: input.error }, { status: 400 });
-  if (!isIsoDate(date)) return Response.json({ error: "Pick the date of your flight." }, { status: 400 });
+  const badDate = checkFlightDate(date);
+  if (badDate) return Response.json({ error: badDate }, { status: 400 });
   const number = `B6${input.digits}`;
   const shown = `B6 ${input.digits}`;
 

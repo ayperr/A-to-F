@@ -25,8 +25,12 @@ async function get(number: string, date = "2026-11-03") {
   return { status: r.status, body: (await r.json()) as { error?: string; flights?: { number: string; route_id: string | null }[]; setup?: boolean } };
 }
 
-beforeEach(() => { vi.resetModules(); vi.stubEnv("AERODATABOX_RAPIDAPI_KEY", "test-key"); });
-afterEach(() => { vi.unstubAllGlobals(); vi.unstubAllEnvs(); });
+// "Today" is pinned to 2 Nov 2026 in New York, so the 12-month date window doesn't move under the tests.
+beforeEach(() => {
+  vi.resetModules(); vi.stubEnv("AERODATABOX_RAPIDAPI_KEY", "test-key");
+  vi.useFakeTimers({ toFake: ["Date"] }); vi.setSystemTime(new Date("2026-11-02T17:00:00Z"));
+});
+afterEach(() => { vi.unstubAllGlobals(); vi.unstubAllEnvs(); vi.useRealTimers(); });
 
 describe("/api/flight input", () => {
   it.each([
@@ -103,9 +107,29 @@ describe("/api/flight lookup outcomes", () => {
 
   it("upstream 400 (date outside the schedules it has) -> 400 about the date", async () => {
     upstream(400, { message: "date out of range" });
-    const { status, body } = await get("615", "2028-06-01");
+    const { status, body } = await get("615", "2027-06-01");
     expect(status).toBe(400);
-    expect(body.error).toMatch(/no schedules for Thu 1 Jun 2028/);
+    expect(body.error).toMatch(/no schedules for Tue 1 Jun 2027/);
+  });
+
+  it.each([
+    ["2026-10-31", /has passed/],
+    ["2025-01-01", /has passed/],
+    ["2027-11-03", /next 12 months, up to Tue 2 Nov 2027/],
+    ["2028-06-01", /next 12 months/],
+  ])("date %s is outside the window -> 400, no lookup", async (d, msg) => {
+    const calls = upstream(200, [leg("B6 615")]);
+    const { status, body } = await get("615", d);
+    expect(status).toBe(400);
+    expect(body.error).toMatch(msg);
+    expect(calls).toHaveLength(0);
+  });
+
+  it.each(["2026-11-01", "2026-11-02", "2027-11-02"])("date %s is inside the window", async (d) => {
+    const calls = upstream(200, [leg("B6 615")]);
+    const { status } = await get("615", d);
+    expect(status).toBe(200);
+    expect(calls).toHaveLength(1);
   });
 
   it("upstream 429 -> 429 with a message", async () => {

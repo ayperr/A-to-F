@@ -1,5 +1,19 @@
 import { describe, expect, it } from "vitest";
-import { checkFlightInput, dayLabel, isIsoDate, normaliseFlight, parseFlights, readLookup } from "./flight";
+import { checkFlightDate, checkFlightInput, dateWindow, dayLabel, isIsoDate, normaliseFlight, parseFlights, readLookup } from "./flight";
+
+describe("dateWindow / checkFlightDate", () => {
+  it("runs from yesterday to the same day next year", () => {
+    expect(dateWindow("2026-11-02")).toEqual({ min: "2026-11-01", max: "2027-11-02" });
+    expect(dateWindow("2026-01-01")).toEqual({ min: "2025-12-31", max: "2027-01-01" });
+  });
+  it("29 Feb -> 28 Feb next year", () => expect(dateWindow("2028-02-29").max).toBe("2029-02-28"));
+  it.each([
+    ["2026-11-01", null], ["2027-11-02", null],
+    ["2026-10-31", "That date has passed. Pick the day you fly."],
+    ["2027-11-03", "Pick a date in the next 12 months, up to Tue 2 Nov 2027."],
+    ["2026-02-30", "Pick the date of your flight."],
+  ])("%s", (d, msg) => expect(checkFlightDate(d, "2026-11-02")).toBe(msg));
+});
 
 describe("normaliseFlight", () => {
   it.each([["B6 23", "B623"], ["b623", "B623"], ["23", "B623"], ["JetBlue 1234", "B61234"], ["JBU0023", "B623"]])("%s", (a, b) =>

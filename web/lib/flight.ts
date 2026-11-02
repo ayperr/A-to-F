@@ -1,4 +1,4 @@
-import { clock } from "./engine/time";
+import { clock, todayIn } from "./engine/time";
 import { routes } from "./routes";
 
 /**
@@ -29,6 +29,27 @@ export function isIsoDate(s: string): boolean {
   if (!/^\d{4}-\d{2}-\d{2}$/.test(s)) return false;
   const d = new Date(`${s}T12:00:00Z`);
   return Number.isFinite(d.getTime()) && d.toISOString().slice(0, 10) === s;
+}
+
+/**
+ * The dates we look up: yesterday (a late flight out west can be "yesterday" in New York) up to 12 months ahead.
+ * `today` is New York's date; the start form and /api/flight use the same window.
+ */
+export function dateWindow(today = todayIn("America/New_York")): { min: string; max: string } {
+  const t = new Date(`${today}T12:00:00Z`);
+  const min = new Date(t.getTime() - 86_400_000).toISOString().slice(0, 10);
+  const y = t.getUTCFullYear() + 1, mo = t.getUTCMonth();
+  const day = Math.min(t.getUTCDate(), new Date(Date.UTC(y, mo + 1, 0)).getUTCDate());   // 29 Feb -> 28 Feb
+  return { min, max: new Date(Date.UTC(y, mo, day, 12)).toISOString().slice(0, 10) };
+}
+
+/** null when the date is fine, otherwise a plain message saying what to pick. */
+export function checkFlightDate(date: string, today?: string): string | null {
+  if (!isIsoDate(date)) return "Pick the date of your flight.";
+  const { min, max } = dateWindow(today);
+  if (date < min) return "That date has passed. Pick the day you fly.";
+  if (date > max) return `Pick a date in the next 12 months, up to ${dayLabel(max)}.`;
+  return null;
 }
 
 /** "2026-11-03" -> "Tue 3 Nov 2026", for messages. */
