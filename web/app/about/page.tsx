@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { loadRoute } from "@/lib/detail";
 import { routes } from "@/lib/routes";
 import styles from "./about.module.css";
