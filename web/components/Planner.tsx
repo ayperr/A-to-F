@@ -10,6 +10,7 @@ import BestSeat from "./BestSeat";
 import FlightFinder from "./FlightFinder";
 import SeatRow from "./SeatRow";
 import Timeline from "./Timeline";
+import CesiumWindow from "./CesiumWindow";
 import WindowView from "./WindowView";
 import styles from "./Planner.module.css";
 
@@ -42,7 +43,7 @@ export default function Planner({ detail, adhoc }: { detail: RouteDetail; adhoc?
   const [minute, setMinute] = useState(0);
   const [viewing, setViewing] = useState<"A" | "F" | null>(null);
   const [playing, setPlaying] = useState(false);
-  const timer = useRef<ReturnType<typeof setInterval> | null>(null);
+  const raf = useRef<number | null>(null);
 
   // Date and time live in the URL so a plan can be shared; read them once on load.
   useEffect(() => {
@@ -68,12 +69,25 @@ export default function Planner({ detail, adhoc }: { detail: RouteDetail; adhoc?
   const rec = useMemo(() => recommend(samples, detail.landmarks), [samples, detail.landmarks]);
   const side = (seat ? SIDE_OF_SEAT[seat] : viewing) ?? rec.side ?? "A";
   const last = samples.length - 1;
-  const m = Math.min(minute, last);
+  const exact = Math.min(minute, last);   // fractional, drives the 3D camera
+  const m = Math.floor(exact);
 
   useEffect(() => {
     if (!playing) return;
-    timer.current = setInterval(() => setMinute((x) => (x >= last ? (setPlaying(false), x) : x + 1)), 90);
-    return () => { if (timer.current) clearInterval(timer.current); };
+    // Smooth playback: about 8 flight-minutes per second, advanced every animation frame.
+    let prev = performance.now();
+    const step = (now: number) => {
+      const dt = (now - prev) / 1000;
+      prev = now;
+      setMinute((x) => {
+        const next = Math.min(last, x + dt * 8);
+        if (next >= last) setPlaying(false);
+        return next;
+      });
+      raf.current = requestAnimationFrame(step);
+    };
+    raf.current = requestAnimationFrame(step);
+    return () => { if (raf.current) cancelAnimationFrame(raf.current); };
   }, [playing, last]);
 
   const go = (o: string, d: string) => {
@@ -170,14 +184,15 @@ export default function Planner({ detail, adhoc }: { detail: RouteDetail; adhoc?
       </section>
 
       <section className={styles.view}>
-        <WindowView side={side} sample={samples[m]} row={detail.track[m]} landmarks={detail.landmarks}
-          minute={m} nearbyLabel={nearbyLabel} />
+        <CesiumWindow detail={detail} departureMs={departureMs} minute={exact} side={side}
+          caption={nearbyLabel ?? (samples[m].golden ? "Golden light" : samples[m].visible ? "Daylight" : "Dark outside")}
+          placeholder={<WindowView side={side} sample={samples[m]} row={detail.track[m]} landmarks={detail.landmarks} minute={m} />} />
         <div className={styles.scrub}>
           <button type="button" onClick={() => { if (m >= last) setMinute(0); setPlaying((p) => !p); }}
             className={styles.play} aria-label={playing ? "Pause" : "Play the flight"}>
             {playing ? "Pause" : "Play the flight"}
           </button>
-          <input type="range" min={0} max={last} value={m} onChange={(e) => { setPlaying(false); setMinute(+e.target.value); }}
+          <input type="range" min={0} max={last} value={exact} step="any" onChange={(e) => { setPlaying(false); setMinute(+e.target.value); }}
             aria-label="Minutes after takeoff" />
           <p>
             Seat {seat ?? side}{seat && seat !== side ? ` looking out of ${side}` : ""}, {clock(departureMs + m * 60_000, detail.origin.tz)} {detail.origin.city} time,{" "}
