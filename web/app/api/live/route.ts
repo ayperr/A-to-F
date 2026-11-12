@@ -1,8 +1,8 @@
-// Live JetBlue flights, from adsb.lol (community ADS-B network, free, no key).
+// Live JetBlue flights: positions from adsb.lol (community ADS-B network), routes from adsbdb.com. Both free, no key.
 //   GET /api/live                     -> every JetBlue plane in the air that adsb.lol can see, with its route
 //   GET /api/live?callsign=JBU615     -> one plane, for the live Virtual Window (polled every 10 s)
 // Both answers are the same for everyone, so the CDN caches them briefly: visitors share one upstream call.
-import { callsignFor, FLEET_TYPES, jetblueCallsign, joinRoutes, type LivePlane, parseAircraft, parseRoutes, SOURCE } from "@/lib/live";
+import { callsignFor, FLEET_TYPES, jetblueCallsign, joinRoutes, type LiveAirport, type LivePlane, parseAdsbdbRoute, parseAircraft, SOURCE } from "@/lib/live";
 
 const API = "https://api.adsb.lol";
 const UA = { "User-Agent": "a-to-f.vercel.app (student project; live JetBlue window views)" };
@@ -13,17 +13,37 @@ async function getJson(url: string, init?: RequestInit): Promise<unknown> {
   return r.json();
 }
 
-/** Routes for many callsigns, 100 per request. A failed batch just leaves those planes without a route. */
-async function routesFor(planes: { callsign: string; lat: number; lon: number }[]) {
-  const all = new Map<string, Parameters<typeof joinRoutes>[1] extends Map<string, infer V> ? V : never>();
-  for (let i = 0; i < planes.length; i += 100) {
-    const body = JSON.stringify({ planes: planes.slice(i, i + 100).map((p) => ({ callsign: p.callsign, lat: p.lat, lng: p.lon })) });
-    try {
-      const got = parseRoutes(await getJson(`${API}/api/0/routeset`, { method: "POST", body, headers: { "content-type": "application/json" } }));
-      got.forEach((v, k) => all.set(k, v));
-    } catch { /* no routes for this batch */ }
+// Routes by callsign from adsbdb.com. A callsign's route rarely changes, so each answer (including
+// "unknown") is kept in memory for 12 hours: after the first list, a refresh asks about new callsigns only.
+type Route = [LiveAirport, LiveAirport];
+const routeCache = new Map<string, { at: number; route: Route | null }>();
+const ROUTE_TTL = 12 * 60 * 60_000;
+
+async function routeOf(callsign: string): Promise<Route | null> {
+  const hit = routeCache.get(callsign);
+  if (hit && Date.now() - hit.at < ROUTE_TTL) return hit.route;
+  try {
+    const r = await fetch(`https://api.adsbdb.com/v0/callsign/${callsign}`, { headers: UA, cache: "no-store", signal: AbortSignal.timeout(6000) });
+    if (r.status !== 200 && r.status !== 404) return hit?.route ?? null;   // a hiccup: don't cache it
+    const route = r.status === 200 ? parseAdsbdbRoute(await r.json()) : null;
+    routeCache.set(callsign, { at: Date.now(), route });
+    return route;
+  } catch {
+    return hit?.route ?? null;
   }
-  return all;
+}
+
+/** Routes for many callsigns, six at a time. */
+async function routesFor(planes: { callsign: string }[]) {
+  const out = new Map<string, Route>();
+  const queue = [...planes];
+  await Promise.all(Array.from({ length: 6 }, async () => {
+    for (let p = queue.shift(); p; p = queue.shift()) {
+      const r = await routeOf(p.callsign);
+      if (r) out.set(p.callsign, r);
+    }
+  }));
+  return out;
 }
 
 const NO_ANSWER = "The live flight feed didn't answer. Try again in a minute.";
@@ -31,21 +51,6 @@ const NO_ANSWER = "The live flight feed didn't answer. Try again in a minute.";
 export async function GET(req: Request) {
   const url = new URL(req.url);
   const asked = url.searchParams.get("callsign") ?? url.searchParams.get("number");
-  if (url.searchParams.get("debug") === "routes") {   // TEMP: inspect the routeset answer
-    const out: Record<string, unknown> = {};
-    for (const [name, body] of [["lng", { planes: [{ callsign: "JBU615", lat: 39.03, lng: -114.2 }] }], ["lon", { planes: [{ callsign: "JBU615", lat: 39.03, lon: -114.2 }] }]] as const) {
-      try {
-        const r = await fetch(`${API}/api/0/routeset`, { method: "POST", body: JSON.stringify(body), headers: { ...UA, "content-type": "application/json" }, cache: "no-store" });
-        out[name] = { status: r.status, text: (await r.text()).slice(0, 1500) };
-      } catch (e) { out[name] = String(e); }
-    }
-    try {
-      const r = await fetch("https://api.adsbdb.com/v0/callsign/JBU615", { headers: UA, cache: "no-store" });
-      out.adsbdb = { status: r.status, text: (await r.text()).slice(0, 1500) };
-    } catch (e) { out.adsbdb = String(e); }
-    return Response.json(out);
-  }
-
   if (asked !== null) {
     const callsign = jetblueCallsign(/^\d+$/.test(asked.trim()) ? callsignFor(asked) : asked.replace(/^B6\s*/i, "JBU").replace(/\s/g, ""));
     if (!callsign) return Response.json({ error: "That isn't a JetBlue flight." }, { status: 400 });

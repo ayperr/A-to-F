@@ -75,7 +75,7 @@ export default function LiveFlights() {
       )}
       <p className={styles.fine}>
         Positions from the <a href="https://adsb.lol" target="_blank" rel="noreferrer">adsb.lol</a> community
-        receiver network (ODbL), updated every minute. Routes come from its callsign database and can be wrong.
+        receiver network (ODbL), updated every minute. Routes from <a href="https://www.adsbdb.com" target="_blank" rel="noreferrer">adsbdb.com</a> (callsign data by David Taylor and Jim Mason) and can be wrong.
         Planes out of receiver range don&rsquo;t show.
       </p>
     </div>

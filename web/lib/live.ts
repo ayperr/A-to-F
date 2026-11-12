@@ -1,5 +1,5 @@
 // Live JetBlue flights: positions from adsb.lol (community ADS-B receivers, free, no key) and the
-// origin/destination from adsb.lol's route database. Pure functions here; /api/live does the fetching.
+// origin/destination from adsbdb.com's callsign database. Pure functions here; /api/live does the fetching.
 // Routes come from a callsign database, not from JetBlue: they can be wrong, and the UI says so.
 import { getRoute, routeId, routes } from "./routes";
 import type { Airport, TrackRow } from "./engine/types";
@@ -38,7 +38,7 @@ export function jetblueCallsign(raw: unknown): string | null {
 }
 
 /** "615", "B6 615", "0615" -> "JBU615". */
-export const callsignFor = (digits: string) => `JBU${digits.replace(/\D/g, "").replace(/^0+/, "")}`;
+export const callsignFor = (digits: string) => `JBU${digits.trim().replace(/^(B6|JBU)\s*/i, "").replace(/\D/g, "").replace(/^0+/, "")}`;
 export const numberFor = (callsign: string) => `B6 ${callsign.replace(/^JBU/, "")}`;
 
 /** readsb "ac" rows -> airborne JetBlue planes (no route yet). Ground, stale or position-less rows are dropped. */
@@ -64,26 +64,22 @@ export function parseAircraft(data: unknown): Omit<LivePlane, "origin" | "dest" 
   return [...out.values()];
 }
 
-/** One adsb.lol routeset answer -> { callsign: [origin, dest] }. Implausible routes are dropped. */
-export function parseRoutes(data: unknown): Map<string, [LiveAirport, LiveAirport]> {
-  const out = new Map<string, [LiveAirport, LiveAirport]>();
-  if (!Array.isArray(data)) return out;
-  for (const r of data as Record<string, unknown>[]) {
-    const callsign = jetblueCallsign(r?.callsign);
-    if (!callsign || r.plausible === 0 || r.plausible === false) continue;
-    const airports = Array.isArray(r._airports) ? (r._airports as Record<string, unknown>[]) : [];
-    const ap = airports.map((x): LiveAirport | null => {
-      const iata = typeof x?.iata === "string" ? x.iata.toUpperCase() : "";
-      const lat = num(x?.lat), lon = num(x?.lon);
-      if (!/^[A-Z]{3}$/.test(iata) || lat === null || lon === null) return null;
-      const city = typeof x.location === "string" && x.location ? x.location : typeof x.name === "string" ? x.name : iata;
-      return { iata, city, lat, lon };
-    });
-    // Multi-leg callsigns list every stop; only a clean two-airport route can be drawn.
-    if (ap.length !== 2 || !ap[0] || !ap[1] || ap[0].iata === ap[1].iata) continue;
-    out.set(callsign, [ap[0], ap[1]]);
-  }
-  return out;
+/** One adsbdb.com /v0/callsign answer -> [origin, dest], or null when it has no clean two-airport route. */
+export function parseAdsbdbRoute(data: unknown): [LiveAirport, LiveAirport] | null {
+  const fr = (data as { response?: { flightroute?: Record<string, unknown> } })?.response?.flightroute;
+  if (!fr || !jetblueCallsign(fr.callsign_icao ?? fr.callsign)) return null;
+  const ap = (x: unknown): LiveAirport | null => {
+    const a = x as Record<string, unknown> | undefined;
+    const iata = typeof a?.iata_code === "string" ? a.iata_code.toUpperCase() : "";
+    const lat = num(a?.latitude), lon = num(a?.longitude);
+    if (!/^[A-Z]{3}$/.test(iata) || lat === null || lon === null) return null;
+    const city = typeof a!.municipality === "string" && a!.municipality ? a!.municipality : typeof a!.name === "string" ? a!.name : iata;
+    return { iata, city, lat, lon };
+  };
+  const o = ap(fr.origin), d = ap(fr.destination);
+  // A callsign that stops on the way (origin -> midpoint -> destination) can't be drawn as one leg.
+  if (!o || !d || o.iata === d.iata || fr.midpoint) return null;
+  return [o, d];
 }
 
 /** Time zones for the airports on our mapped routes (every airport is an origin of some route). */
