@@ -31,6 +31,20 @@ const NO_ANSWER = "The live flight feed didn't answer. Try again in a minute.";
 export async function GET(req: Request) {
   const url = new URL(req.url);
   const asked = url.searchParams.get("callsign") ?? url.searchParams.get("number");
+  if (url.searchParams.get("debug") === "routes") {   // TEMP: inspect the routeset answer
+    const out: Record<string, unknown> = {};
+    for (const [name, body] of [["lng", { planes: [{ callsign: "JBU615", lat: 39.03, lng: -114.2 }] }], ["lon", { planes: [{ callsign: "JBU615", lat: 39.03, lon: -114.2 }] }]] as const) {
+      try {
+        const r = await fetch(`${API}/api/0/routeset`, { method: "POST", body: JSON.stringify(body), headers: { ...UA, "content-type": "application/json" }, cache: "no-store" });
+        out[name] = { status: r.status, text: (await r.text()).slice(0, 1500) };
+      } catch (e) { out[name] = String(e); }
+    }
+    try {
+      const r = await fetch("https://api.adsbdb.com/v0/callsign/JBU615", { headers: UA, cache: "no-store" });
+      out.adsbdb = { status: r.status, text: (await r.text()).slice(0, 1500) };
+    } catch (e) { out.adsbdb = String(e); }
+    return Response.json(out);
+  }
 
   if (asked !== null) {
     const callsign = jetblueCallsign(/^\d+$/.test(asked.trim()) ? callsignFor(asked) : asked.replace(/^B6\s*/i, "JBU").replace(/\s/g, ""));
