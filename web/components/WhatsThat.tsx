@@ -16,7 +16,7 @@ export interface Identified {
 export const PHOTO_HANDOFF = "atof-photo"; // sessionStorage: photo + caption carried to the postcard
 
 /** Downscale to a ~1024 px JPEG in the browser: smaller upload, fewer image tokens, same answer. */
-export async function toJpeg(src: Blob | HTMLImageElement, max = 1024): Promise<string> {
+async function toJpeg(src: Blob | HTMLImageElement, max = 1024): Promise<string> {
   const img = src instanceof HTMLImageElement ? src : await createImageBitmap(src);
   const w = "naturalWidth" in img ? img.naturalWidth : img.width;
   const h = "naturalHeight" in img ? img.naturalHeight : img.height;

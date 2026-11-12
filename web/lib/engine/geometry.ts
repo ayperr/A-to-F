@@ -2,33 +2,33 @@
 import { mod, sunPosition } from "./solar";
 import type { Landmark, Recommendation, Side, SunSample, TrackRow } from "./types";
 
-export const WINDOW_MIN = 20;
-export const WINDOW_MAX = 160;
-export const GLOW_MIN_OFF_NOSE = 5;
-export const GOLDEN_MAX_EL = 6;
-export const LANDMARK_MIN_WEIGHT = 8;
-export const LANDMARK_MARGIN = 1.5;
+const WINDOW_MIN = 20;
+const WINDOW_MAX = 160;
+const GLOW_MIN_OFF_NOSE = 5;
+const GOLDEN_MAX_EL = 6;
+const LANDMARK_MIN_WEIGHT = 8;
+const LANDMARK_MARGIN = 1.5;
 
 export function wrap180(x: number): number {
   const r = mod(x + 180, 360) - 180;
   return r === -180 ? 180 : r;
 }
 
-export const horizonDipDeg = (altM: number) => 0.0293 * Math.sqrt(Math.max(altM, 0));
+const horizonDipDeg = (altM: number) => 0.0293 * Math.sqrt(Math.max(altM, 0));
 
-export function sideOf(rel: number): "A" | "F" | "-" {
+function sideOf(rel: number): "A" | "F" | "-" {
   const a = Math.abs(rel);
   if (a < WINDOW_MIN || a > WINDOW_MAX) return "-";
   return rel < 0 ? "A" : "F";
 }
 
-export function glowSideOf(rel: number): "A" | "F" | "-" {
+function glowSideOf(rel: number): "A" | "F" | "-" {
   const a = Math.abs(rel);
   if (a < GLOW_MIN_OFF_NOSE || a > 180 - GLOW_MIN_OFF_NOSE) return "-";
   return rel < 0 ? "A" : "F";
 }
 
-export function sunAt(row: TrackRow, epochMs: number, minute: number): SunSample {
+function sunAt(row: TrackRow, epochMs: number, minute: number): SunSample {
   const [lat, lon, alt, heading] = row;
   const [az, el] = sunPosition(epochMs, lat, lon);
   const rel = wrap180(az - heading);
@@ -46,7 +46,7 @@ export function samplesFor(track: TrackRow[], departureMs: number): SunSample[] 
 
 const word = (s: "A" | "F") => (s === "A" ? "left (A)" : "right (F)");
 
-export function landmarkWeights(samples: SunSample[], landmarks: Landmark[]) {
+function landmarkWeights(samples: SunSample[], landmarks: Landmark[]) {
   const w = { A: 0, F: 0 };
   const seen: Record<"A" | "F", [number, number, string][]> = { A: [], F: [] };
   for (const h of landmarks) {

@@ -1,14 +1,8 @@
-"""Flight tracks.
+"""Flight tracks: a list of TrackPoint, one per minute.
 
-Two sources, same output shape (a list of TrackPoint, one per minute):
-
-1. `synthetic_track` (available now): great-circle path with a simple climb/cruise/descent
-   profile. Real flights deviate (airways, jet stream, North Atlantic Tracks), so every
-   output built from it is labelled `"track_source": "synthetic-great-circle"`.
-2. `opensky_track` (Day 3): real ADS-B history from the OpenSky Network Trino database
-   via `pyopensky`. Requires an approved OpenSky research-data account
-   (university-affiliated research only; apply under My OpenSky -> Request Data Access).
-   Always filter on the partition column (`hour` / `day`) - unfiltered queries are rejected.
+`synthetic_track` is a great-circle path with a simple climb/cruise/descent profile. Real flights
+deviate (airways, jet stream, North Atlantic Tracks), so every output built from it is labelled
+`"track_source": "synthetic-great-circle"`.
 """
 from __future__ import annotations
 
@@ -93,10 +87,3 @@ def synthetic_track(o_lat, o_lon, d_lat, d_lon, dep_utc: datetime) -> list[Track
             alt = CRUISE_ALT_M
         pts.append(TrackPoint(dep_utc + timedelta(minutes=m), lat, lon, alt, hdg))
     return pts
-
-
-def opensky_track(*_args, **_kwargs):  # pragma: no cover - Day 3
-    raise NotImplementedError(
-        "OpenSky historical tracks need an approved Trino account. "
-        "Until then build_data.py uses synthetic_track(). See BUILD_GUIDE.md Day 3."
-    )

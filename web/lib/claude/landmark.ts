@@ -35,7 +35,7 @@ const SCHEMA = {
   additionalProperties: false,
 } as const;
 
-export function viewFacts(detail: RouteDetail, l: Landmark, side: "A" | "F"): string {
+function viewFacts(detail: RouteDetail, l: Landmark, side: "A" | "F"): string {
   const where = l.side === "below" ? "the plane flies right over it"
     : `it is about ${l.dist_km} km out on the passenger's side (seat ${side})`;
   return [

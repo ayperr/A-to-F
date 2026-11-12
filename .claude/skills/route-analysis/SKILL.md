@@ -10,7 +10,7 @@ Follow these steps in order. Do not skip verification.
 1. **Confirm the route exists.** It must appear on JetBlue's current route map or schedule. Record the source and date in
    `ROUTE_PAIRS` in `pipeline/airports.py`. If you cannot confirm it, set `verified=False`.
 2. **Airports.** Add any missing airport to `AIRPORTS` with its IANA time zone. Coordinates come from a published source.
-3. **Track.** Prefer a real OpenSky track (`fetch_tracks.opensky_track`). Otherwise the synthetic great-circle track is used,
+3. **Track.** The synthetic great-circle track is used,
    and the output must keep `track_source: synthetic-great-circle`.
 4. **Inspect before.** Print distance, initial heading and duration. Sanity-check against intuition
    (e.g. JFK→LAX leaves heading roughly WNW, ~3,980 km).

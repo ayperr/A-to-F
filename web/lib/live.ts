@@ -2,7 +2,7 @@
 // origin/destination from adsbdb.com's callsign database. Pure functions here; /api/live does the fetching.
 // Routes come from a callsign database, not from JetBlue: they can be wrong, and the UI says so.
 import { getRoute, routeId, routes } from "./routes";
-import type { Airport, TrackRow } from "./engine/types";
+import type { TrackRow } from "./engine/types";
 import { gcDistanceKm, initialBearing } from "./engine/track";
 
 /** The JetBlue fleet types adsb.lol is asked for (A320, A321, A321neo, A220-300, E190). */
@@ -39,7 +39,7 @@ export function jetblueCallsign(raw: unknown): string | null {
 
 /** "615", "B6 615", "0615" -> "JBU615". */
 export const callsignFor = (digits: string) => `JBU${digits.trim().replace(/^(B6|JBU)\s*/i, "").replace(/\D/g, "").replace(/^0+/, "")}`;
-export const numberFor = (callsign: string) => `B6 ${callsign.replace(/^JBU/, "")}`;
+const numberFor = (callsign: string) => `B6 ${callsign.replace(/^JBU/, "")}`;
 
 /** readsb "ac" rows -> airborne JetBlue planes (no route yet). Ground, stale or position-less rows are dropped. */
 export function parseAircraft(data: unknown): Omit<LivePlane, "origin" | "dest" | "route_id">[] {
@@ -149,4 +149,3 @@ export function liveHref(p: Pick<LivePlane, "callsign" | "number" | "route_id" |
   return `/flight/window?${q.toString()}${s}`;
 }
 
-export type { Airport };

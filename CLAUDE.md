@@ -16,8 +16,8 @@ Plan, status and what's left: `BUILD_GUIDE.md`.
    `npm test` checks 320 Python vectors (`web/lib/engine/fixtures/golden.json`).
 4. **Never invent data.** Landmarks come from Natural Earth and carry Wikidata IDs. Routes with
    `verified: False` in `pipeline/airports.py` are not confirmed yet. No seat maps, no JetBlue internals.
-5. **Label approximations.** Tracks are `synthetic-great-circle` until OpenSky tracks load; durations are short
-   westbound. Never present them as real flight times.
+5. **Label approximations.** Tracks are `synthetic-great-circle`; durations are short westbound. Never present
+   them as real flight times. Live flights use real positions, but their routes and time since takeoff are estimates.
 6. **Generated files are not hand-edited** (`web/public/data/routes*`, `insights.json`, `basemap.json`,
    `narration.json`, golden fixtures). A PreToolUse hook blocks it. Change the pipeline and rerun it.
 7. **Brand/legal.** "for JetBlue flyers", never "by JetBlue". White and blue, but our own blues and our own
@@ -57,8 +57,7 @@ npm test && npm run lint && npm run build
   corridor search), `fetch_tracks.py`, `build_data.py`, `stats.py` (year grid), `view_of_week.py`, `basemap.py`,
   `narrate.py`, `check_claims.py`, `tests/`.
 - `web/` Next.js 16 (App Router, `cacheComponents`), Vercel root `web`. Pages: `/`, `/route/[id]`, `/window/[id]`
-  (CesiumJS), `/postcard/[id]` (canvas), `/insights`, `/about`, `/privacy`; APIs `/api/flight` (AeroDataBox), `/api/live` (adsb.lol positions + adsbdb.com routes, CDN-cached 30 s / 5 s), `/api/identify` and `/api/landmark` (Claude, `lib/claude/`),
-  `/api/cesium-check`.
+  (CesiumJS), `/postcard/[id]` (canvas), `/insights`, `/about`, `/privacy`; APIs `/api/flight` (AeroDataBox), `/api/live` (adsb.lol positions + adsbdb.com routes, CDN-cached 30 s / 5 s), `/api/identify` and `/api/landmark` (Claude, `lib/claude/`).
   Engine port in `web/lib/engine`. Next's docs: `web/node_modules/next/dist/docs/`.
 - `mcp_server/` FastMCP, **pinned mcp==1.30.0** (v1 API; 2.x renamed FastMCP). `main.py` at repo root hosts it.
 - `.claude/` skills (route-analysis, window-narrator, postcard-copy), agents (route-analyst, storyteller,

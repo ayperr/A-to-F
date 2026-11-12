@@ -38,7 +38,7 @@ function interpolate(lat1: number, lon1: number, lat2: number, lon2: number, f: 
 }
 
 /** Python round() to n decimals (round half to even on exact ties). */
-export function pyRound(x: number, n = 0): number {
+function pyRound(x: number, n = 0): number {
   const m = 10 ** n;
   const v = x * m;
   const r = Math.round(v);

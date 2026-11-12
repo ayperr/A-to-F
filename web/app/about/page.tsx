@@ -77,11 +77,9 @@ export default function About() {
       <section className={styles.section}>
         <h2>Limits</h2>
         <ul className={styles.limits}>
-          <li>Flight paths are approximations until real flight tracks are loaded, so flight times are shorter than the schedule, especially flying west into the wind.</li>
           <li>Clouds are not forecast. A sunset on your side can still be a grey one.</li>
           <li>There are no seat maps here, so the wing is not taken into account. Rows behind the wing usually have the clearer view down.</li>
           <li>Live flights only show planes the volunteer adsb.lol receivers can hear, so flights over the ocean can drop out. Their routes come from a callsign database, not from JetBlue, and can be wrong. The time since takeoff in a live view is estimated from where the plane is.</li>
-          <li>Three routes are still being checked against JetBlue&rsquo;s current schedule and are marked on the route list.</li>
         </ul>
       </section>
 

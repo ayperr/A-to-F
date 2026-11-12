@@ -1,6 +1,6 @@
 """Builds the A to F logo and every icon from one window drawing: a cabin window with a low blue sun.
 
-Writes brand/logo.svg, brand/icon.svg, web/public/logo.svg, web/app/icon.svg and renders the PNGs
+Writes web/public/logo.svg and web/app/icon.svg and renders the PNGs
 (PWA icons, apple-icon, plugin icon, brand preview) with the pre-installed Playwright Chromium.
 Run from the repo root: python brand/make_logo.py
 """
@@ -40,9 +40,9 @@ def icon_svg(side: float = 447.4) -> str:
 
 def main() -> None:
     logo, icon, maskable = logo_svg(), icon_svg(), icon_svg(562)
-    for p in ("brand/logo.svg", "web/public/logo.svg"):
+    for p in ("web/public/logo.svg",):
         (ROOT / p).write_text(logo)
-    for p in ("brand/icon.svg", "web/app/icon.svg"):
+    for p in ("web/app/icon.svg",):
         (ROOT / p).write_text(icon)
 
     renders = [

@@ -40,7 +40,7 @@ function declinationAndEqTime(t: number): [number, number] {
   return [decl, eqTime];
 }
 
-export function refraction(elevation: number): number {
+function refraction(elevation: number): number {
   if (elevation >= 85.0) return 0;
   const te = Math.tan(elevation * RAD);
   let r: number;

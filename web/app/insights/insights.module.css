@@ -9,14 +9,4 @@
 .section { margin-top: 72px; }
 .section h2 { font-size: 1.5rem; font-weight: 800; margin: 0 0 14px; }
 
-.bars { display: grid; gap: 12px; max-width: 760px; margin-top: 8px; }
-.bar { display: grid; grid-template-columns: minmax(0, 17em) 1fr 3.5em; align-items: center; gap: 14px; }
-.track { height: 18px; background: var(--line); border-radius: 4px; position: relative; overflow: hidden; }
-.fillAlone, .fillEngine { position: absolute; left: 0; top: 0; bottom: 0; border-radius: 0 4px 4px 0; }
-.fillAlone { background: #9aaac2; }
-.fillEngine { background: var(--accent); }
-.value { font-weight: 800; font-variant-numeric: tabular-nums; text-align: right; }
 .fine { color: var(--ink-soft); font-size: 0.85rem; max-width: 70ch; margin-top: 14px; }
-.pending { border: 2px dashed var(--line-strong); border-radius: 12px; padding: 16px 18px; color: var(--ink-soft); max-width: 62ch; }
-
-@media (max-width: 560px) { .bar { grid-template-columns: 1fr 3em; } .bar .track { grid-column: 1 / -1; grid-row: 2; } }

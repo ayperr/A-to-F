@@ -12,7 +12,7 @@ I spent two years as a KLM gate agent at Schiphol. The question passengers asked
 This project answers it with geometry, not guesswork — and then makes sure every seat gets the view.
 
 ## How it works
-1. **Track** — the flight path (OpenSky ADS-B history; a labelled great-circle approximation until real tracks load).
+1. **Track** — the flight path: a labelled great-circle approximation for planning; real positions for live flights.
 2. **Sun geometry** — for every minute of the flight: sun azimuth and elevation at the plane, the horizon dip at
    cruise altitude, and the sun's bearing relative to the nose. Left of the nose is A, right is F.
 3. **Recommendation** — sunset/sunrise side if there is golden light; otherwise the shade side for glare-free,
@@ -46,6 +46,8 @@ cd web && npm install && npm run dev
 ```
 
 ## Data and credits
-Sun positions computed with [astral](https://github.com/sffjunkie/astral). Flight tracks: The OpenSky Network
-(research use). Landmarks: OpenStreetMap contributors / Wikidata. Built with Claude Code for the
+Sun positions: NOAA formulas, cross-checked against [astral](https://github.com/sffjunkie/astral) in the tests.
+Landmarks and map outlines: [Natural Earth](https://www.naturalearthdata.com) (public domain), linked to Wikidata.
+Live positions: [adsb.lol](https://adsb.lol) (ODbL); live routes: [adsbdb.com](https://www.adsbdb.com). Flight-number
+lookup: AeroDataBox. 3D view: CesiumJS and Cesium ion. Built with Claude Code for the
 ieNYC × DataCamp "Be a Master in Claude" challenge.
