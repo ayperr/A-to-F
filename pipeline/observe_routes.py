@@ -100,6 +100,38 @@ def merge(state: dict | None, flights: list[dict], now: str) -> tuple[dict, list
     return state, new
 
 
+PUBLISHED = Path(__file__).resolve().parent / "published_routes.json"
+
+
+def load_published(path: Path = PUBLISHED) -> set[frozenset]:
+    """JetBlue routes from an independent published list (airportroutes.com, FlightAware observed operations)."""
+    if not path.exists():
+        return set()
+    return {frozenset(r.split("-")) for r in json.loads(path.read_text())["routes"]}
+
+
+def mappable(observed: dict, published: set[frozenset]) -> dict[frozenset, str]:
+    """Airport pairs that may be mapped, each with its source note. A pair seen on the live list qualifies
+    when both of its airports were seen in use, or when the published list also has it."""
+    seen_at: dict[frozenset, dict[str, str]] = {}
+    last: dict[frozenset, str] = {}
+    for r in observed.get("routes", {}).values():
+        key = frozenset((r["origin"], r["dest"]))
+        last[key] = max(last.get(key, ""), r.get("last_seen", ""))
+        for where, first in r.get("confirmed", {}).items():
+            seen_at.setdefault(key, {}).setdefault(where, first.split()[-1][:10])
+    out = {}
+    for key, day in last.items():
+        a, b = sorted(key)
+        if {a, b} <= set(seen_at.get(key, {})):
+            out[key] = (f"takeoffs and landings seen at {a} and {b} on the A to F live list, "
+                        f"{max(seen_at[key].values())} (adsb.lol positions, adsbdb.com route)")
+        elif key in published:
+            out[key] = (f"seen flying on the A to F live list, {day[:10]}, and among JetBlue's busiest routes on "
+                        f"airportroutes.com (FlightAware observed operations, updated 30 Sep 2026)")
+    return out
+
+
 def merge_states(a: dict | None, b: dict | None) -> dict | None:
     """Two observation files combined (the Actions cache and the copy in the repo), losing nothing."""
     if not a or not b:

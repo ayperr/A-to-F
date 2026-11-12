@@ -1,0 +1,17 @@
+{
+ "about": "JetBlue's 100 most frequent routes on the airportroutes.com JetBlue profile, from FlightAware AeroAPI observed operations. Used to confirm routes seen on the A to F live list.",
+ "source": "airportroutes.com JetBlue (B6) profile, top 100 routes by frequency (FlightAware observed operations)",
+ "url": "https://www.airportroutes.com/airlines/JBU",
+ "updated": "2026-09-30",
+ "checked": "2026-11-12",
+ "routes": ["BOS-MAD", "BOS-AMS", "BOS-BCN", "MAD-BOS", "SDQ-JFK", "STI-JFK", "PBI-HPN", "SJU-JFK", "PBI-JFK", "KIN-JFK",
+  "PBI-BOS", "FLL-JFK", "GEO-JFK", "PUJ-SJU", "MBJ-FLL", "UVF-JFK", "SDQ-BOS", "MBJ-JFK", "PUJ-JFK", "SJU-MCO",
+  "MCO-SJU", "KIN-FLL", "PBI-LGA", "SJU-FLL", "SDQ-SJU", "ROC-JFK", "BOS-JFK", "ISP-PBI", "FLL-LAX", "SDQ-MCO",
+  "MCO-SDQ", "FLL-DCA", "POP-JFK", "BQN-JFK", "ISP-MCO", "FLL-BOS", "ISP-FLL", "BQN-MCO", "MCO-BOS", "STI-BOS",
+  "JFK-LAX", "HPN-PBI", "AUA-JFK", "SJU-BOS", "JFK-STI", "MCO-JFK", "ALB-FLL", "GND-JFK", "BDL-MCO", "EWR-MCO",
+  "RSW-BOS", "MHT-MCO", "AUA-BOS", "STI-MCO", "BQN-FLL", "MCO-STI", "SDQ-FLL", "POS-JFK", "STI-EWR", "SFO-JFK",
+  "FLL-SJU", "MBJ-MCO", "FLL-EWR", "BOS-MCO", "FLL-LGA", "BGI-JFK", "SJU-BDL", "PBI-DCA", "BUF-JFK", "PBI-EWR",
+  "LAX-JFK", "SDQ-EWR", "HPN-RSW", "JFK-SJU", "FLL-SFO", "PUJ-FLL", "GYE-JFK", "SJU-SDQ", "PUJ-BOS", "PBI-ISP",
+  "EWR-SJU", "DAB-JFK", "JFK-KIN", "EYW-BOS", "SJU-TPA", "GUA-JFK", "STI-SJU", "GUA-FLL", "RDU-JFK", "JFK-SDQ",
+  "DAB-BOS", "SYR-JFK", "ALB-MCO", "ATL-BOS", "VRB-JFK", "SAP-JFK", "BOS-SDQ", "PVD-MCO", "JFK-MCO", "SYR-MCO"]
+}

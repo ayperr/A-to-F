@@ -67,3 +67,14 @@ def test_merge_states_keeps_everything_from_both_files():
     assert m["routes"]["JFK-SFO"]["first_seen"].startswith("2026-11-12T20")
     assert m["routes"]["BOS-PIT"]["confirmed"] == {"PIT": "B6 3 2026-11-12T21:00:00+00:00"}
     assert merge_states(None, b) is b
+
+
+def test_a_published_route_seen_on_the_live_list_is_mapped_without_waiting():
+    from observe_routes import mappable
+    obs = {"routes": {
+        "BOS-MCO": {"origin": "BOS", "dest": "MCO", "last_seen": "2026-11-12T21:40:00+00:00"},
+        "LGB-JFK": {"origin": "LGB", "dest": "JFK", "last_seen": "2026-11-12T21:40:00+00:00", "confirmed": {"JFK": "B6 216 t"}},
+    }}
+    ok = mappable(obs, {frozenset(("MCO", "BOS")), frozenset(("BOS", "SFO"))})
+    assert list(ok) == [frozenset(("BOS", "MCO"))]          # BOS-SFO is published but not seen today; LGB-JFK neither
+    assert "airportroutes.com" in ok[frozenset(("BOS", "MCO"))]

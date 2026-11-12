@@ -71,24 +71,18 @@ AIRPORTS: dict[str, Airport] = {**CORE_AIRPORTS, **_extra_airports()}
 
 
 def _observed_pairs() -> list[tuple[str, str, bool, str]]:
+    from observe_routes import load_published, mappable
     path = HERE / "observed_routes.json"
     if not path.exists():
         return []
     core = {frozenset((o, d)) for o, d, _, _ in CORE_PAIRS}
-    # Sightings per pair, either direction: an airport seen in use by any flight on the pair counts.
-    pairs: dict[frozenset, dict[str, str]] = {}
-    for r in json.loads(path.read_text())["routes"].values():
-        key = frozenset((r["origin"], r["dest"]))
-        for where, first in r.get("confirmed", {}).items():
-            day = first.split()[-1][:10]
-            pairs.setdefault(key, {}).setdefault(where, day)
+    ok = mappable(json.loads(path.read_text()), load_published(HERE / "published_routes.json"))
     out = []
-    for key, seen in pairs.items():
+    for key, note in ok.items():
         a, b = sorted(key)
-        if key in core or not {a, b} <= set(seen) or a not in AIRPORTS or b not in AIRPORTS:
-            continue   # both airports must have been seen in use
-        out.append((a, b, True, f"takeoffs and landings seen at {a} and {b} on the A to F live list, "
-                                f"{max(seen.values())} (adsb.lol positions, adsbdb.com route)"))
+        if key in core or a not in AIRPORTS or b not in AIRPORTS:
+            continue
+        out.append((a, b, True, note))
     return sorted(out)
 
 

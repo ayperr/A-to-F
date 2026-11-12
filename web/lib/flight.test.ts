@@ -36,9 +36,9 @@ describe("parseFlights", () => {
     expect(f.time).toBe("15:00");
   });
   it("keeps other routes without a route id", () => {
-    const [f] = parseFlights([leg("JFK", "MCO", "2026-11-12 13:30Z")], "B623");
+    const [f] = parseFlights([leg("JFK", "QQQ", "2026-11-12 13:30Z")], "B623");   // a made-up airport: never mapped
     expect(f.route_id).toBeNull();
-    expect(f.dest.iata).toBe("MCO");
+    expect(f.dest.iata).toBe("QQQ");
   });
   it("drops legs missing coordinates or times", () => {
     const broken = leg("JFK", "LAX", "2026-11-12 20:00Z");
