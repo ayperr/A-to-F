@@ -1,0 +1,543 @@
+{
+ "about": "JetBlue routes seen flying on the A to F live list. Positions: adsb.lol (ODbL). Routes: adsbdb.com callsign data. Kept: airport pair, flight numbers, first and last seen (UTC).",
+ "started": "2026-11-12T21:29:45+00:00",
+ "updated": "2026-11-12T21:29:45+00:00",
+ "snapshots": 1,
+ "routes": {
+  "BNA-FLL": {
+   "origin": "BNA",
+   "dest": "FLL",
+   "flights": [
+    "B6 2582"
+   ],
+   "first_seen": "2026-11-12T21:29:45+00:00",
+   "last_seen": "2026-11-12T21:29:45+00:00",
+   "sightings": 1
+  },
+  "BOS-CLE": {
+   "origin": "BOS",
+   "dest": "CLE",
+   "flights": [
+    "B6 641"
+   ],
+   "first_seen": "2026-11-12T21:29:45+00:00",
+   "last_seen": "2026-11-12T21:29:45+00:00",
+   "sightings": 1
+  },
+  "BOS-DTW": {
+   "origin": "BOS",
+   "dest": "DTW",
+   "flights": [
+    "B6 1237"
+   ],
+   "first_seen": "2026-11-12T21:29:45+00:00",
+   "last_seen": "2026-11-12T21:29:45+00:00",
+   "sightings": 1
+  },
+  "BOS-MCO": {
+   "origin": "BOS",
+   "dest": "MCO",
+   "flights": [
+    "B6 1251",
+    "B6 2251"
+   ],
+   "first_seen": "2026-11-12T21:29:45+00:00",
+   "last_seen": "2026-11-12T21:29:45+00:00",
+   "sightings": 2
+  },
+  "BOS-PIT": {
+   "origin": "BOS",
+   "dest": "PIT",
+   "flights": [
+    "B6 1785"
+   ],
+   "first_seen": "2026-11-12T21:29:45+00:00",
+   "last_seen": "2026-11-12T21:29:45+00:00",
+   "sightings": 1
+  },
+  "BOS-TPA": {
+   "origin": "BOS",
+   "dest": "TPA",
+   "flights": [
+    "B6 391"
+   ],
+   "first_seen": "2026-11-12T21:29:45+00:00",
+   "last_seen": "2026-11-12T21:29:45+00:00",
+   "sightings": 1
+  },
+  "BQN-FLL": {
+   "origin": "BQN",
+   "dest": "FLL",
+   "flights": [
+    "B6 2072"
+   ],
+   "first_seen": "2026-11-12T21:29:45+00:00",
+   "last_seen": "2026-11-12T21:29:45+00:00",
+   "sightings": 1
+  },
+  "CHS-BOS": {
+   "origin": "CHS",
+   "dest": "BOS",
+   "flights": [
+    "B6 168"
+   ],
+   "first_seen": "2026-11-12T21:29:45+00:00",
+   "last_seen": "2026-11-12T21:29:45+00:00",
+   "sightings": 1
+  },
+  "CLO-FLL": {
+   "origin": "CLO",
+   "dest": "FLL",
+   "flights": [
+    "B6 1540"
+   ],
+   "first_seen": "2026-11-12T21:29:45+00:00",
+   "last_seen": "2026-11-12T21:29:45+00:00",
+   "sightings": 1
+  },
+  "CTG-JFK": {
+   "origin": "CTG",
+   "dest": "JFK",
+   "flights": [
+    "B6 1532"
+   ],
+   "first_seen": "2026-11-12T21:29:45+00:00",
+   "last_seen": "2026-11-12T21:29:45+00:00",
+   "sightings": 1
+  },
+  "CUN-JFK": {
+   "origin": "CUN",
+   "dest": "JFK",
+   "flights": [
+    "B6 1852"
+   ],
+   "first_seen": "2026-11-12T21:29:45+00:00",
+   "last_seen": "2026-11-12T21:29:45+00:00",
+   "sightings": 1
+  },
+  "DCA-BOS": {
+   "origin": "DCA",
+   "dest": "BOS",
+   "flights": [
+    "B6 1254"
+   ],
+   "first_seen": "2026-11-12T21:29:45+00:00",
+   "last_seen": "2026-11-12T21:29:45+00:00",
+   "sightings": 1
+  },
+  "DCA-FLL": {
+   "origin": "DCA",
+   "dest": "FLL",
+   "flights": [
+    "B6 1579"
+   ],
+   "first_seen": "2026-11-12T21:29:45+00:00",
+   "last_seen": "2026-11-12T21:29:45+00:00",
+   "sightings": 1
+  },
+  "DEN-BOS": {
+   "origin": "DEN",
+   "dest": "BOS",
+   "flights": [
+    "B6 394"
+   ],
+   "first_seen": "2026-11-12T21:29:45+00:00",
+   "last_seen": "2026-11-12T21:29:45+00:00",
+   "sightings": 1
+  },
+  "EWR-PBI": {
+   "origin": "EWR",
+   "dest": "PBI",
+   "flights": [
+    "B6 547"
+   ],
+   "first_seen": "2026-11-12T21:29:45+00:00",
+   "last_seen": "2026-11-12T21:29:45+00:00",
+   "sightings": 1
+  },
+  "EYW-BOS": {
+   "origin": "EYW",
+   "dest": "BOS",
+   "flights": [
+    "B6 2064"
+   ],
+   "first_seen": "2026-11-12T21:29:45+00:00",
+   "last_seen": "2026-11-12T21:29:45+00:00",
+   "sightings": 1
+  },
+  "FLL-CHS": {
+   "origin": "FLL",
+   "dest": "CHS",
+   "flights": [
+    "B6 1130"
+   ],
+   "first_seen": "2026-11-12T21:29:45+00:00",
+   "last_seen": "2026-11-12T21:29:45+00:00",
+   "sightings": 1
+  },
+  "FLL-DFW": {
+   "origin": "FLL",
+   "dest": "DFW",
+   "flights": [
+    "B6 2182"
+   ],
+   "first_seen": "2026-11-12T21:29:45+00:00",
+   "last_seen": "2026-11-12T21:29:45+00:00",
+   "sightings": 1
+  },
+  "FLL-IAH": {
+   "origin": "FLL",
+   "dest": "IAH",
+   "flights": [
+    "B6 2379"
+   ],
+   "first_seen": "2026-11-12T21:29:45+00:00",
+   "last_seen": "2026-11-12T21:29:45+00:00",
+   "sightings": 1
+  },
+  "FLL-LGA": {
+   "origin": "FLL",
+   "dest": "LGA",
+   "flights": [
+    "B6 272",
+    "B6 2372"
+   ],
+   "first_seen": "2026-11-12T21:29:45+00:00",
+   "last_seen": "2026-11-12T21:29:45+00:00",
+   "sightings": 2
+  },
+  "FLL-ORH": {
+   "origin": "FLL",
+   "dest": "ORH",
+   "flights": [
+    "B6 2020"
+   ],
+   "first_seen": "2026-11-12T21:29:45+00:00",
+   "last_seen": "2026-11-12T21:29:45+00:00",
+   "sightings": 1
+  },
+  "GND-JFK": {
+   "origin": "GND",
+   "dest": "JFK",
+   "flights": [
+    "B6 350"
+   ],
+   "first_seen": "2026-11-12T21:29:45+00:00",
+   "last_seen": "2026-11-12T21:29:45+00:00",
+   "sightings": 1
+  },
+  "HPN-MCO": {
+   "origin": "HPN",
+   "dest": "MCO",
+   "flights": [
+    "B6 595"
+   ],
+   "first_seen": "2026-11-12T21:29:45+00:00",
+   "last_seen": "2026-11-12T21:29:45+00:00",
+   "sightings": 1
+  },
+  "HPN-PBI": {
+   "origin": "HPN",
+   "dest": "PBI",
+   "flights": [
+    "B6 367"
+   ],
+   "first_seen": "2026-11-12T21:29:45+00:00",
+   "last_seen": "2026-11-12T21:29:45+00:00",
+   "sightings": 1
+  },
+  "IAH-BOS": {
+   "origin": "IAH",
+   "dest": "BOS",
+   "flights": [
+    "B6 932"
+   ],
+   "first_seen": "2026-11-12T21:29:45+00:00",
+   "last_seen": "2026-11-12T21:29:45+00:00",
+   "sightings": 1
+  },
+  "IAH-FLL": {
+   "origin": "IAH",
+   "dest": "FLL",
+   "flights": [
+    "B6 2780"
+   ],
+   "first_seen": "2026-11-12T21:29:45+00:00",
+   "last_seen": "2026-11-12T21:29:45+00:00",
+   "sightings": 1
+  },
+  "JFK-LAS": {
+   "origin": "JFK",
+   "dest": "LAS",
+   "flights": [
+    "B6 211"
+   ],
+   "first_seen": "2026-11-12T21:29:45+00:00",
+   "last_seen": "2026-11-12T21:29:45+00:00",
+   "sightings": 1
+  },
+  "JFK-PBI": {
+   "origin": "JFK",
+   "dest": "PBI",
+   "flights": [
+    "B6 145",
+    "B6 507"
+   ],
+   "first_seen": "2026-11-12T21:29:45+00:00",
+   "last_seen": "2026-11-12T21:29:45+00:00",
+   "sightings": 2
+  },
+  "KIN-FLL": {
+   "origin": "KIN",
+   "dest": "FLL",
+   "flights": [
+    "B6 1576"
+   ],
+   "first_seen": "2026-11-12T21:29:45+00:00",
+   "last_seen": "2026-11-12T21:29:45+00:00",
+   "sightings": 1
+  },
+  "LAS-BOS": {
+   "origin": "LAS",
+   "dest": "BOS",
+   "flights": [
+    "B6 578B"
+   ],
+   "first_seen": "2026-11-12T21:29:45+00:00",
+   "last_seen": "2026-11-12T21:29:45+00:00",
+   "sightings": 1
+  },
+  "LAX-JFK": {
+   "origin": "LAX",
+   "dest": "JFK",
+   "flights": [
+    "B6 324",
+    "B6 424"
+   ],
+   "first_seen": "2026-11-12T21:29:45+00:00",
+   "last_seen": "2026-11-12T21:29:45+00:00",
+   "sightings": 2
+  },
+  "LAX-PBI": {
+   "origin": "LAX",
+   "dest": "PBI",
+   "flights": [
+    "B6 2010"
+   ],
+   "first_seen": "2026-11-12T21:29:45+00:00",
+   "last_seen": "2026-11-12T21:29:45+00:00",
+   "sightings": 1
+  },
+  "LGA-FLL": {
+   "origin": "LGA",
+   "dest": "FLL",
+   "flights": [
+    "B6 1371"
+   ],
+   "first_seen": "2026-11-12T21:29:45+00:00",
+   "last_seen": "2026-11-12T21:29:45+00:00",
+   "sightings": 1
+  },
+  "LGB-IAD": {
+   "origin": "LGB",
+   "dest": "IAD",
+   "flights": [
+    "B6 300"
+   ],
+   "first_seen": "2026-11-12T21:29:45+00:00",
+   "last_seen": "2026-11-12T21:29:45+00:00",
+   "sightings": 1
+  },
+  "LGB-JFK": {
+   "origin": "LGB",
+   "dest": "JFK",
+   "flights": [
+    "B6 216"
+   ],
+   "first_seen": "2026-11-12T21:29:45+00:00",
+   "last_seen": "2026-11-12T21:29:45+00:00",
+   "sightings": 1
+  },
+  "MBJ-JFK": {
+   "origin": "MBJ",
+   "dest": "JFK",
+   "flights": [
+    "B6 280"
+   ],
+   "first_seen": "2026-11-12T21:29:45+00:00",
+   "last_seen": "2026-11-12T21:29:45+00:00",
+   "sightings": 1
+  },
+  "MCO-DCA": {
+   "origin": "MCO",
+   "dest": "DCA",
+   "flights": [
+    "B6 2324"
+   ],
+   "first_seen": "2026-11-12T21:29:45+00:00",
+   "last_seen": "2026-11-12T21:29:45+00:00",
+   "sightings": 1
+  },
+  "MCO-ISP": {
+   "origin": "MCO",
+   "dest": "ISP",
+   "flights": [
+    "B6 1084"
+   ],
+   "first_seen": "2026-11-12T21:29:45+00:00",
+   "last_seen": "2026-11-12T21:29:45+00:00",
+   "sightings": 1
+  },
+  "MCO-PVD": {
+   "origin": "MCO",
+   "dest": "PVD",
+   "flights": [
+    "B6 2876"
+   ],
+   "first_seen": "2026-11-12T21:29:45+00:00",
+   "last_seen": "2026-11-12T21:29:45+00:00",
+   "sightings": 1
+  },
+  "MCO-SYR": {
+   "origin": "MCO",
+   "dest": "SYR",
+   "flights": [
+    "B6 1656"
+   ],
+   "first_seen": "2026-11-12T21:29:45+00:00",
+   "last_seen": "2026-11-12T21:29:45+00:00",
+   "sightings": 1
+  },
+  "MSY-FLL": {
+   "origin": "MSY",
+   "dest": "FLL",
+   "flights": [
+    "B6 2722"
+   ],
+   "first_seen": "2026-11-12T21:29:45+00:00",
+   "last_seen": "2026-11-12T21:29:45+00:00",
+   "sightings": 1
+  },
+  "NAS-JFK": {
+   "origin": "NAS",
+   "dest": "JFK",
+   "flights": [
+    "B6 2922"
+   ],
+   "first_seen": "2026-11-12T21:29:45+00:00",
+   "last_seen": "2026-11-12T21:29:45+00:00",
+   "sightings": 1
+  },
+  "PBI-BOS": {
+   "origin": "PBI",
+   "dest": "BOS",
+   "flights": [
+    "B6 1222"
+   ],
+   "first_seen": "2026-11-12T21:29:45+00:00",
+   "last_seen": "2026-11-12T21:29:45+00:00",
+   "sightings": 1
+  },
+  "PUJ-JFK": {
+   "origin": "PUJ",
+   "dest": "JFK",
+   "flights": [
+    "B6 368"
+   ],
+   "first_seen": "2026-11-12T21:29:45+00:00",
+   "last_seen": "2026-11-12T21:29:45+00:00",
+   "sightings": 1
+  },
+  "ROC-MCO": {
+   "origin": "ROC",
+   "dest": "MCO",
+   "flights": [
+    "B6 1043"
+   ],
+   "first_seen": "2026-11-12T21:29:45+00:00",
+   "last_seen": "2026-11-12T21:29:45+00:00",
+   "sightings": 1
+  },
+  "RSW-BUF": {
+   "origin": "RSW",
+   "dest": "BUF",
+   "flights": [
+    "B6 1950"
+   ],
+   "first_seen": "2026-11-12T21:29:45+00:00",
+   "last_seen": "2026-11-12T21:29:45+00:00",
+   "sightings": 1
+  },
+  "RSW-LGA": {
+   "origin": "RSW",
+   "dest": "LGA",
+   "flights": [
+    "B6 60"
+   ],
+   "first_seen": "2026-11-12T21:29:45+00:00",
+   "last_seen": "2026-11-12T21:29:45+00:00",
+   "sightings": 1
+  },
+  "SAV-BOS": {
+   "origin": "SAV",
+   "dest": "BOS",
+   "flights": [
+    "B6 1148"
+   ],
+   "first_seen": "2026-11-12T21:29:45+00:00",
+   "last_seen": "2026-11-12T21:29:45+00:00",
+   "sightings": 1
+  },
+  "SDQ-FLL": {
+   "origin": "SDQ",
+   "dest": "FLL",
+   "flights": [
+    "B6 2448"
+   ],
+   "first_seen": "2026-11-12T21:29:45+00:00",
+   "last_seen": "2026-11-12T21:29:45+00:00",
+   "sightings": 1
+  },
+  "SDQ-JFK": {
+   "origin": "SDQ",
+   "dest": "JFK",
+   "flights": [
+    "B6 2110"
+   ],
+   "first_seen": "2026-11-12T21:29:45+00:00",
+   "last_seen": "2026-11-12T21:29:45+00:00",
+   "sightings": 1
+  },
+  "SFO-BOS": {
+   "origin": "SFO",
+   "dest": "BOS",
+   "flights": [
+    "B6 434",
+    "B6 1734"
+   ],
+   "first_seen": "2026-11-12T21:29:45+00:00",
+   "last_seen": "2026-11-12T21:29:45+00:00",
+   "sightings": 2
+  },
+  "SJC-JFK": {
+   "origin": "SJC",
+   "dest": "JFK",
+   "flights": [
+    "B6 670"
+   ],
+   "first_seen": "2026-11-12T21:29:45+00:00",
+   "last_seen": "2026-11-12T21:29:45+00:00",
+   "sightings": 1
+  },
+  "SJU-MCO": {
+   "origin": "SJU",
+   "dest": "MCO",
+   "flights": [
+    "B6 934"
+   ],
+   "first_seen": "2026-11-12T21:29:45+00:00",
+   "last_seen": "2026-11-12T21:29:45+00:00",
+   "sightings": 1
+  }
+ }
+}
