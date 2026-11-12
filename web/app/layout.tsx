@@ -18,6 +18,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="en">
       <body>
+        <p className="disclaimer">A student project for JetBlue flyers, not made by or connected to JetBlue.</p>
         <header className="site-header">
           <div className="wrap">
             <Link href="/" aria-label="A to F home">

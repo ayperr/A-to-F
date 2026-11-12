@@ -52,3 +52,10 @@ a { color: inherit; text-underline-offset: 3px; }
 @media (prefers-reduced-motion: reduce) {
   * { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
 }
+
+/* The small "not JetBlue" line above the header, on every page. */
+.disclaimer {
+  margin: 0; padding: 5px 16px; text-align: center;
+  font-size: 0.72rem; line-height: 1.4; color: var(--ink-soft);
+  background: var(--bg-soft); border-bottom: 1px solid var(--line);
+}
