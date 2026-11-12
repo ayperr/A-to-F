@@ -11,9 +11,9 @@ export default function RoutesPage() {
         Routes
       </h1>
       <p style={{ color: "var(--ink-soft)", margin: 0, maxWidth: "60ch" }}>
-        Every JetBlue flight works on A to F: type its flight number on the first page to get the best side, the
-        Virtual Window and a postcard. The routes below are the ones mapped in full so far, with landmarks, camera
-        moments and narration as well. Pick one, then tell us when you fly.
+        Every JetBlue flight works on A to F. Type its flight number on the first page to get the best side, the
+        landmarks and camera moments, the Virtual Window and a postcard. The routes below are mapped in advance,
+        with their own pages and a full year in Insights. Pick one, then tell us when you fly.
       </p>
       <RouteList />
       <ViewOfWeek />

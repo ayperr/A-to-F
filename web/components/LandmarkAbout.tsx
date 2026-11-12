@@ -5,8 +5,8 @@ import styles from "./LandmarkAbout.module.css";
 
 type Note = { text: string; source: { title: string; url: string } };
 
-export default function LandmarkAbout({ routeId, wikidata, side, label = "About" }: {
-  routeId: string; wikidata: string; side: "A" | "F"; label?: string;
+export default function LandmarkAbout({ route, wikidata, side, label = "About" }: {
+  route: string; wikidata: string; side: "A" | "F"; label?: string;   // route = routeRef(detail)
 }) {
   const [open, setOpen] = useState(false);
   const [note, setNote] = useState<Note | null>(null);
@@ -19,7 +19,7 @@ export default function LandmarkAbout({ routeId, wikidata, side, label = "About"
     if (note || busy) return;
     setBusy(true);
     try {
-      const r = await fetch(`/api/landmark?route=${routeId}&q=${wikidata}&side=${side}`);
+      const r = await fetch(`/api/landmark?${route}&q=${wikidata}&side=${side}`);
       const j = await r.json();
       if (r.ok) setNote(j); else setError(j.error ?? "No note for this one.");
     } catch {

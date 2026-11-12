@@ -1,7 +1,7 @@
 // "What's that?": POST a window photo, get back the landmark it most likely shows and a caption.
 // Claude Haiku 5.5 with vision and tool use; the engine supplies every candidate and fact.
 // Costs well under a cent per photo; limited per visitor and per day. Photos are not stored.
-import { loadRoute } from "@/lib/detail";
+import { resolveRoute } from "@/lib/detail";
 import { identify } from "@/lib/claude/identify";
 import { claude, ipOf, limiter } from "@/lib/claude/shared";
 
@@ -12,11 +12,11 @@ export async function POST(req: Request) {
   const client = claude();
   if (!client) return Response.json({ error: "Photo lookup isn't switched on yet.", setup: true }, { status: 503 });
 
-  let body: { route?: string; d?: string; t?: string; side?: string; minute?: number | null; image?: string };
+  let body: { route?: string; o?: string; x?: string; d?: string; t?: string; side?: string; minute?: number | null; image?: string };
   try { body = await req.json(); } catch { return Response.json({ error: "Bad request." }, { status: 400 }); }
 
-  const detail = loadRoute(String(body.route ?? ""));
-  if (!detail) return Response.json({ error: "Photo lookup works on our mapped routes." }, { status: 404 });
+  const detail = resolveRoute(body);
+  if (!detail) return Response.json({ error: "We couldn't find this flight's route." }, { status: 404 });
   if (!/^\d{4}-\d{2}-\d{2}$/.test(body.d ?? "") || !/^\d{2}:\d{2}$/.test(body.t ?? "")) {
     return Response.json({ error: "Pick the date and time of your flight first." }, { status: 400 });
   }

@@ -15,6 +15,7 @@ import LandmarkAbout from "./LandmarkAbout";
 import { aimNight, interpolate, ionWorks, type LightMode, lightFromSun, loadCesium, PITCH_DEG, setLightMode, TOKEN } from "@/lib/cesium";
 import { samplesFor } from "@/lib/engine/geometry";
 import { deadReckon, type LivePlane, nearestMinute } from "@/lib/live";
+import { routeRef } from "@/lib/adhoc";
 
 type LivePos = { lat: number; lon: number; alt: number; heading: number; speed_ms: number; at: number };
 
@@ -298,7 +299,7 @@ export default function VirtualWindow({ detail, backHref }: { detail: RouteDetai
   const samples = useMemo(() => samplesFor(detail.track, departureMs), [detail.track, departureMs]);
   const dark = !gps && !samples[m].visible;
   const word = side === "A" ? "left" : "right";
-  const mapped = /^[a-z]{3}-[a-z]{3}$/.test(detail.id) && detail.landmarks.length > 0; // the Claude features need a mapped route
+  const mapped = detail.landmarks.length > 0; // the Claude features need landmarks to choose from
   const upcoming = detail.landmarks
     .filter((l) => (l.side === side || l.side === "below") && l.minute >= m - 1 && l.minute <= m + 15)
     .sort((a, b) => a.minute - b.minute)[0];
@@ -331,7 +332,7 @@ export default function VirtualWindow({ detail, backHref }: { detail: RouteDetai
         <h1>Blind down? Middle seat? This is the {word} window.</h1>
         <p className={styles.callout} aria-live="polite">{callout ?? " "}</p>
         {upcoming && mapped && (
-          <div className={styles.about}><LandmarkAbout routeId={detail.id} wikidata={upcoming.wikidata} side={side} label={`Tell me about ${upcoming.name}`} /></div>
+          <div className={styles.about}><LandmarkAbout route={routeRef(detail)} wikidata={upcoming.wikidata} side={side} label={`Tell me about ${upcoming.name}`} /></div>
         )}
 
         <div className={styles.controls}>
@@ -392,7 +393,7 @@ export default function VirtualWindow({ detail, backHref }: { detail: RouteDetai
 
         {mapped && (
           <div className={styles.snap}>
-            <WhatsThat routeId={detail.id} date={date} time={time} side={side} minute={gps ? null : m}
+            <WhatsThat route={routeRef(detail)} date={date} time={time} side={side} minute={gps ? null : m}
               postcardHref={`/postcard/${detail.id}?d=${date}&t=${time}&s=${side}`} />
           </div>
         )}

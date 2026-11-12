@@ -1,7 +1,7 @@
-// "Tell me about it": GET /api/landmark?route=jfk-lax&q=Q1297&side=A
+// "Tell me about it": GET /api/landmark?route=jfk-lax&q=Q1297&side=A (other routes add o= and x= airports)
 // A few sentences from the landmark's Wikipedia summary, written by Claude Haiku 5.5 with structured
 // output. The answer is the same for everyone, so the CDN caches it for a day: most taps cost nothing.
-import { loadRoute } from "@/lib/detail";
+import { resolveRoute } from "@/lib/detail";
 import { aboutLandmark, wikipediaSummary } from "@/lib/claude/landmark";
 import { claude, ipOf, limiter } from "@/lib/claude/shared";
 
@@ -10,7 +10,8 @@ const memo = new Map<string, unknown>();
 
 export async function GET(req: Request) {
   const url = new URL(req.url);
-  const detail = loadRoute(url.searchParams.get("route") ?? "");
+  const sp = url.searchParams;
+  const detail = resolveRoute({ route: sp.get("route") ?? "", o: sp.get("o") ?? undefined, x: sp.get("x") ?? undefined });
   const qid = url.searchParams.get("q") ?? "";
   const side = url.searchParams.get("side") === "F" ? "F" : "A";
   const lm = detail?.landmarks.find((l) => l.wikidata === qid);

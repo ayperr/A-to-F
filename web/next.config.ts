@@ -6,8 +6,8 @@ const nextConfig: NextConfig = {
   partialPrefetching: true,
   // The Claude routes read route data at request time; ship it with those functions.
   outputFileTracingIncludes: {
-    "/api/identify": ["./public/data/routes/**"],
-    "/api/landmark": ["./public/data/routes/**"],
+    "/api/identify": ["./public/data/routes/**", "./public/data/landmarks.json"],
+    "/api/landmark": ["./public/data/routes/**", "./public/data/landmarks.json"],
   },
 };
 

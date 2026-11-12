@@ -109,7 +109,7 @@ def _rings(geom: dict) -> list[np.ndarray]:
     for poly in polys:
         ring = np.asarray(poly[0], dtype=float)
         step = max(1, len(ring) // 300)
-        rings.append(ring[::step])
+        rings.append(np.round(ring[::step], 4))   # ~10 m; the exported catalogue is exactly this
     return rings
 
 
@@ -165,7 +165,7 @@ def catalog() -> tuple[dict, ...]:
                 allv = np.vstack(item["rings"])
                 item["bbox"] = (allv[:, 1].min(), allv[:, 1].max(), allv[:, 0].min(), allv[:, 0].max())
             else:
-                lon, lat = f["geometry"]["coordinates"][:2]
+                lon, lat = (round(float(v), 4) for v in f["geometry"]["coordinates"][:2])
                 item["point"] = (lat, lon)
                 item["bbox"] = (lat, lat, lon, lon)
             feats.append(item)
@@ -252,6 +252,29 @@ def along_route(track: list[TrackPoint], origin: tuple[float, float], dest: tupl
             best[h["name"]] = h
     chosen = sorted(best.values(), key=lambda h: -h["score"])[:MAX_PER_ROUTE]
     return sorted(chosen, key=lambda h: h["minute"])
+
+
+def export_catalog(path: Path) -> int:
+    """The catalogue as one JSON file for the browser (web/lib/engine/landmarks.ts), so any flight gets
+    landmarks: same features, same rounded geometry, same rules. Returns the number of features."""
+    feats = []
+    for f in catalog():
+        item = {"n": f["name"], "k": f["kind"], "q": f["wikidata"], "s": f["source"], "sc": f["score"],
+                "b": [float(v) for v in f["bbox"]]}
+        if "point" in f:
+            item["p"] = list(f["point"])
+        else:
+            item["r"] = [ring.tolist() for ring in f["rings"]]
+        feats.append(item)
+    out = {
+        "about": "Natural Earth (public domain) features with Wikidata IDs, from pipeline/landmarks.py. Generated: do not edit.",
+        "kinds": {k: [v[0], v[2]] for k, v in KINDS.items()},
+        "rules": {"max_per_route": MAX_PER_ROUTE, "edge_minutes": EDGE_MINUTES,
+                  "low_confidence_km": LOW_CONFIDENCE_KM, "below_km": BELOW_KM},
+        "features": feats,
+    }
+    path.write_text(json.dumps(out, separators=(",", ":"), ensure_ascii=False))
+    return len(feats)
 
 
 if __name__ == "__main__":

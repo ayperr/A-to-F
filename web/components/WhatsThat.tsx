@@ -31,9 +31,9 @@ async function toJpeg(src: Blob | HTMLImageElement, max = 1024): Promise<string>
 const TITLE: Record<string, string> = { sky: "Sky and clouds", clouds: "Sky and clouds", unknown: "Not sure" };
 
 export default function WhatsThat({
-  routeId, date, time, side, minute, photo, postcardHref, onResult, label = "What's that? Snap the view",
+  route, date, time, side, minute, photo, postcardHref, onResult, label = "What's that? Snap the view",
 }: {
-  routeId: string; date: string; time: string; side: "A" | "F"; minute: number | null;
+  route: string; date: string; time: string; side: "A" | "F"; minute: number | null;
   photo?: HTMLImageElement | null; postcardHref?: string; onResult?: (r: Identified, dataUrl: string) => void; label?: string;
 }) {
   const input = useRef<HTMLInputElement>(null);
@@ -45,7 +45,7 @@ export default function WhatsThat({
     try {
       const r = await fetch("/api/identify", {
         method: "POST", headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ route: routeId, d: date, t: time, side, minute, image: dataUrl }),
+        body: JSON.stringify({ ...Object.fromEntries(new URLSearchParams(route)), d: date, t: time, side, minute, image: dataUrl }),
       });
       const j = await r.json();
       if (!r.ok) return setState({ error: j.error ?? "Something went wrong.", dataUrl });

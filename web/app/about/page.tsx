@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { loadRoute } from "@/lib/detail";
+import { catalogSize, loadRoute } from "@/lib/detail";
 import { routes } from "@/lib/routes";
 import styles from "./about.module.css";
 
@@ -54,9 +54,10 @@ export default function About() {
         <li>
           <h2>What you can see</h2>
           <p>
-            {unique} landmarks along these routes: mountain ranges, canyons, lakes, islands, capes and big cities,
-            each from Natural Earth with a Wikidata ID. Terrain only counts in daylight. Cities count at night too,
-            because their lights are the view.
+            Landmarks come from {catalogSize().toLocaleString("en-US")} Natural Earth features with a Wikidata ID:
+            mountain ranges, canyons, lakes, islands, capes and big cities. They are found along any route, for any
+            JetBlue flight, and {unique} of them lie along the mapped routes. Terrain only counts in daylight. Cities
+            count at night too, because their lights are the view.
           </p>
         </li>
         <li>

@@ -3,7 +3,7 @@
 "Every seat gets the view." A website (PWA) for JetBlue flyers: which side of the plane (A = left, F = right)
 has the sunset, sunrise and landmarks, plus a Virtual Window for anyone who can't see out (middle or aisle seat, blind down,
 night flight) and camera moments: when to get the phone out.
-Independent student project for the ieNYC × DataCamp "Be a Master in Claude" challenge. Deadline 12 Nov 2026, 23:59 ET.
+Independent student project for the ieNYC × DataCamp "Be a Master in Claude" challenge. Deadline Sun 15 Nov 2026, 23:59 ET.
 Plan, status and what's left: `BUILD_GUIDE.md`.
 
 ## Golden rules
@@ -13,13 +13,14 @@ Plan, status and what's left: `BUILD_GUIDE.md`.
 2. **Side convention.** rel = azimuth − heading, wrapped to (−180, 180]. rel < 0 → left (A). rel > 0 → right (F).
    A window sees |rel| 20°–160°. Golden light uses the looser glow band |rel| 5°–175°.
 3. **Python and TypeScript engines stay identical.** Change both, rebuild data, run both test suites.
-   `npm test` checks 320 Python vectors (`web/lib/engine/fixtures/golden.json`).
+   `npm test` checks 320 Python vectors (`web/lib/engine/fixtures/golden.json`), and the landmark search
+   (`web/lib/engine/landmarks.ts`) against Python on the 20 mapped routes plus 52 other airport pairs.
 4. **Never invent data.** Landmarks come from Natural Earth and carry Wikidata IDs. Routes with
    `verified: False` in `pipeline/airports.py` are not confirmed yet. No seat maps, no JetBlue internals.
 5. **Label approximations.** Tracks are `synthetic-great-circle`; durations are short westbound. Never present
    them as real flight times. Live flights use real positions, but their routes and time since takeoff are estimates.
-6. **Generated files are not hand-edited** (`web/public/data/routes*`, `insights.json`, `basemap.json`,
-   `narration.json`, golden fixtures). A PreToolUse hook blocks it. Change the pipeline and rerun it.
+6. **Generated files are not hand-edited** (`web/public/data/routes*`, `landmarks.json`, `insights.json`,
+   `basemap.json`, `narration.json`, golden fixtures). A PreToolUse hook blocks it. Change the pipeline and rerun it.
 7. **Brand/legal.** "for JetBlue flyers", never "by JetBlue". White and blue, but our own blues and our own
    A to F logo: never JetBlue's logo, fonts or exact brand colours. Tokens in `web/app/globals.css`: bg #ffffff,
    ink #0b2350, accent #1f5fd6, accent-soft #e4eefc. Font: Manrope. "Not affiliated" footer on every page.
@@ -58,7 +59,8 @@ npm test && npm run lint && npm run build
   `narrate.py`, `check_claims.py`, `tests/`.
 - `web/` Next.js 16 (App Router, `cacheComponents`), Vercel root `web`. Pages: `/`, `/route/[id]`, `/window/[id]`
   (CesiumJS), `/postcard/[id]` (canvas), `/insights`, `/about`, `/privacy`; APIs `/api/flight` (AeroDataBox), `/api/live` (adsb.lol positions + adsbdb.com routes, CDN-cached 30 s / 5 s), `/api/identify` and `/api/landmark` (Claude, `lib/claude/`).
-  Engine port in `web/lib/engine`. Next's docs: `web/node_modules/next/dist/docs/`.
+  Engine port in `web/lib/engine`, including the landmark search, so any JetBlue flight gets landmarks from the
+  exported catalogue (`web/public/data/landmarks.json`); the Claude APIs rebuild unmapped routes the same way. Next's docs: `web/node_modules/next/dist/docs/`.
 - `mcp_server/` FastMCP, **pinned mcp==1.30.0** (v1 API; 2.x renamed FastMCP). `main.py` at repo root hosts it.
 - `.claude/` skills (route-analysis, window-narrator, postcard-copy), agents (route-analyst, storyteller,
   landmark-verifier), hooks (guard generated files, check claims/engine after edits).

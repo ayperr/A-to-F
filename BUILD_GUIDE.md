@@ -1,6 +1,6 @@
 # A to F — Build Guide and status
 
-Deadline: **Thu 12 Nov 2026, 23:59 ET.**
+Deadline: **Sun 15 Nov 2026, 23:59 ET.**
 Live: **https://a-to-f.vercel.app** · MCP: **https://a-to-f-mcp.vercel.app/mcp** · Repo: github.com/ayperr/A-to-F
 Facts were checked on 1 Nov 2026; sources at the end.
 
@@ -14,7 +14,7 @@ Facts were checked on 1 Nov 2026; sources at the end.
 | Landmarks | Corridor search over Natural Earth features with Wikidata IDs (`pipeline/landmarks.py`), side/minute/distance/confidence | Tests: provenance, Rockies + Grand Canyon on JFK→LAX, sides flip on return |
 | Browser engine | TypeScript port (`web/lib/engine`) for any date and time | 320 parity cases vs Python (`npm test`) |
 | Planner | Flight-number lookup or route picker, A/F answer, clickable seat row (middle/aisle seats explained), camera moments that open the Virtual Window at that minute, two-lane timeline | `/`, `/route/[id]` |
-| Any JetBlue flight | Flight number + date → AeroDataBox → airports and time; pre-built routes get everything, other routes get the sun answer with a browser-computed track (tested equal to the pipeline's) | `/api/flight`, `/flight`, `/flight/window`, `/flight/postcard` |
+| Any JetBlue flight | Flight number + date → AeroDataBox → airports and time. Every flight gets the sun answer, landmarks, camera moments, Virtual Window, postcard and the Claude features: track and landmarks are computed in the browser from the exported Natural Earth catalogue, tested equal to the pipeline on 72 routes. Mapped routes add their own pages, Insights and narration | `/api/flight`, `/flight`, `/flight/window`, `/flight/postcard`, `lib/engine/landmarks.ts` |
 | Virtual Window | CesiumJS side camera, real sun lighting, terrain (ion token), 1×/60×/300×, phone GPS | `/window/[id]` |
 | Live flights | JetBlue planes in the air now (adsb.lol, by fleet type) with routes (adsbdb.com, cached 12 h); live Virtual Window follows the real position (dead-reckoned between 10 s polls), LIVE button after replay; a flight number for today that's airborne opens it | `/api/live`, `?live=JBU615`; tests in `lib/live.test.ts` |
 | Postcard | 1080×1350 canvas: map, golden stretch, landmarks on your side, your photo in the window, share/download | `/postcard/[id]` |

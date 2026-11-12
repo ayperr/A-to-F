@@ -3,7 +3,8 @@
 // the Virtual Window or the postcard for it.
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { adhocDetail, adhocQuery } from "@/lib/adhoc";
+import { adhocDetail, adhocQuery, withLandmarks } from "@/lib/adhoc";
+import { loadCatalog } from "@/lib/engine/landmarks";
 import { checkFlightInput, readLookup } from "@/lib/flight";
 import type { RouteDetail } from "@/lib/engine/types";
 import Planner, { type Adhoc } from "./Planner";
@@ -12,6 +13,9 @@ import VirtualWindow from "./VirtualWindow";
 
 type View = "plan" | "window" | "postcard";
 
+/** Find the landmarks along a route that isn't mapped. Without the catalogue the page still works, sun only. */
+const landmarked = (detail: RouteDetail) => loadCatalog().then((c) => withLandmarks(detail, c), () => detail);
+
 export default function FlightPage({ view }: { view: View }) {
   const [state, setState] = useState<{ detail: RouteDetail; adhoc: Adhoc } | { error: string } | null>(null);
 
@@ -19,10 +23,13 @@ export default function FlightPage({ view }: { view: View }) {
     const q = new URLSearchParams(window.location.search);
     if (view !== "plan") {
       const detail = adhocDetail(q);
-      // eslint-disable-next-line react-hooks/set-state-in-effect -- built from the URL after hydration
-      setState(detail
-        ? { detail, adhoc: { flight: q.get("f") ?? "", date: q.get("d") ?? "", time: q.get("t") ?? "", query: adhocQuery(detail.origin, detail.dest, q.get("f") ? { f: q.get("f")! } : {}) } }
-        : { error: "This link is missing the flight's airports." });
+      if (!detail) {
+        // eslint-disable-next-line react-hooks/set-state-in-effect -- built from the URL after hydration
+        setState({ error: "This link is missing the flight's airports." });
+        return;
+      }
+      const adhoc = { flight: q.get("f") ?? "", date: q.get("d") ?? "", time: q.get("t") ?? "", query: adhocQuery(detail.origin, detail.dest, q.get("f") ? { f: q.get("f")! } : {}) };
+      landmarked(detail).then((d) => setState({ detail: d, adhoc }));
       return;
     }
     const n = q.get("n") ?? "", date = q.get("date") ?? "";
@@ -40,7 +47,7 @@ export default function FlightPage({ view }: { view: View }) {
         const query = adhocQuery(leg.origin, leg.dest, { f: leg.number });
         const detail = adhocDetail(new URLSearchParams(query));
         if (!detail) return setState({ error: `Couldn't map ${leg.number}: the lookup didn't give both airports.` });
-        setState({ detail, adhoc: { flight: leg.number, date: leg.date, time: leg.time, query } });
+        return landmarked(detail).then((d) => setState({ detail: d, adhoc: { flight: leg.number, date: leg.date, time: leg.time, query } }));
       })
       .catch(() => setState({ error: "No connection. Try again in a moment." }));
   }, [view]);

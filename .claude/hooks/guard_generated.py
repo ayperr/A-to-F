@@ -12,7 +12,9 @@ GENERATED = (
     "web/public/data/routes.json",
     "web/public/data/insights.json",
     "web/public/data/basemap.json",
+    "web/public/data/landmarks.json",
     "web/lib/engine/fixtures/golden.json",
+    "web/lib/engine/fixtures/landmarks-golden.json",
 )
 
 event = json.load(sys.stdin)

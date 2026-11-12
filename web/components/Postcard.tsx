@@ -8,6 +8,7 @@ import type { RouteDetail } from "@/lib/engine/types";
 import { duration } from "@/lib/routes";
 import styles from "./Postcard.module.css";
 import WhatsThat, { type Identified, PHOTO_HANDOFF } from "./WhatsThat";
+import { routeRef } from "@/lib/adhoc";
 
 const W = 1080, H = 1350;
 const C = { ground: "#FFFFFF", deep: "#EEF3FA", cream: "#0B2350", dim: "#4B5F80", coral: "#1F5FD6", accentSoft: "#E4EEFC", land: "#D3DEEC", line: "#B5C5DD" };
@@ -356,7 +357,7 @@ export default function Postcard({ detail, backHref }: { detail: RouteDetail; ba
           <input type="file" accept="image/*" onChange={(e) => onPhoto(e.target.files?.[0])} />
         </label>
         {photo && detail.landmarks.length > 0 && /^[a-z]{3}-[a-z]{3}$/.test(detail.id) && (
-          <WhatsThat key={photo.src} routeId={detail.id} date={date} time={time} side={side} minute={null} photo={photo}
+          <WhatsThat key={photo.src} route={routeRef(detail)} date={date} time={time} side={side} minute={null} photo={photo}
             label="What's in my photo?" onResult={(r) => setIdentified(r)} />
         )}
         <div className={styles.actions}>

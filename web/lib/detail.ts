@@ -1,6 +1,8 @@
 import "server-only";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
+import { adhocDetail, withLandmarks } from "./adhoc";
+import type { Catalog } from "./engine/landmarks";
 import type { RouteDetail } from "./engine/types";
 
 /** Read one route's track + landmarks at build time (pages are prerendered per route). */
@@ -11,4 +13,32 @@ export function loadRoute(id: string): RouteDetail | undefined {
   } catch {
     return undefined;
   }
+}
+
+let catalog: Catalog | null = null;
+
+/** How many features the landmark catalogue holds (read at build time for the About page). */
+export function catalogSize(): number {
+  try {
+    catalog ??= JSON.parse(readFileSync(join(process.cwd(), "public", "data", "landmarks.json"), "utf8")) as Catalog;
+    return catalog.features.length;
+  } catch {
+    return 0;
+  }
+}
+
+/** A mapped route from its file, or any other route rebuilt from the airports in the request (with the same
+ *  landmark search the browser runs), so the Claude features can only use engine facts either way. */
+export function resolveRoute(p: { route?: unknown; o?: unknown; x?: unknown }): RouteDetail | undefined {
+  const mapped = loadRoute(String(p.route ?? ""));
+  if (mapped) return mapped;
+  if (typeof p.o !== "string" || typeof p.x !== "string") return undefined;
+  const detail = adhocDetail(new URLSearchParams({ o: p.o, x: p.x }));
+  if (!detail || detail.id !== String(p.route ?? "")) return undefined;
+  try {
+    catalog ??= JSON.parse(readFileSync(join(process.cwd(), "public", "data", "landmarks.json"), "utf8")) as Catalog;
+  } catch {
+    return undefined;
+  }
+  return withLandmarks(detail, catalog);
 }

@@ -5,7 +5,9 @@
 Writes:
     web/public/data/routes.json            route index
     web/public/data/routes/<id>.json       track (1 point per minute) + landmarks along it
+    web/public/data/landmarks.json         the landmark catalogue, so the browser can find landmarks for any flight
     web/lib/engine/fixtures/golden.json    Python answers the TS engine must reproduce
+    web/lib/engine/fixtures/landmarks-golden.json   landmarks for airport pairs that are not mapped routes
 
 The track is date-independent geometry; the browser adds the departure time and computes
 the sun for any date. Python stays the source of truth: the TS port is tested against it.
@@ -19,7 +21,7 @@ from zoneinfo import ZoneInfo
 
 from airports import AIRPORTS, DEPARTURE_SLOTS, all_routes
 from fetch_tracks import TrackPoint, gc_distance_km, synthetic_track
-from landmarks import along_route
+from landmarks import along_route, export_catalog
 from sun_geometry import recommend, samples_for
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -84,9 +86,25 @@ def main() -> None:
                     "rec": rec,
                 })
 
+    # Every ordered airport pair that is not a mapped route: the browser must find the same landmarks.
+    mapped = {r["id"] for r in all_routes()}
+    lm_golden = []
+    for a in AIRPORTS.values():
+        for b in AIRPORTS.values():
+            if a.iata == b.iata or f"{a.iata}-{b.iata}".lower() in mapped:
+                continue
+            rows = compact(synthetic_track(a.lat, a.lon, b.lat, b.lon, ref))
+            lms = along_route(expand(rows, ref), (a.lat, a.lon), (b.lat, b.lon))
+            lm_golden.append({"o": [a.lat, a.lon], "d": [b.lat, b.lon], "pair": f"{a.iata}-{b.iata}",
+                              "landmarks": [{k: l[k] for k in ("name", "kind", "wikidata", "side", "minute", "dist_km",
+                                                               "confidence", "score", "lat", "lon")} for l in lms]})
+    n_cat = export_catalog(OUT / "landmarks.json")
+    (FIXTURES / "landmarks-golden.json").write_text(json.dumps(lm_golden, separators=(",", ":"), ensure_ascii=False))
+
     (OUT / "routes.json").write_text(json.dumps({"routes": index}, indent=1))
     (FIXTURES / "golden.json").write_text(json.dumps(golden, separators=(",", ":")))
-    print(f"wrote {len(index)} routes, {len(golden)} golden cases")
+    print(f"wrote {len(index)} routes, {len(golden)} golden cases, {n_cat} catalogue features, "
+          f"{len(lm_golden)} landmark pairs")
 
 
 if __name__ == "__main__":

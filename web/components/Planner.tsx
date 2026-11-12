@@ -11,6 +11,7 @@ import Timeline from "./Timeline";
 import WhatsThat from "./WhatsThat";
 import LandmarkAbout from "./LandmarkAbout";
 import styles from "./Planner.module.css";
+import { routeRef } from "@/lib/adhoc";
 
 const TIMES = Array.from({ length: 48 }, (_, i) => `${String(Math.floor(i / 2)).padStart(2, "0")}:${i % 2 ? "30" : "00"}`);
 
@@ -135,7 +136,7 @@ export default function Planner({ detail, adhoc }: { detail: RouteDetail; adhoc?
       </div>
       <p className={styles.context}>
         About {duration(detail.duration_min)} in the air. Times are local to {detail.origin.city}.
-        {adhoc && " We haven't mapped landmarks along this route yet, so the answer is about the sun."}
+        {adhoc && detail.landmarks.length === 0 && " There are no landmarks we can point out along this route, so the answer is about the sun."}
       </p>
       <section className={styles.answer} aria-live="polite">
         <div className={styles.letter} aria-hidden="true">{rec.side ?? "A/F"}</div>
@@ -175,7 +176,7 @@ export default function Planner({ detail, adhoc }: { detail: RouteDetail; adhoc?
                   <small>{mo.detail}</small>
                 </span>
               </Link>
-              {mo.wikidata && !adhoc && <LandmarkAbout routeId={detail.id} wikidata={mo.wikidata} side={side} />}
+              {mo.wikidata && <LandmarkAbout route={routeRef(detail)} wikidata={mo.wikidata} side={side} />}
             </li>
           ))}
         </ol>
@@ -185,7 +186,7 @@ export default function Planner({ detail, adhoc }: { detail: RouteDetail; adhoc?
         <section className={styles.snap}>
           <h2>What&rsquo;s out there?</h2>
           <p className={styles.fine}>Take a photo out of the window, or pick one you took, and we&rsquo;ll tell you what it shows.</p>
-          <WhatsThat routeId={detail.id} date={date} time={time} side={side} postcardHref={postcardHref}
+          <WhatsThat route={routeRef(detail)} date={date} time={time} side={side} postcardHref={postcardHref}
             minute={liveMinute ?? (m > 0 ? m : null)} />
         </section>
       )}
