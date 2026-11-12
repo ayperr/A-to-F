@@ -56,7 +56,7 @@ npm test && npm run lint && npm run build
 ## Layout
 - `pipeline/` Python. `solar.py` (NOAA sun), `sun_geometry.py` (sides + recommend), `landmarks.py` (Natural Earth
   corridor search), `fetch_tracks.py`, `build_data.py`, `stats.py` (year grid), `view_of_week.py`, `basemap.py`,
-  `narrate.py`, `check_claims.py`, `tests/`.
+  `narrate.py`, `check_claims.py`, `observe_routes.py` (JetBlue routes seen on the live list), `tests/`.
 - `web/` Next.js 16 (App Router, `cacheComponents`), Vercel root `web`. Pages: `/`, `/route/[id]`, `/window/[id]`
   (CesiumJS), `/postcard/[id]` (canvas), `/insights`, `/about`, `/privacy`; APIs `/api/flight` (AeroDataBox), `/api/live` (adsb.lol positions + adsbdb.com routes, CDN-cached 30 s / 5 s), `/api/identify` and `/api/landmark` (Claude, `lib/claude/`).
   Engine port in `web/lib/engine`, including the landmark search, so any JetBlue flight gets landmarks from the
@@ -65,7 +65,8 @@ npm test && npm run lint && npm run build
 - `.claude/` skills (route-analysis, window-narrator, postcard-copy), agents (route-analyst, storyteller,
   landmark-verifier), hooks (guard generated files, check claims/engine after edits).
 - `plugin/a-to-f-trip-planner/` Cowork plugin (skills + hosted MCP).
-- `.github/workflows/` CI, Claude Code PR review, "Generate Claude data" (narration with a repo secret).
+- `.github/workflows/` CI, Claude Code PR review, "Generate Claude data" (narration with a repo secret),
+  "Observe JetBlue routes" (every 15 min for a day; commits `pipeline/observed_routes.json` once at the end).
 
 ## Working style
 Explore → plan → code → test → commit. Small commits. Run tests and `npm run build` before every commit.

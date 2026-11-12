@@ -1,0 +1,90 @@
+name: Observe JetBlue routes
+
+# For one day, every 15 minutes: read the site's live list (/api/live) and record which JetBlue routes are
+# flying (pipeline/observe_routes.py). The running list lives in the Actions cache and is uploaded as an
+# artifact after every run, so there is nothing to commit (and nothing to redeploy) while it runs. When the
+# window ends, the next run commits pipeline/observed_routes.json once. Run it by hand with "commit" ticked
+# to commit what is there so far.
+on:
+  schedule:
+    - cron: "*/15 * * * *"
+  workflow_dispatch:
+    inputs:
+      commit:
+        description: "Commit the observations now"
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+concurrency:
+  group: observe-routes
+  cancel-in-progress: false
+
+env:
+  OBSERVE_UNTIL: "2026-11-13T23:00:00Z"   # Fri 13 Nov, 18:00 New York: a full day and night of flights
+
+jobs:
+  observe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Observing, finishing or done?
+        id: phase
+        run: |
+          now=$(date -u +%s); until=$(date -u -d "$OBSERVE_UNTIL" +%s)
+          if [ "$now" -le "$until" ]; then phase=observe
+          elif [ "$now" -le $((until + 7200)) ]; then phase=finish
+          else phase=done; fi
+          if [ "${{ inputs.commit }}" = "true" ]; then phase=finish; fi
+          echo "phase=$phase" >> "$GITHUB_OUTPUT"
+          echo "Phase: $phase"
+
+      - uses: actions/checkout@v7
+        if: steps.phase.outputs.phase != 'done'
+
+      - uses: actions/setup-python@v7
+        if: steps.phase.outputs.phase == 'observe'
+        with:
+          python-version: "3.13"
+
+      - name: Restore the list so far
+        if: steps.phase.outputs.phase != 'done'
+        uses: actions/cache/restore@v5
+        with:
+          path: pipeline/observed_routes.json
+          key: observed-routes-${{ github.run_id }}-${{ github.run_attempt }}
+          restore-keys: observed-routes-
+
+      - name: Snapshot of the flights in the air
+        if: steps.phase.outputs.phase == 'observe'
+        run: python pipeline/observe_routes.py
+
+      - name: Keep the list for the next run
+        if: steps.phase.outputs.phase == 'observe'
+        uses: actions/cache/save@v5
+        with:
+          path: pipeline/observed_routes.json
+          key: observed-routes-${{ github.run_id }}-${{ github.run_attempt }}
+
+      - name: Upload the list (download it from this run's page)
+        if: steps.phase.outputs.phase != 'done'
+        uses: actions/upload-artifact@v7
+        with:
+          name: observed-routes
+          path: pipeline/observed_routes.json
+          if-no-files-found: ignore
+          overwrite: true
+
+      - name: Commit once the day is over
+        if: steps.phase.outputs.phase == 'finish'
+        run: |
+          [ -f pipeline/observed_routes.json ] || { echo "Nothing observed yet."; exit 0; }
+          git config user.name "a-to-f-bot"
+          git config user.email "a-to-f-bot@users.noreply.github.com"
+          git add pipeline/observed_routes.json
+          git diff --cached --quiet && { echo "Already committed."; exit 0; }
+          git commit -m "Observed JetBlue routes ($(python3 -c 'import json;d=json.load(open("pipeline/observed_routes.json"));print(len(d["routes"]),"pairs,",d["snapshots"],"snapshots")'))"
+          git pull --rebase -q origin main
+          git push
