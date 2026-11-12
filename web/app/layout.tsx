@@ -18,14 +18,16 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="en">
       <body>
-        <p className="disclaimer">A student project for JetBlue flyers, not made by or connected to JetBlue.</p>
         <header className="site-header">
           <div className="wrap">
             <Link href="/" aria-label="A to F home">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src="/logo.svg" alt="" width={35} height={46} />
             </Link>
-            <Link href="/" className="brand">A to F</Link>
+            <Link href="/" className="brand">
+              A to F
+              <small>Student project for JetBlue flyers. Not by JetBlue.</small>
+            </Link>
             <nav className="site-nav" aria-label="Main">
               <Link href="/routes">Routes</Link>
               <Link href="/insights">Insights</Link>
