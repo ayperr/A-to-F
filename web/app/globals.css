@@ -42,7 +42,8 @@ a { color: inherit; text-underline-offset: 3px; }
 .site-header img { height: 46px; width: auto; display: block; }
 .brand { font-weight: 800; font-size: 1.2rem; text-decoration: none; letter-spacing: -0.01em; margin-right: auto; line-height: 1.15; }
 .brand small { display: block; font-size: 0.68rem; font-weight: 500; letter-spacing: 0; color: var(--ink-soft); margin-top: 2px; }
-@media (max-width: 600px) { .brand small { max-width: 13em; } }
+.site-nav a { white-space: nowrap; }
+@media (max-width: 600px) { .brand small .wide { display: none; } }
 .site-nav { display: flex; gap: 22px; font-weight: 600; font-size: 0.95rem; }
 .site-nav a { text-decoration: none; padding: 10px 0; }
 .site-nav a:hover { text-decoration: underline; }
