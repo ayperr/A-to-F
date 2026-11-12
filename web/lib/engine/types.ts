@@ -30,6 +30,7 @@ export interface Landmark {
 
 export interface RouteDetail {
   id: string;
+  core?: boolean;
   origin: Airport;
   dest: Airport;
   verified: boolean;
@@ -43,6 +44,7 @@ export interface RouteDetail {
 
 export interface RouteSummary {
   id: string;
+  core?: boolean;   // one of the 20 hand-checked directions (Insights, engine fixtures); others are observed routes
   origin: string;
   dest: string;
   origin_city: string;

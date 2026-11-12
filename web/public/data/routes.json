@@ -12,7 +12,8 @@
    "distance_km": 3974,
    "duration_min": 298,
    "landmark_count": 12,
-   "track_source": "synthetic-great-circle"
+   "track_source": "synthetic-great-circle",
+   "core": true
   },
   {
    "id": "lax-jfk",
@@ -26,7 +27,8 @@
    "distance_km": 3974,
    "duration_min": 298,
    "landmark_count": 12,
-   "track_source": "synthetic-great-circle"
+   "track_source": "synthetic-great-circle",
+   "core": true
   },
   {
    "id": "jfk-sfo",
@@ -40,7 +42,8 @@
    "distance_km": 4152,
    "duration_min": 311,
    "landmark_count": 17,
-   "track_source": "synthetic-great-circle"
+   "track_source": "synthetic-great-circle",
+   "core": true
   },
   {
    "id": "sfo-jfk",
@@ -54,7 +57,8 @@
    "distance_km": 4152,
    "duration_min": 311,
    "landmark_count": 17,
-   "track_source": "synthetic-great-circle"
+   "track_source": "synthetic-great-circle",
+   "core": true
   },
   {
    "id": "jfk-sju",
@@ -68,7 +72,8 @@
    "distance_km": 2578,
    "duration_min": 193,
    "landmark_count": 0,
-   "track_source": "synthetic-great-circle"
+   "track_source": "synthetic-great-circle",
+   "core": true
   },
   {
    "id": "sju-jfk",
@@ -82,7 +87,8 @@
    "distance_km": 2578,
    "duration_min": 193,
    "landmark_count": 0,
-   "track_source": "synthetic-great-circle"
+   "track_source": "synthetic-great-circle",
+   "core": true
   },
   {
    "id": "bos-sju",
@@ -96,7 +102,8 @@
    "distance_km": 2702,
    "duration_min": 203,
    "landmark_count": 0,
-   "track_source": "synthetic-great-circle"
+   "track_source": "synthetic-great-circle",
+   "core": true
   },
   {
    "id": "sju-bos",
@@ -110,7 +117,8 @@
    "distance_km": 2702,
    "duration_min": 203,
    "landmark_count": 0,
-   "track_source": "synthetic-great-circle"
+   "track_source": "synthetic-great-circle",
+   "core": true
   },
   {
    "id": "jfk-fll",
@@ -124,7 +132,8 @@
    "distance_km": 1723,
    "duration_min": 129,
    "landmark_count": 5,
-   "track_source": "synthetic-great-circle"
+   "track_source": "synthetic-great-circle",
+   "core": true
   },
   {
    "id": "fll-jfk",
@@ -138,7 +147,8 @@
    "distance_km": 1723,
    "duration_min": 129,
    "landmark_count": 5,
-   "track_source": "synthetic-great-circle"
+   "track_source": "synthetic-great-circle",
+   "core": true
   },
   {
    "id": "jfk-lhr",
@@ -152,7 +162,8 @@
    "distance_km": 5540,
    "duration_min": 416,
    "landmark_count": 11,
-   "track_source": "synthetic-great-circle"
+   "track_source": "synthetic-great-circle",
+   "core": true
   },
   {
    "id": "lhr-jfk",
@@ -166,7 +177,8 @@
    "distance_km": 5540,
    "duration_min": 416,
    "landmark_count": 11,
-   "track_source": "synthetic-great-circle"
+   "track_source": "synthetic-great-circle",
+   "core": true
   },
   {
    "id": "bos-lhr",
@@ -180,7 +192,8 @@
    "distance_km": 5240,
    "duration_min": 393,
    "landmark_count": 8,
-   "track_source": "synthetic-great-circle"
+   "track_source": "synthetic-great-circle",
+   "core": true
   },
   {
    "id": "lhr-bos",
@@ -194,7 +207,8 @@
    "distance_km": 5240,
    "duration_min": 393,
    "landmark_count": 8,
-   "track_source": "synthetic-great-circle"
+   "track_source": "synthetic-great-circle",
+   "core": true
   },
   {
    "id": "bos-lax",
@@ -208,7 +222,8 @@
    "distance_km": 4193,
    "duration_min": 314,
    "landmark_count": 19,
-   "track_source": "synthetic-great-circle"
+   "track_source": "synthetic-great-circle",
+   "core": true
   },
   {
    "id": "lax-bos",
@@ -222,7 +237,8 @@
    "distance_km": 4193,
    "duration_min": 314,
    "landmark_count": 19,
-   "track_source": "synthetic-great-circle"
+   "track_source": "synthetic-great-circle",
+   "core": true
   },
   {
    "id": "jfk-las",
@@ -236,7 +252,8 @@
    "distance_km": 3609,
    "duration_min": 271,
    "landmark_count": 9,
-   "track_source": "synthetic-great-circle"
+   "track_source": "synthetic-great-circle",
+   "core": true
   },
   {
    "id": "las-jfk",
@@ -250,7 +267,8 @@
    "distance_km": 3609,
    "duration_min": 271,
    "landmark_count": 9,
-   "track_source": "synthetic-great-circle"
+   "track_source": "synthetic-great-circle",
+   "core": true
   },
   {
    "id": "bos-den",
@@ -264,7 +282,8 @@
    "distance_km": 2816,
    "duration_min": 211,
    "landmark_count": 12,
-   "track_source": "synthetic-great-circle"
+   "track_source": "synthetic-great-circle",
+   "core": true
   },
   {
    "id": "den-bos",
@@ -278,7 +297,8 @@
    "distance_km": 2816,
    "duration_min": 211,
    "landmark_count": 12,
-   "track_source": "synthetic-great-circle"
+   "track_source": "synthetic-great-circle",
+   "core": true
   }
  ]
 }

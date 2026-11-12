@@ -28,3 +28,19 @@ def test_route_is_confirmed_only_by_a_takeoff_or_landing_at_its_airports():
     s, _ = merge(s, [landing_lax, stale], "t2")
     assert s["routes"]["JFK-LAX"]["confirmed"] == {"LAX": "B6 1 t2"}
     assert "confirmed" not in s["routes"]["JFK-LGB"]   # 17 km from LGB: not close enough
+
+
+def test_only_confirmed_observed_routes_are_mapped(tmp_path, monkeypatch):
+    import json
+    import airports
+    obs = {"routes": {
+        "BOS-SFO": {"origin": "BOS", "dest": "SFO", "confirmed": {"SFO": "B6 333 2026-11-12T22:00:00+00:00"}},
+        "BOS-LAS": {"origin": "BOS", "dest": "LAS"},                                     # never seen low: not mapped
+        "JFK-LAX": {"origin": "JFK", "dest": "LAX", "confirmed": {"JFK": "B6 23 t"}},   # already a core pair
+        "JFK-XXX": {"origin": "JFK", "dest": "XXX", "confirmed": {"JFK": "B6 9 t"}},    # airport unknown
+    }}
+    (tmp_path / "observed_routes.json").write_text(json.dumps(obs))
+    monkeypatch.setattr(airports, "HERE", tmp_path)
+    pairs = airports._observed_pairs()
+    assert [(o, d) for o, d, _, _ in pairs] == [("BOS", "SFO")]
+    assert pairs[0][3].startswith("seen at SFO on the A to F live list, 2026-11-12")

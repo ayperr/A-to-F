@@ -19,7 +19,7 @@ from datetime import date, datetime, time, timedelta, timezone
 from pathlib import Path
 from zoneinfo import ZoneInfo
 
-from airports import AIRPORTS, DEPARTURE_SLOTS, all_routes
+from airports import AIRPORTS, CORE_AIRPORTS, DEPARTURE_SLOTS, all_routes
 from fetch_tracks import TrackPoint, gc_distance_km, synthetic_track
 from landmarks import along_route, export_catalog
 from sun_geometry import recommend, samples_for
@@ -54,6 +54,10 @@ def main() -> None:
     (OUT / "routes").mkdir(parents=True, exist_ok=True)
     FIXTURES.mkdir(parents=True, exist_ok=True)
     index, golden = [], []
+    keep = {f"{r['id']}.json" for r in all_routes()}
+    for stale in (OUT / "routes").glob("*.json"):
+        if stale.name not in keep:   # a route that is no longer mapped
+            stale.unlink()
     ref = datetime(2026, 1, 1, tzinfo=timezone.utc)  # geometry only; time is added later
 
     for r in all_routes():
@@ -71,8 +75,10 @@ def main() -> None:
             "id": r["id"], "origin": o.iata, "dest": d.iata, "origin_city": o.city, "dest_city": d.city,
             "origin_tz": o.tz, "verified": r["verified"], "source": r["source"],
             "distance_km": detail["distance_km"], "duration_min": detail["duration_min"],
-            "landmark_count": len(lms), "track_source": detail["track_source"],
+            "landmark_count": len(lms), "track_source": detail["track_source"], "core": r["core"],
         })
+        if not r["core"]:
+            continue   # the engine fixtures stay on the 20 hand-checked routes
         for day in GOLDEN_DATES:
             for hhmm in DEPARTURE_SLOTS.values():
                 dep = departure_utc(o.tz, day, hhmm)
@@ -89,8 +95,8 @@ def main() -> None:
     # Every ordered airport pair that is not a mapped route: the browser must find the same landmarks.
     mapped = {r["id"] for r in all_routes()}
     lm_golden = []
-    for a in AIRPORTS.values():
-        for b in AIRPORTS.values():
+    for a in CORE_AIRPORTS.values():
+        for b in CORE_AIRPORTS.values():
             if a.iata == b.iata or f"{a.iata}-{b.iata}".lower() in mapped:
                 continue
             rows = compact(synthetic_track(a.lat, a.lon, b.lat, b.lon, ref))

@@ -1,4 +1,4 @@
-// The browser's landmark search must give the pipeline's answers: for the 20 mapped routes (the
+// The browser's landmark search must give the pipeline's answers: for every mapped route (the
 // landmarks stored in their JSON) and for 52 airport pairs that are not mapped (landmarks-golden.json).
 import { readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
@@ -25,7 +25,7 @@ function same(got: Landmark[], want: Landmark[]) {
 describe("landmarks: browser port matches the pipeline", () => {
   it("has a real catalogue", () => {
     expect(catalog.features.length).toBeGreaterThan(1000);
-    expect(routes).toHaveLength(20);
+    expect(routes.filter((r) => r.core).length).toBe(20);   // plus any confirmed observed routes
     expect(golden.length).toBe(52);
   });
 

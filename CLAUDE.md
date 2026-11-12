@@ -15,8 +15,9 @@ Plan, status and what's left: `BUILD_GUIDE.md`.
 3. **Python and TypeScript engines stay identical.** Change both, rebuild data, run both test suites.
    `npm test` checks 320 Python vectors (`web/lib/engine/fixtures/golden.json`), and the landmark search
    (`web/lib/engine/landmarks.ts`) against Python on the 20 mapped routes plus 52 other airport pairs.
-4. **Never invent data.** Landmarks come from Natural Earth and carry Wikidata IDs. Routes with
-   `verified: False` in `pipeline/airports.py` are not confirmed yet. No seat maps, no JetBlue internals.
+4. **Never invent data.** Landmarks come from Natural Earth and carry Wikidata IDs. The 20 core directions were
+   checked by hand; more routes come only from `observed_routes.json` once a plane was seen taking off or landing
+   at one of their airports, with airports from OpenFlights (`airport_db.py --update`). No seat maps, no JetBlue internals.
 5. **Label approximations.** Tracks are `synthetic-great-circle`; durations are short westbound. Never present
    them as real flight times. Live flights use real positions, but their routes and time since takeoff are estimates.
 6. **Generated files are not hand-edited** (`web/public/data/routes*`, `landmarks.json`, `insights.json`,
@@ -56,7 +57,8 @@ npm test && npm run lint && npm run build
 ## Layout
 - `pipeline/` Python. `solar.py` (NOAA sun), `sun_geometry.py` (sides + recommend), `landmarks.py` (Natural Earth
   corridor search), `fetch_tracks.py`, `build_data.py`, `stats.py` (year grid), `view_of_week.py`, `basemap.py`,
-  `narrate.py`, `check_claims.py`, `observe_routes.py` (JetBlue routes seen on the live list), `tests/`.
+  `narrate.py`, `check_claims.py`, `observe_routes.py` (JetBlue routes seen on the live list), `airport_db.py`
+  (OpenFlights airports for them), `tests/`. Insights and the engine fixtures stay on the 20 core directions.
 - `web/` Next.js 16 (App Router, `cacheComponents`), Vercel root `web`. Pages: `/`, `/route/[id]`, `/window/[id]`
   (CesiumJS), `/postcard/[id]` (canvas), `/insights`, `/about`, `/privacy`; APIs `/api/flight` (AeroDataBox), `/api/live` (adsb.lol positions + adsbdb.com routes, CDN-cached 30 s / 5 s), `/api/identify` and `/api/landmark` (Claude, `lib/claude/`).
   Engine port in `web/lib/engine`, including the landmark search, so any JetBlue flight gets landmarks from the

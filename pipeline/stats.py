@@ -27,7 +27,7 @@ def empty() -> dict:
 
 
 def main() -> None:
-    routes = json.loads((OUT / "routes.json").read_text())["routes"]
+    routes = [r for r in json.loads((OUT / "routes.json").read_text())["routes"] if r.get("core", True)]
     result = {"year": YEAR, "hours": HOURS, "days": "all", "flights": 0, "routes": {}}
     for r in routes:
         detail = json.loads((OUT / "routes" / f"{r['id']}.json").read_text())
