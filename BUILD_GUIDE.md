@@ -15,7 +15,8 @@ Facts were checked on 1 Nov 2026; sources at the end.
 | Browser engine | TypeScript port (`web/lib/engine`) for any date and time | 320 parity cases vs Python (`npm test`) |
 | Planner | Flight-number lookup or route picker, A/F answer, clickable seat row (middle/aisle seats explained), camera moments that open the Virtual Window at that minute, two-lane timeline | `/`, `/route/[id]` |
 | Any JetBlue flight | Flight number + date → AeroDataBox → airports and time; pre-built routes get everything, other routes get the sun answer with a browser-computed track (tested equal to the pipeline's) | `/api/flight`, `/flight`, `/flight/window`, `/flight/postcard` |
-| Virtual Window | CesiumJS side camera, real sun lighting, terrain + night lights (ion token), 1×/60×/300×, phone GPS | `/window/[id]` |
+| Virtual Window | CesiumJS side camera, real sun lighting, terrain (ion token), 1×/60×/300×, phone GPS | `/window/[id]` |
+| Live flights | JetBlue planes in the air now (adsb.lol, by fleet type) with routes (adsbdb.com, cached 12 h); live Virtual Window follows the real position (dead-reckoned between 10 s polls), LIVE button after replay; a flight number for today that's airborne opens it | `/api/live`, `?live=JBU615`; tests in `lib/live.test.ts` |
 | Postcard | 1080×1350 canvas: map, golden stretch, landmarks on your side, your photo in the window, share/download | `/postcard/[id]` |
 | Insights | Year grid per route (months × departure times), headline facts | `/insights` |
 | Narration | Batches (Haiku lines, Sonnet adaptive-thinking tips), claim check rejects wrong sides | `pipeline/narrate.py`, `check_claims.py` |

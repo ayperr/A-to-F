@@ -14,6 +14,9 @@ import LandmarkAbout from "./LandmarkAbout";
 
 import { aimNight, interpolate, ionWorks, type LightMode, lightFromSun, loadCesium, PITCH_DEG, setLightMode, TOKEN } from "@/lib/cesium";
 import { samplesFor } from "@/lib/engine/geometry";
+import { deadReckon, type LivePlane, nearestMinute } from "@/lib/live";
+
+type LivePos = { lat: number; lon: number; alt: number; heading: number; speed_ms: number; at: number };
 
 const SPEEDS = [1, 60, 300];
 const CRUISE_M = 10_700;
@@ -28,6 +31,9 @@ export default function VirtualWindow({ detail, backHref }: { detail: RouteDetai
   const minuteRef = useRef(0);
   const depRef = useRef(0);
   const modeRef = useRef<LightMode>("real");
+  // Live flight (?live=JBU615): the camera follows the plane's real position while `followRef` is on.
+  const liveRef = useRef<LivePos | null>(null);
+  const followRef = useRef(false);
 
   const [side, setSide] = useState<"A" | "F">("A");
   const [date, setDate] = useState("2026-11-12");
@@ -39,6 +45,8 @@ export default function VirtualWindow({ detail, backHref }: { detail: RouteDetai
   const [gps, setGps] = useState<string | null>(null);
   const [mode, setMode] = useState<LightMode>("real");
   const [lines, setLines] = useState<Record<string, string>>({});
+  const [live, setLive] = useState<{ callsign: string; plane?: LivePlane; note: string; gone?: boolean; at?: number } | null>(null);
+  const [following, setFollowing] = useState(false);
 
   // Pre-generated narration (pipeline/narrate.py), already checked against the geometry. Optional.
   useEffect(() => {
@@ -58,6 +66,11 @@ export default function VirtualWindow({ detail, backHref }: { detail: RouteDetai
     if (Number.isFinite(startAt) && startAt > 0) { setMinute(startAt); minuteRef.current = startAt; }
     const light = q.get("light");
     if (light === "day" || light === "night") { setMode(light); modeRef.current = light; }
+    const lv = q.get("live");
+    if (lv && /^JBU\d{1,4}[A-Z]?$/.test(lv)) {
+      setLive({ callsign: lv, note: "Finding the plane…" });
+      setFollowing(true); followRef.current = true;
+    }
     /* eslint-enable react-hooks/set-state-in-effect */
   }, []);
 
@@ -66,7 +79,9 @@ export default function VirtualWindow({ detail, backHref }: { detail: RouteDetai
   useEffect(() => { depRef.current = departureMs; }, [departureMs]);
 
   const placeCamera = useCallback((C: typeof CesiumNS, v: CesiumNS.Viewer, m: number) => {
-    const p = gpsRef.current ?? interpolate(detail.track, m);
+    const lp = followRef.current ? liveRef.current : null;
+    const p = gpsRef.current
+      ?? (lp ? { ...deadReckon(lp, (Date.now() - lp.at) / 1000), alt: lp.alt, heading: lp.heading } : interpolate(detail.track, m));
     const look = sideRef.current === "A" ? -90 : 90;
     v.camera.setView({
       destination: C.Cartesian3.fromDegrees(p.lon, p.lat, Math.max(p.alt, 300)),
@@ -134,14 +149,14 @@ export default function VirtualWindow({ detail, backHref }: { detail: RouteDetai
         let lastUi = 0;
         removeTick = v.clock.onTick.addEventListener((clk) => {
           const start = v.clock.startTime;
-          const m = gpsRef.current ? 0 : C.JulianDate.secondsDifference(clk.currentTime, start) / 60;
+          const m = gpsRef.current ? 0 : followRef.current ? minuteRef.current : C.JulianDate.secondsDifference(clk.currentTime, start) / 60;
           placeCamera(C, v, m);
           const now = performance.now();
           if (now - lastUi > 200) {
             lastUi = now;
             setMinute(m);
             minuteRef.current = m;
-            if (!gpsRef.current && m >= last) setPlaying(false);
+            if (!gpsRef.current && !followRef.current && m >= last) setPlaying(false);
           }
         });
         setStatus(ion ? "" : TOKEN
@@ -168,6 +183,13 @@ export default function VirtualWindow({ detail, backHref }: { detail: RouteDetai
   useEffect(() => {
     const v = viewerRef.current, C = window.Cesium;
     if (!v || !C || gpsRef.current) return;
+    if (following) {   // live: real time, so the sun is where it really is now
+      v.clock.currentTime = C.JulianDate.now();
+      v.clock.clockRange = C.ClockRange.UNBOUNDED;
+      v.clock.multiplier = 1;
+      v.clock.shouldAnimate = true;
+      return;
+    }
     const start = C.JulianDate.fromDate(new Date(departureMs));
     v.clock.startTime = start;
     v.clock.stopTime = C.JulianDate.addMinutes(start, last, new C.JulianDate());
@@ -175,9 +197,58 @@ export default function VirtualWindow({ detail, backHref }: { detail: RouteDetai
     v.clock.currentTime = C.JulianDate.addMinutes(start, Math.min(minuteRef.current, last), new C.JulianDate());
     v.clock.multiplier = speed;
     v.clock.shouldAnimate = playing;
-  }, [departureMs, last, speed, playing, status]);
+  }, [departureMs, last, speed, playing, status, following]);
+
+  // Poll the plane's position every 10 seconds (the API is CDN-cached, so viewers share calls).
+  const callsign = live?.callsign;
+  useEffect(() => {
+    if (!callsign) return;
+    let stop = false, first = true;
+    const poll = async () => {
+      try {
+        const r = await fetch(`/api/live?callsign=${callsign}`);
+        const j = await r.json().catch(() => null);
+        if (stop) return;
+        if (!r.ok || !j) { setLive((l) => l && { ...l, note: "The live feed didn't answer. Showing the last known position." }); return; }
+        if (!j.live) {
+          setLive((l) => l && { ...l, gone: true, note: "This flight isn't in the air any more, or it's out of receiver range. Replay the route below." });
+          if (followRef.current) { followRef.current = false; setFollowing(false); }
+          return;
+        }
+        const pl = j.plane as LivePlane;
+        liveRef.current = { lat: pl.lat, lon: pl.lon, alt: Math.max(pl.alt_m, 300), heading: pl.heading, speed_ms: pl.speed_ms, at: Date.now() - pl.seen_s * 1000 };
+        const k = Math.min(nearestMinute(detail.track, pl.lat, pl.lon), last);
+        if (first) {
+          // No departure time for a live flight: estimate it from how far along the route the plane is.
+          const dep = Date.now() - k * 60_000;
+          setDate(new Intl.DateTimeFormat("en-CA", { timeZone: detail.origin.tz, year: "numeric", month: "2-digit", day: "2-digit" }).format(new Date(dep)));
+          setTime(clock(dep, detail.origin.tz));
+          first = false;
+        }
+        if (followRef.current) { minuteRef.current = k; setMinute(k); }
+        setLive((l) => l && { ...l, plane: pl, gone: false, at: Date.now(), note: "" });
+      } catch {
+        if (!stop) setLive((l) => l && { ...l, note: "No connection. Showing the last known position." });
+      }
+    };
+    poll();
+    const id = setInterval(() => { if (document.visibilityState === "visible") poll(); }, 10_000);
+    return () => { stop = true; clearInterval(id); };
+  }, [callsign, detail.track, detail.origin.tz, last]);
+
+  /** Leave live to replay or scrub, from where the plane is now. */
+  const leaveLive = () => { if (followRef.current) { followRef.current = false; setFollowing(false); } };
+  const goLive = () => {
+    if (!liveRef.current || live?.gone) return;
+    setPlaying(false);
+    followRef.current = true;
+    setFollowing(true);
+    const k = Math.min(nearestMinute(detail.track, liveRef.current.lat, liveRef.current.lon), last);
+    minuteRef.current = k; setMinute(k);
+  };
 
   const seek = (m: number) => {
+    leaveLive();
     const v = viewerRef.current, C = window.Cesium;
     setMinute(m);
     minuteRef.current = m;
@@ -252,7 +323,10 @@ export default function VirtualWindow({ detail, backHref }: { detail: RouteDetai
 
       <div className={styles.panel}>
         <p className={styles.kicker}>
-          {detail.origin.iata} to {detail.dest.iata}, {date}, leaving {time}
+          {live
+            ? <>{live.plane?.number ?? live.callsign.replace(/^JBU/, "B6 ")}, {detail.origin.iata} to {detail.dest.iata}{" "}
+                {following && !live.gone ? <span className={styles.liveBadge}><span aria-hidden="true" /> LIVE</span> : "· replay"}</>
+            : <>{detail.origin.iata} to {detail.dest.iata}, {date}, leaving {time}</>}
         </p>
         <h1>Blind down? Middle seat? This is the {word} window.</h1>
         <p className={styles.callout} aria-live="polite">{callout ?? " "}</p>
@@ -282,21 +356,35 @@ export default function VirtualWindow({ detail, backHref }: { detail: RouteDetai
                 ? `Night mode: the same view after sunset.${dark ? "" : " Outside it's daylight right now."}`
                 : dark ? "It's dark out there right now. Day mode shows the ground as if it were noon." : "\u00a0"}
           </p>
+          {live && (
+            <div className={styles.liveRow}>
+              <button type="button" className={styles.liveBtn} aria-pressed={following && !live.gone}
+                disabled={!live.plane || live.gone} onClick={goLive}>
+                <span aria-hidden="true" /> {following && !live.gone ? "Live" : "Back to LIVE"}
+              </button>
+              <p className={styles.liveInfo} aria-live="polite">
+                {live.note || (live.plane && (following
+                  ? `${Math.round(live.plane.alt_m / 0.3048).toLocaleString("en-US")} ft, ${Math.round(live.plane.speed_ms * 3.6)} km/h. Real position, updated every 10 seconds.`
+                  : "Replaying the route. Back to LIVE jumps to where the plane is now."))}
+              </p>
+            </div>
+          )}
           {!gps && (
             <>
-              <button type="button" className={styles.play} onClick={() => { if (m >= last) seek(0); setPlaying((p) => !p); }}>
+              <button type="button" className={styles.play} onClick={() => { leaveLive(); if (m >= last) seek(0); setPlaying((p) => !p); }}>
                 {playing ? "Pause" : "Play"}
               </button>
               <div className={styles.toggle} role="group" aria-label="Speed">
                 {SPEEDS.map((s) => (
-                  <button key={s} type="button" aria-pressed={speed === s} onClick={() => setSpeed(s)}>{s}×</button>
+                  <button key={s} type="button" aria-pressed={speed === s && !following} onClick={() => { leaveLive(); setSpeed(s); }}>{s}×</button>
                 ))}
               </div>
               <input type="range" min={0} max={last} value={m} aria-label="Minutes after takeoff"
                 onChange={(e) => { setPlaying(false); seek(+e.target.value); }} />
               <p className={styles.time}>
-                {clock(departureMs + m * 60_000, detail.origin.tz)} {detail.origin.city} time,{" "}
-                {m === 0 ? "takeoff" : `${duration(m)} after takeoff`}
+                {following && live?.at ? clock(live.at, detail.origin.tz) : clock(departureMs + m * 60_000, detail.origin.tz)}{" "}
+                {detail.origin.tz === "UTC" ? "UTC" : `${detail.origin.city} time`},{" "}
+                {m === 0 ? "takeoff" : `${live ? "about " : ""}${duration(m)} after takeoff`}
               </p>
             </>
           )}
@@ -309,12 +397,21 @@ export default function VirtualWindow({ detail, backHref }: { detail: RouteDetai
           </div>
         )}
 
-        <div className={styles.gps}>
-          <button type="button" onClick={startGps} className={styles.linkish}>Use my phone&rsquo;s GPS instead</button>
-          <p>{gps ?? "GPS works in airplane mode. Your location stays on your phone."}</p>
-        </div>
+        {live ? (
+          <p className={styles.liveFine}>
+            Position from the <a href="https://adsb.lol" target="_blank" rel="noreferrer">adsb.lol</a> receiver network (ODbL).
+            Route from <a href="https://www.adsbdb.com" target="_blank" rel="noreferrer">adsbdb.com</a>. The time after takeoff is estimated from where the plane is.
+          </p>
+        ) : (
+          <div className={styles.gps}>
+            <button type="button" onClick={startGps} className={styles.linkish}>Use my phone&rsquo;s GPS instead</button>
+            <p>{gps ?? "GPS works in airplane mode. Your location stays on your phone."}</p>
+          </div>
+        )}
         <p className={styles.back}>
-          <Link href={backHref ?? `/route/${detail.id}?d=${date}&t=${time}`}>Back to the plan</Link>
+          {live
+            ? <Link href="/?live=1">All live flights</Link>
+            : <Link href={backHref ?? `/route/${detail.id}?d=${date}&t=${time}`}>Back to the plan</Link>}
         </p>
       </div>
     </div>

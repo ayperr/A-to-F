@@ -6,6 +6,8 @@ import { useEffect, useRef, useState } from "react";
 import { todayIn } from "@/lib/engine/time";
 import { checkFlightDate, checkFlightInput, dateWindow, type FlightLeg, readLookup } from "@/lib/flight";
 import { destinationsFrom, getRoute, origins, routeId, routes } from "@/lib/routes";
+import { callsignFor, liveHref } from "@/lib/live";
+import LiveFlights from "./LiveFlights";
 import styles from "./StartForm.module.css";
 
 const TIMES = Array.from({ length: 48 }, (_, i) => `${String(Math.floor(i / 2)).padStart(2, "0")}:${i % 2 ? "30" : "00"}`);
@@ -18,6 +20,7 @@ export default function StartForm() {
   const [number, setNumber] = useState("");
   const [date, setDate] = useState("");
   const [showRoute, setShowRoute] = useState(false);
+  const [showLive, setShowLive] = useState(false);
   const [from, setFrom] = useState("");
   const [to, setTo] = useState("");
   const [time, setTime] = useState("");
@@ -42,6 +45,7 @@ export default function StartForm() {
     if (q.get("f")) setNumber((q.get("f") ?? "").replace(/^B6\s*/i, ""));
     if (r) { setShowRoute(true); setFrom(r.origin); setTo(r.dest); }
     if (q.get("t")) setTime(q.get("t") ?? "");
+    if (q.get("live")) setShowLive(true);
     /* eslint-enable react-hooks/set-state-in-effect */
   }, []);
 
@@ -59,6 +63,12 @@ export default function StartForm() {
     if (badDate) return setError(badDate);
     setBusy(true);
     try {
+      // Flying today (or a late one from yesterday)? If the plane is in the air now, go straight to its live view.
+      if (win && date <= todayIn("America/New_York") && date >= win.min) {
+        const lv = await fetch(`/api/live?callsign=${callsignFor(input.digits)}`).then((x) => (x.ok ? x.json() : null)).catch(() => null);
+        const href = lv?.live ? liveHref(lv.plane) : null;
+        if (href) { router.push(href); return; }
+      }
       const r = await fetch(`/api/flight?number=${input.digits}&date=${date}`);
       const body: unknown = await r.json().catch(() => null);
       const found = readLookup(r.status, body, `B6 ${input.digits}`, date);
@@ -126,9 +136,14 @@ export default function StartForm() {
       </form>
 
 
-      <button type="button" className={styles.toggle} aria-expanded={showRoute} onClick={() => setShowRoute((v) => !v)}>
-        No flight number?
-      </button>
+      <div className={styles.toggles}>
+        <button type="button" className={styles.toggle} aria-expanded={showRoute} onClick={() => setShowRoute((v) => !v)}>
+          No flight number?
+        </button>
+        <button type="button" className={`${styles.toggle} ${styles.liveToggle}`} aria-expanded={showLive} onClick={() => setShowLive((v) => !v)}>
+          <span aria-hidden="true" /> Live flights
+        </button>
+      </div>
 
       {showRoute && (
         <form className={styles.route} onSubmit={findRoute}>
@@ -165,6 +180,8 @@ export default function StartForm() {
           <p className={styles.hint}>Departure time is local to the airport you leave from.</p>
         </form>
       )}
+
+      {showLive && <LiveFlights />}
     </section>
   );
 }

@@ -80,6 +80,7 @@ export default function About() {
           <li>Flight paths are approximations until real flight tracks are loaded, so flight times are shorter than the schedule, especially flying west into the wind.</li>
           <li>Clouds are not forecast. A sunset on your side can still be a grey one.</li>
           <li>There are no seat maps here, so the wing is not taken into account. Rows behind the wing usually have the clearer view down.</li>
+          <li>Live flights only show planes the volunteer adsb.lol receivers can hear, so flights over the ocean can drop out. Their routes come from a callsign database, not from JetBlue, and can be wrong. The time since takeoff in a live view is estimated from where the plane is.</li>
           <li>Three routes are still being checked against JetBlue&rsquo;s current schedule and are marked on the route list.</li>
         </ul>
       </section>
@@ -116,6 +117,7 @@ export default function About() {
         <h2>Data and credits</h2>
         <ul className={styles.limits}>
           <li>Landmarks and map outlines: Natural Earth (public domain), linked to Wikidata.</li>
+          <li>Live positions: <a href="https://adsb.lol">adsb.lol</a> community receiver network (ODbL). Live routes: <a href="https://www.adsbdb.com">adsbdb.com</a>, callsign data by David Taylor and Jim Mason, looked up per flight and never stored.</li>
           <li>3D view: CesiumJS and Cesium ion, used under their free personal and education terms.</li>
           <li>Built with Claude for the ieNYC × DataCamp &ldquo;Be a Master in Claude&rdquo; challenge. Code on <a href="https://github.com/ayperr/A-to-F">GitHub</a>.</li>
           <li>Independent student project. Not affiliated with or endorsed by JetBlue Airways.</li>

@@ -23,8 +23,9 @@ Plan, status and what's left: `BUILD_GUIDE.md`.
 7. **Brand/legal.** "for JetBlue flyers", never "by JetBlue". White and blue, but our own blues and our own
    A to F logo: never JetBlue's logo, fonts or exact brand colours. Tokens in `web/app/globals.css`: bg #ffffff,
    ink #0b2350, accent #1f5fd6, accent-soft #e4eefc. Font: Manrope. "Not affiliated" footer on every page.
-8. **First page stays simple.** Only the B6 flight-number form, with "No flight number?" for route and time.
-   Results unlock after one of them is filled in; a bare route link asks for date and time first.
+8. **First page stays simple.** Only the B6 flight-number form, with "No flight number?" for route and time and
+   "Live flights" (JetBlue planes in the air now). Results unlock after one of them is used; a bare route link asks
+   for date and time first. A flight number for today that is in the air opens its live Virtual Window.
 9. **Cost.** Visitors cost $0 except two live Claude Haiku 5.5 features, both rate-limited and capped per day:
    "What's that?" (`/api/identify`: photo + tool use, Claude may only name engine candidates) and "Tell me about it"
    (`/api/landmark`: Wikipedia summary -> 2-3 sentences, CDN-cached a day). Every Claude sentence passes a
@@ -56,7 +57,7 @@ npm test && npm run lint && npm run build
   corridor search), `fetch_tracks.py`, `build_data.py`, `stats.py` (year grid), `view_of_week.py`, `basemap.py`,
   `narrate.py`, `check_claims.py`, `tests/`.
 - `web/` Next.js 16 (App Router, `cacheComponents`), Vercel root `web`. Pages: `/`, `/route/[id]`, `/window/[id]`
-  (CesiumJS), `/postcard/[id]` (canvas), `/insights`, `/about`, `/privacy`; APIs `/api/flight` (AeroDataBox), `/api/identify` and `/api/landmark` (Claude, `lib/claude/`),
+  (CesiumJS), `/postcard/[id]` (canvas), `/insights`, `/about`, `/privacy`; APIs `/api/flight` (AeroDataBox), `/api/live` (adsb.lol positions + adsbdb.com routes, CDN-cached 30 s / 5 s), `/api/identify` and `/api/landmark` (Claude, `lib/claude/`),
   `/api/cesium-check`.
   Engine port in `web/lib/engine`. Next's docs: `web/node_modules/next/dist/docs/`.
 - `mcp_server/` FastMCP, **pinned mcp==1.30.0** (v1 API; 2.x renamed FastMCP). `main.py` at repo root hosts it.
