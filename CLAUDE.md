@@ -68,7 +68,8 @@ npm test && npm run lint && npm run build
   landmark-verifier), hooks (guard generated files, check claims/engine after edits).
 - `plugin/a-to-f-trip-planner/` Cowork plugin (skills + hosted MCP).
 - `.github/workflows/` CI, Claude Code PR review, "Generate Claude data" (narration with a repo secret),
-  "Observe JetBlue routes" (every 15 min for a day; commits `pipeline/observed_routes.json` once at the end).
+  "Observe JetBlue routes" (snapshot every 5 min until Fri 18:00 ET, each run starting the next; commits
+  `pipeline/observed_routes.json` every 6 hours and at the end).
 
 ## Working style
 Explore → plan → code → test → commit. Small commits. Run tests and `npm run build` before every commit.

@@ -1,13 +1,12 @@
 name: Observe JetBlue routes
 
-# For one day, every 15 minutes: read the site's live list (/api/live) and record which JetBlue routes are
-# flying (pipeline/observe_routes.py). The running list lives in the Actions cache and is uploaded as an
-# artifact after every run, so there is nothing to commit (and nothing to redeploy) while it runs. When the
-# window ends, the next run commits pipeline/observed_routes.json once. Run it by hand with "commit" ticked
-# to commit what is there so far.
+# Records which JetBlue routes are flying, from the site's own live list (/api/live), until OBSERVE_UNTIL.
+# GitHub's 15-minute schedule did not fire for this repo, so each run instead takes a snapshot every
+# 5 minutes for about 55 minutes and then starts the next run itself (workflow_dispatch is allowed from
+# GITHUB_TOKEN). The running list lives in the Actions cache; it is committed at most every 6 hours (so
+# routes can be mapped while it runs, with few redeploys) and once more when the window ends.
+# Start it, or restart a broken chain, from the Actions tab with "Run workflow".
 on:
-  schedule:
-    - cron: "*/15 * * * *"
   workflow_dispatch:
     inputs:
       commit:
@@ -17,32 +16,35 @@ on:
 
 permissions:
   contents: write
+  actions: write
 
 concurrency:
   group: observe-routes
   cancel-in-progress: false
 
 env:
-  OBSERVE_UNTIL: "2026-11-13T23:00:00Z"   # Fri 13 Nov, 18:00 New York: a full day and night of flights
+  OBSERVE_UNTIL: "2026-11-13T23:00:00Z"   # Fri 13 Nov, 18:00 New York
+  COMMIT_EVERY_H: "6"
 
 jobs:
   observe:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 75
     steps:
       - name: Observing, finishing or done?
         id: phase
         run: |
           now=$(date -u +%s); until=$(date -u -d "$OBSERVE_UNTIL" +%s)
-          if [ "$now" -le "$until" ]; then phase=observe
+          if [ "$now" -lt "$until" ]; then phase=observe
           elif [ "$now" -le $((until + 7200)) ]; then phase=finish
           else phase=done; fi
-          if [ "${{ inputs.commit }}" = "true" ]; then phase=finish; fi
           echo "phase=$phase" >> "$GITHUB_OUTPUT"
           echo "Phase: $phase"
 
       - uses: actions/checkout@v7
         if: steps.phase.outputs.phase != 'done'
+        with:
+          fetch-depth: 50
 
       - uses: actions/setup-python@v7
         if: steps.phase.outputs.phase == 'observe'
@@ -57,19 +59,26 @@ jobs:
           key: observed-routes-${{ github.run_id }}-${{ github.run_attempt }}
           restore-keys: observed-routes-
 
-      - name: Snapshot of the flights in the air
+      - name: A snapshot every 5 minutes for up to 55 minutes
         if: steps.phase.outputs.phase == 'observe'
-        run: python pipeline/observe_routes.py
+        run: |
+          end=$(( $(date -u +%s) + 3300 )); until=$(date -u -d "$OBSERVE_UNTIL" +%s)
+          [ "$until" -lt "$end" ] && end=$until
+          while :; do
+            python pipeline/observe_routes.py || echo "Snapshot failed, trying again in 5 minutes."
+            [ $(( $(date -u +%s) + 300 )) -gt "$end" ] && break
+            sleep 300
+          done
 
       - name: Keep the list for the next run
-        if: steps.phase.outputs.phase == 'observe'
+        if: always() && steps.phase.outputs.phase == 'observe'
         uses: actions/cache/save@v5
         with:
           path: pipeline/observed_routes.json
           key: observed-routes-${{ github.run_id }}-${{ github.run_attempt }}
 
-      - name: Upload the list (download it from this run's page)
-        if: steps.phase.outputs.phase != 'done'
+      - name: Upload the list
+        if: always() && steps.phase.outputs.phase != 'done'
         uses: actions/upload-artifact@v7
         with:
           name: observed-routes
@@ -77,14 +86,26 @@ jobs:
           if-no-files-found: ignore
           overwrite: true
 
-      - name: Commit once the day is over
-        if: steps.phase.outputs.phase == 'finish'
+      - name: Commit (every 6 hours, when asked, and when the window ends)
+        if: steps.phase.outputs.phase != 'done'
         run: |
           [ -f pipeline/observed_routes.json ] || { echo "Nothing observed yet."; exit 0; }
+          last=$(git log -1 --format=%ct -- pipeline/observed_routes.json 2>/dev/null || echo 0); last=${last:-0}
+          age=$(( $(date -u +%s) - last ))
+          if [ "${{ steps.phase.outputs.phase }}" != "finish" ] && [ "${{ inputs.commit }}" != "true" ] \
+             && [ "$age" -lt $(( COMMIT_EVERY_H * 3600 )) ]; then
+            echo "Last commit $((age / 60)) minutes ago; not yet."; exit 0
+          fi
           git config user.name "a-to-f-bot"
           git config user.email "a-to-f-bot@users.noreply.github.com"
           git add pipeline/observed_routes.json
-          git diff --cached --quiet && { echo "Already committed."; exit 0; }
-          git commit -m "Observed JetBlue routes ($(python3 -c 'import json;d=json.load(open("pipeline/observed_routes.json"));print(len(d["routes"]),"pairs,",d["snapshots"],"snapshots")'))"
+          git diff --cached --quiet && { echo "No change since the last commit."; exit 0; }
+          git commit -m "Observed JetBlue routes ($(python3 -c 'import json;d=json.load(open("pipeline/observed_routes.json"));r=d["routes"].values();print(len(d["routes"]),"pairs,",sum(1 for x in r if x.get("confirmed")),"confirmed,",d["snapshots"],"snapshots")'))"
           git pull --rebase -q origin main
           git push
+
+      - name: Start the next run
+        if: always() && steps.phase.outputs.phase == 'observe'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run observe-routes.yml --ref main -R "$GITHUB_REPOSITORY"
