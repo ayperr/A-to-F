@@ -15,9 +15,12 @@ export default function About() {
     <article className={styles.page}>
       <h1>How A to F works</h1>
       <p className={styles.lead}>
-        I spent two years as a gate agent at Amsterdam Schiphol, and the question I heard most was
-        &ldquo;which side has the view?&rdquo; The honest answer was always &ldquo;it depends.&rdquo; This site works
-        out what it depends on.
+        &ldquo;Which side has the view?&rdquo; is the question friends have asked me most since I started working
+        for the airline KLM, and passengers sometimes asked it at the gate as well. The answer depends on the route,
+        the date, the departure time and the position of the sun, so most people simply guess. A to F answers it with
+        geometry rather than guesswork. For everyone who cannot see out, in a middle or aisle seat, next to a closed
+        blind or on a night flight, there is the Virtual Window: the view from the window seat, live or replayed, in
+        the real light of that moment or in full daylight or full night.
       </p>
 
       <ol className={styles.steps}>
@@ -26,7 +29,8 @@ export default function About() {
           <p>
             One position per minute from takeoff to landing. For now this is the shortest route between the two
             airports at a typical cruising height. Real flights bend with the wind and air traffic control, which is
-            why anything within 40 km of the line is marked as possibly on either side.
+            why anything within 40 km of the line is marked as possibly on either side. Live flights use the real
+            position of the plane instead.
           </p>
         </li>
         <li>
@@ -67,9 +71,10 @@ export default function About() {
         <li>
           <h2>Where Claude fits</h2>
           <p>
-            Claude writes and reviews the code and the words: the window narration, the trip-planner plugin and the MCP server.
-            It never decides which side something is on: the geometry does, and a separate checker rejects any
-            sentence the geometry doesn&rsquo;t support.
+            Geometry decides the side and Claude explains it, never the other way round. Claude writes the window
+            narration, explains landmarks and tells you what is in your photo, with information and fun facts about it.
+            Every sentence it writes is checked against the engine first, and a sentence naming the wrong side is
+            dropped.
           </p>
         </li>
       </ol>
