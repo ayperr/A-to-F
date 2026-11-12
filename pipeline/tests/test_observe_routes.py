@@ -44,3 +44,15 @@ def test_only_confirmed_observed_routes_are_mapped(tmp_path, monkeypatch):
     pairs = airports._observed_pairs()
     assert [(o, d) for o, d, _, _ in pairs] == [("BOS", "SFO")]
     assert pairs[0][3].startswith("seen at SFO on the A to F live list, 2026-11-12")
+
+
+def test_merge_states_keeps_everything_from_both_files():
+    from observe_routes import merge_states
+    a, _ = merge(None, [fl("B6 1", "JFK", "SFO")], "2026-11-12T20:00:00+00:00")
+    b, _ = merge(None, [fl("B6 2", "JFK", "SFO"), fl("B6 3", "BOS", "PIT")], "2026-11-12T21:00:00+00:00")
+    b["routes"]["BOS-PIT"]["confirmed"] = {"PIT": "B6 3 2026-11-12T21:00:00+00:00"}
+    m = merge_states(a, b)
+    assert m["routes"]["JFK-SFO"]["flights"] == ["B6 1", "B6 2"]
+    assert m["routes"]["JFK-SFO"]["first_seen"].startswith("2026-11-12T20")
+    assert m["routes"]["BOS-PIT"]["confirmed"] == {"PIT": "B6 3 2026-11-12T21:00:00+00:00"}
+    assert merge_states(None, b) is b

@@ -5,7 +5,8 @@ name: Observe JetBlue routes
 # 5 minutes for about 55 minutes and then starts the next run itself (workflow_dispatch is allowed from
 # GITHUB_TOKEN). The running list lives in the Actions cache; it is committed at most every 6 hours (so
 # routes can be mapped while it runs, with few redeploys) and once more when the window ends.
-# Start it, or restart a broken chain, from the Actions tab with "Run workflow".
+# Start it, or restart a broken chain, from the Actions tab with "Run workflow". Tick "commit" to commit the
+# latest saved list right away (a separate queue: the chain keeps running).
 on:
   workflow_dispatch:
     inputs:
@@ -19,7 +20,8 @@ permissions:
   actions: write
 
 concurrency:
-  group: observe-routes
+  # "Commit now" runs have their own queue, so they don't wait behind (or replace) the chain.
+  group: observe-routes-${{ inputs.commit && 'commit' || 'chain' }}
   cancel-in-progress: false
 
 env:
@@ -38,6 +40,8 @@ jobs:
           if [ "$now" -lt "$until" ]; then phase=observe
           elif [ "$now" -le $((until + 7200)) ]; then phase=finish
           else phase=done; fi
+          # "Commit now": no snapshots this run, commit straight away, then the chain carries on.
+          if [ "${{ inputs.commit }}" = "true" ] && [ "$phase" = "observe" ]; then phase=commit; fi
           echo "phase=$phase" >> "$GITHUB_OUTPUT"
           echo "Phase: $phase"
 
@@ -47,7 +51,7 @@ jobs:
           fetch-depth: 50
 
       - uses: actions/setup-python@v7
-        if: steps.phase.outputs.phase == 'observe'
+        if: steps.phase.outputs.phase != 'done'
         with:
           python-version: "3.13"
 
@@ -69,6 +73,12 @@ jobs:
             [ $(( $(date -u +%s) + 300 )) -gt "$end" ] && break
             sleep 300
           done
+
+      - name: Combine with the copy in the repo (nothing is lost if both changed)
+        if: always() && steps.phase.outputs.phase != 'done'
+        run: |
+          git show HEAD:pipeline/observed_routes.json > "$RUNNER_TEMP/repo.json" 2>/dev/null || true
+          python pipeline/observe_routes.py --merge "$RUNNER_TEMP/repo.json"
 
       - name: Keep the list for the next run
         if: always() && steps.phase.outputs.phase == 'observe'
@@ -92,7 +102,7 @@ jobs:
           [ -f pipeline/observed_routes.json ] || { echo "Nothing observed yet."; exit 0; }
           last=$(git log -1 --format=%ct -- pipeline/observed_routes.json 2>/dev/null || echo 0); last=${last:-0}
           age=$(( $(date -u +%s) - last ))
-          if [ "${{ steps.phase.outputs.phase }}" != "finish" ] && [ "${{ inputs.commit }}" != "true" ] \
+          if [ "${{ steps.phase.outputs.phase }}" = "observe" ] \
              && [ "$age" -lt $(( COMMIT_EVERY_H * 3600 )) ]; then
             echo "Last commit $((age / 60)) minutes ago; not yet."; exit 0
           fi

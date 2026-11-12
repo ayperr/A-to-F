@@ -76,11 +76,46 @@ def merge(state: dict | None, flights: list[dict], now: str) -> tuple[dict, list
     return state, new
 
 
+def merge_states(a: dict | None, b: dict | None) -> dict | None:
+    """Two observation files combined (the Actions cache and the copy in the repo), losing nothing."""
+    if not a or not b:
+        return a or b
+    out = {**a, "started": min(a["started"], b["started"]), "updated": max(a["updated"], b["updated"]),
+           "snapshots": max(a["snapshots"], b["snapshots"]), "routes": {}}
+    for key in sorted(set(a["routes"]) | set(b["routes"])):
+        x, y = a["routes"].get(key), b["routes"].get(key)
+        if not x or not y:
+            out["routes"][key] = x or y
+            continue
+        r = {**x, "flights": sorted(set(x["flights"]) | set(y["flights"]),
+                                    key=lambda n: int("".join(c for c in n if c.isdigit()) or 0)),
+             "first_seen": min(x["first_seen"], y["first_seen"]), "last_seen": max(x["last_seen"], y["last_seen"]),
+             "sightings": max(x["sightings"], y["sightings"])}
+        conf = {**y.get("confirmed", {}), **x.get("confirmed", {})}
+        for where in conf:   # keep the earliest sighting per airport
+            seen = [c[where] for c in (x.get("confirmed", {}), y.get("confirmed", {})) if where in c]
+            conf[where] = min(seen, key=lambda s: s.split()[-1])
+        if conf:
+            r["confirmed"] = dict(sorted(conf.items()))
+        out["routes"][key] = r
+    return out
+
+
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--live", default=LIVE)
     ap.add_argument("--out", type=Path, default=OUT)
+    ap.add_argument("--merge", type=Path, help="combine this observation file into --out and stop")
     args = ap.parse_args()
+    if args.merge:
+        mine = json.loads(args.out.read_text()) if args.out.exists() else None
+        other = json.loads(args.merge.read_text()) if args.merge.exists() else None
+        merged = merge_states(mine, other)
+        if merged:
+            args.out.write_text(json.dumps(merged, indent=1) + "\n")
+            print(f"merged: {len(merged['routes'])} pairs, "
+                  f"{sum(1 for r in merged['routes'].values() if r.get('confirmed'))} confirmed")
+        return
 
     req = urllib.request.Request(args.live, headers={"User-Agent": "a-to-f route observer (GitHub Actions)"})
     with urllib.request.urlopen(req, timeout=60) as r:
