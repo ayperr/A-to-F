@@ -15,6 +15,10 @@ export default function RoutesPage() {
         landmarks and camera moments, the Virtual Window and a postcard. The routes below are mapped in advance,
         with their own pages and a full year in Insights. Pick one, then tell us when you fly.
       </p>
+      <p style={{ color: "var(--ink-soft)", margin: "10px 0 0", maxWidth: "60ch", fontSize: "0.9rem" }}>
+        New routes are added from what is actually flying: A to F records every JetBlue route on the live list
+        throughout a day, and those routes are mapped next.
+      </p>
       <RouteList />
       <ViewOfWeek />
     </article>
