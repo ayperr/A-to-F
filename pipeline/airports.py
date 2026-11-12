@@ -75,16 +75,21 @@ def _observed_pairs() -> list[tuple[str, str, bool, str]]:
     if not path.exists():
         return []
     core = {frozenset((o, d)) for o, d, _, _ in CORE_PAIRS}
-    seen: dict[frozenset, tuple[str, str, bool, str]] = {}
+    # Sightings per pair, either direction: an airport seen in use by any flight on the pair counts.
+    pairs: dict[frozenset, dict[str, str]] = {}
     for r in json.loads(path.read_text())["routes"].values():
-        o, d = r["origin"], r["dest"]
-        key = frozenset((o, d))
-        if not r.get("confirmed") or key in core or key in seen or o not in AIRPORTS or d not in AIRPORTS:
-            continue
-        where, first = next(iter(sorted(r["confirmed"].items())))
-        day = first.split()[-1][:10]
-        seen[key] = (o, d, True, f"seen at {where} on the A to F live list, {day} (adsb.lol positions, adsbdb.com route)")
-    return sorted(seen.values())
+        key = frozenset((r["origin"], r["dest"]))
+        for where, first in r.get("confirmed", {}).items():
+            day = first.split()[-1][:10]
+            pairs.setdefault(key, {}).setdefault(where, day)
+    out = []
+    for key, seen in pairs.items():
+        a, b = sorted(key)
+        if key in core or not {a, b} <= set(seen) or a not in AIRPORTS or b not in AIRPORTS:
+            continue   # both airports must have been seen in use
+        out.append((a, b, True, f"takeoffs and landings seen at {a} and {b} on the A to F live list, "
+                                f"{max(seen.values())} (adsb.lol positions, adsbdb.com route)"))
+    return sorted(out)
 
 
 ROUTE_PAIRS: list[tuple[str, str, bool, str]] = CORE_PAIRS + _observed_pairs()

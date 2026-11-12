@@ -30,20 +30,31 @@ def test_route_is_confirmed_only_by_a_takeoff_or_landing_at_its_airports():
     assert "confirmed" not in s["routes"]["JFK-LGB"]   # 17 km from LGB: not close enough
 
 
-def test_only_confirmed_observed_routes_are_mapped(tmp_path, monkeypatch):
+def test_only_routes_with_both_airports_seen_are_mapped(tmp_path, monkeypatch):
     import json
     import airports
     obs = {"routes": {
         "BOS-SFO": {"origin": "BOS", "dest": "SFO", "confirmed": {"SFO": "B6 333 2026-11-12T22:00:00+00:00"}},
-        "BOS-LAS": {"origin": "BOS", "dest": "LAS"},                                     # never seen low: not mapped
-        "JFK-LAX": {"origin": "JFK", "dest": "LAX", "confirmed": {"JFK": "B6 23 t"}},   # already a core pair
-        "JFK-XXX": {"origin": "JFK", "dest": "XXX", "confirmed": {"JFK": "B6 9 t"}},    # airport unknown
+        "SFO-BOS": {"origin": "SFO", "dest": "BOS", "confirmed": {"BOS": "B6 434 2026-11-12T23:00:00+00:00"}},
+        "BOS-LAS": {"origin": "BOS", "dest": "LAS", "confirmed": {"BOS": "B6 1 t"}},     # Las Vegas never seen: not mapped
+        "JFK-LAX": {"origin": "JFK", "dest": "LAX", "confirmed": {"JFK": "B6 23 t", "LAX": "B6 23 t"}},   # core pair
+        "JFK-XXX": {"origin": "JFK", "dest": "XXX", "confirmed": {"JFK": "B6 9 t", "XXX": "B6 9 t"}},     # airport unknown
     }}
     (tmp_path / "observed_routes.json").write_text(json.dumps(obs))
     monkeypatch.setattr(airports, "HERE", tmp_path)
     pairs = airports._observed_pairs()
     assert [(o, d) for o, d, _, _ in pairs] == [("BOS", "SFO")]
-    assert pairs[0][3].startswith("seen at SFO on the A to F live list, 2026-11-12")
+    assert pairs[0][3].startswith("takeoffs and landings seen at BOS and SFO on the A to F live list, 2026-11-12")
+
+
+def test_a_stale_route_seen_only_at_its_real_end_is_not_mapped():
+    jfk, lgb, lax = {"iata": "JFK", "lat": 40.64, "lon": -73.78}, {"iata": "LGB", "lat": 33.82, "lon": -118.15}, {"iata": "LAX", "lat": 33.94, "lon": -118.41}
+    real = {"number": "B6 24", "origin": lax, "dest": jfk, "lat": 39, "lon": -100, "alt_m": 11000}
+    stale_landing_jfk = {"number": "B6 216", "origin": lgb, "dest": jfk, "lat": 40.70, "lon": -73.95, "alt_m": 900}
+    stale_leaving_lax = {"number": "B6 216", "origin": lgb, "dest": jfk, "lat": 33.96, "lon": -118.30, "alt_m": 1200}
+    s, _ = merge(None, [real, stale_landing_jfk], "t1")
+    s, _ = merge(s, [real, stale_leaving_lax], "t2")
+    assert s["routes"]["LGB-JFK"]["confirmed"] == {"JFK": "B6 216 t1"}   # LAX is nearer than LGB: Long Beach never seen
 
 
 def test_merge_states_keeps_everything_from_both_files():

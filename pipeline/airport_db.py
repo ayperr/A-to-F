@@ -40,7 +40,11 @@ def read_openflights(path: Path = RAW) -> dict[str, dict]:
 
 
 def confirmed_codes(observed: dict) -> set[str]:
-    return {c for r in observed.get("routes", {}).values() if r.get("confirmed") for c in (r["origin"], r["dest"])}
+    """Airports of every route whose two airports have both been seen in use (either direction)."""
+    seen: dict[frozenset, set[str]] = {}
+    for r in observed.get("routes", {}).values():
+        seen.setdefault(frozenset((r["origin"], r["dest"])), set()).update(r.get("confirmed", {}))
+    return {c for pair, s in seen.items() if set(pair) <= s for c in pair}
 
 
 def update(core: set[str]) -> int:

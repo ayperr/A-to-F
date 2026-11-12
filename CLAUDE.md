@@ -16,8 +16,8 @@ Plan, status and what's left: `BUILD_GUIDE.md`.
    `npm test` checks 320 Python vectors (`web/lib/engine/fixtures/golden.json`), and the landmark search
    (`web/lib/engine/landmarks.ts`) against Python on the 20 mapped routes plus 52 other airport pairs.
 4. **Never invent data.** Landmarks come from Natural Earth and carry Wikidata IDs. The 20 core directions were
-   checked by hand; more routes come only from `observed_routes.json` once a plane was seen taking off or landing
-   at one of their airports, with airports from OpenFlights (`airport_db.py --update`). No seat maps, no JetBlue internals.
+   checked by hand; more routes come only from `observed_routes.json` once BOTH airports were seen in use (a plane on
+   the route below 3,000 m, within 40 km, nearest to that airport), with airports from OpenFlights (`airport_db.py --update`). No seat maps, no JetBlue internals.
 5. **Label approximations.** Tracks are `synthetic-great-circle`; durations are short westbound. Never present
    them as real flight times. Live flights use real positions, but their routes and time since takeoff are estimates.
 6. **Generated files are not hand-edited** (`web/public/data/routes*`, `landmarks.json`, `insights.json`,
