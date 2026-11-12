@@ -26,7 +26,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
             </Link>
             <Link href="/" className="brand">
               A to F
-              <small>Student project<span className="wide"> for JetBlue flyers</span>. Not by JetBlue.</small>
+              <small><span className="wide">Student project for JetBlue flyers. </span>Not by JetBlue.</small>
             </Link>
             <nav className="site-nav" aria-label="Main">
               <Link href="/routes">Routes</Link>
