@@ -8,7 +8,8 @@ for the sunset, the sunrise and the landmarks on their route, gives anyone who c
 > Independent student project for JetBlue flyers. **Not affiliated with or endorsed by JetBlue Airways.**
 
 ## Why
-I spent two years as a KLM gate agent at Schiphol. The question passengers asked me most was "which side has the view?"
+Ever since I started working for KLM (two years as a gate agent at Schiphol), "which side has the view?" is the question
+friends ask me most, and passengers sometimes asked it at the gate too.
 This project answers it with geometry, not guesswork — and then makes sure every seat gets the view.
 
 ## How it works
