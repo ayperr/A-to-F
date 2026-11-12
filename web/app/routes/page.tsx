@@ -19,6 +19,21 @@ export default function RoutesPage() {
         New routes are added from what is actually flying: A to F records every JetBlue route on the live list
         throughout a day, and those routes are mapped next.
       </p>
+      <details style={{ color: "var(--ink-soft)", margin: "10px 0 0", maxWidth: "60ch", fontSize: "0.9rem" }}>
+        <summary style={{ cursor: "pointer", color: "var(--accent)" }}>How landmarks are chosen</summary>
+        <p style={{ margin: "8px 0 0" }}>
+          Landmarks come from Natural Earth, a public domain world map, and none are typed in by hand. A feature only
+          counts if it has a Wikidata ID and is something you would recognise from a window: canyons, mountain ranges,
+          deserts, valleys, coasts, capes, islands, deltas, the larger lakes, peaks and volcanoes of at least 2,500 m,
+          and cities of at least 750,000 people. Plains, plateaus, basins and island groups are left out, as they are
+          too big to point at.
+        </p>
+        <p style={{ margin: "8px 0 0" }}>
+          For each flight, A to F keeps what lies within sight of the flight path (from 40 km for a valley to 150 km
+          for a volcano), ignores the first and last 12 minutes as the runway decides that view, and keeps the 24
+          strongest. Terrain only counts in daylight, while cities count at night as well because of their lights.
+        </p>
+      </details>
       <RouteList />
       <ViewOfWeek />
     </article>
