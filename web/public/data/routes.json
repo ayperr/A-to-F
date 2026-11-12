@@ -299,6 +299,66 @@
    "landmark_count": 12,
    "track_source": "synthetic-great-circle",
    "core": true
+  },
+  {
+   "id": "bos-phl",
+   "origin": "BOS",
+   "dest": "PHL",
+   "origin_city": "Boston",
+   "dest_city": "Philadelphia",
+   "origin_tz": "America/New_York",
+   "verified": true,
+   "source": "seen at BOS on the A to F live list, 2026-11-12 (adsb.lol positions, adsbdb.com route)",
+   "distance_km": 450,
+   "duration_min": 50,
+   "landmark_count": 6,
+   "track_source": "synthetic-great-circle",
+   "core": false
+  },
+  {
+   "id": "phl-bos",
+   "origin": "PHL",
+   "dest": "BOS",
+   "origin_city": "Philadelphia",
+   "dest_city": "Boston",
+   "origin_tz": "America/New_York",
+   "verified": true,
+   "source": "seen at BOS on the A to F live list, 2026-11-12 (adsb.lol positions, adsbdb.com route)",
+   "distance_km": 450,
+   "duration_min": 50,
+   "landmark_count": 6,
+   "track_source": "synthetic-great-circle",
+   "core": false
+  },
+  {
+   "id": "sdq-fll",
+   "origin": "SDQ",
+   "dest": "FLL",
+   "origin_city": "Santo Domingo",
+   "dest_city": "Fort Lauderdale",
+   "origin_tz": "America/Santo_Domingo",
+   "verified": true,
+   "source": "seen at FLL on the A to F live list, 2026-11-12 (adsb.lol positions, adsbdb.com route)",
+   "distance_km": 1372,
+   "duration_min": 103,
+   "landmark_count": 2,
+   "track_source": "synthetic-great-circle",
+   "core": false
+  },
+  {
+   "id": "fll-sdq",
+   "origin": "FLL",
+   "dest": "SDQ",
+   "origin_city": "Fort Lauderdale",
+   "dest_city": "Santo Domingo",
+   "origin_tz": "America/New_York",
+   "verified": true,
+   "source": "seen at FLL on the A to F live list, 2026-11-12 (adsb.lol positions, adsbdb.com route)",
+   "distance_km": 1372,
+   "duration_min": 103,
+   "landmark_count": 2,
+   "track_source": "synthetic-great-circle",
+   "core": false
   }
  ]
 }
