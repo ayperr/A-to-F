@@ -7,11 +7,16 @@ Run every 15 minutes for a day by .github/workflows/observe-routes.yml. Each run
 plausibility check: the plane is between the airports and heading for the destination) and merges
 the airport pairs into the file. Only the pair, the flight numbers and when they were seen are kept:
 no positions and no airport details. Routes come from adsbdb.com, so they are credited to it.
+
+Callsign routes can be stale (a reused number still listed on an old route that points the same way), so
+a route is only *confirmed* once one of its planes is seen taking off or landing at one of its airports:
+below 1,500 m and within 12 km of it, from the adsb.lol position. Only confirmed routes get mapped.
 """
 from __future__ import annotations
 
 import argparse
 import json
+import math
 import urllib.request
 from datetime import datetime, timezone
 from pathlib import Path
@@ -19,7 +24,28 @@ from pathlib import Path
 LIVE = "https://a-to-f.vercel.app/api/live"
 OUT = Path(__file__).resolve().parent / "observed_routes.json"
 ABOUT = ("JetBlue routes seen flying on the A to F live list. Positions: adsb.lol (ODbL). "
-         "Routes: adsbdb.com callsign data. Kept: airport pair, flight numbers, first and last seen (UTC).")
+         "Routes: adsbdb.com callsign data. Kept: airport pair, flight numbers, first and last seen (UTC), "
+         "and the first takeoff or landing seen at either airport (confirmed).")
+
+
+LOW_M, NEAR_KM = 1500, 12
+
+
+def _km(lat1, lon1, lat2, lon2) -> float:
+    p1, p2 = math.radians(lat1), math.radians(lat2)
+    a = math.sin((p2 - p1) / 2) ** 2 + math.cos(p1) * math.cos(p2) * math.sin(math.radians(lon2 - lon1) / 2) ** 2
+    return 2 * 6371.0088 * math.asin(math.sqrt(min(1.0, a)))
+
+
+def at_airport(f: dict) -> str | None:
+    """The route airport this plane is taking off from or landing at, if it is low and close to one."""
+    if not isinstance(f.get("alt_m"), (int, float)) or f["alt_m"] >= LOW_M:
+        return None
+    for end in (f.get("origin"), f.get("dest")):
+        if end and all(isinstance(end.get(k), (int, float)) for k in ("lat", "lon")) \
+                and _km(f["lat"], f["lon"], end["lat"], end["lon"]) < NEAR_KM:
+            return end["iata"]
+    return None
 
 
 def merge(state: dict | None, flights: list[dict], now: str) -> tuple[dict, list[str]]:
@@ -41,6 +67,9 @@ def merge(state: dict | None, flights: list[dict], now: str) -> tuple[dict, list
             r["flights"] = sorted(r["flights"] + [number], key=lambda n: int("".join(c for c in n if c.isdigit()) or 0))
         r["last_seen"] = now
         r["sightings"] += 1
+        where = at_airport(f) if isinstance(f.get("lat"), (int, float)) and isinstance(f.get("lon"), (int, float)) else None
+        if where:
+            r.setdefault("confirmed", {}).setdefault(where, f"{number} {now}")
     state["routes"] = dict(sorted(routes.items()))
     state["updated"] = now
     state["snapshots"] += 1
@@ -61,8 +90,10 @@ def main() -> None:
     state, new = merge(state, flights, now)
     args.out.write_text(json.dumps(state, indent=1) + "\n")
     with_route = sum(1 for f in flights if f.get("origin") and f.get("dest"))
+    confirmed = sum(1 for r in state["routes"].values() if r.get("confirmed"))
     print(f"{now}: {len(flights)} JetBlue planes in the air, {with_route} with a route; "
-          f"{len(new)} new pairs, {len(state['routes'])} pairs in total after {state['snapshots']} snapshots")
+          f"{len(new)} new pairs, {len(state['routes'])} pairs in total ({confirmed} confirmed) "
+          f"after {state['snapshots']} snapshots")
     for k in new:
         print("  new:", k)
 
