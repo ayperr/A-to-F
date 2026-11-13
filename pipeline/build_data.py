@@ -93,7 +93,7 @@ def main() -> None:
                 })
 
     # Every ordered airport pair that is not a mapped route: the browser must find the same landmarks.
-    mapped = {r["id"] for r in all_routes()}
+    mapped = {r["id"] for r in all_routes() if r["core"]}   # the 52 pairs stay the same as routes get added
     lm_golden = []
     for a in CORE_AIRPORTS.values():
         for b in CORE_AIRPORTS.values():
