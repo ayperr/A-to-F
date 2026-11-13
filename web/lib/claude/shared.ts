@@ -4,7 +4,7 @@ import Anthropic from "@anthropic-ai/sdk";
 
 export const MODEL = "claude-haiku-5-5"; // vision, tool use, structured outputs; $0.10 / $0.50 per MTok
 
-/** The client, or null when ANTHROPIC_API_KEY isn't set (the feature then says it's switched off). */
+/** The client, or null when ANTHROPIC_API_KEY isn't set (the feature then says it is paused to keep API costs down). */
 export function claude(): Anthropic | null {
   const key = process.env.ANTHROPIC_API_KEY;
   return key ? new Anthropic({ apiKey: key }) : null;

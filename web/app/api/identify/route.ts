@@ -10,7 +10,7 @@ const MAX_BASE64 = 2_000_000; // about 1.5 MB of image; the page sends ~1024 px 
 
 export async function POST(req: Request) {
   const client = claude();
-  if (!client) return Response.json({ error: "Photo lookup isn't switched on yet.", setup: true }, { status: 503 });
+  if (!client) return Response.json({ error: "Photo identification is paused to keep API costs down. It is fully built and ready to switch on.", setup: true }, { status: 503 });
 
   let body: { route?: string; o?: string; x?: string; d?: string; t?: string; side?: string; minute?: number | null; image?: string };
   try { body = await req.json(); } catch { return Response.json({ error: "Bad request." }, { status: 400 }); }

@@ -22,7 +22,7 @@ export async function GET(req: Request) {
   if (memo.has(key)) return Response.json(memo.get(key), { headers: cached });
 
   const client = claude();
-  if (!client) return Response.json({ error: "Landmark notes aren't switched on yet.", setup: true }, { status: 503 });
+  if (!client) return Response.json({ error: "Landmark notes are paused to keep API costs down. They are fully built and ready to switch on.", setup: true }, { status: 503 });
   const limited = allow(ipOf(req));
   if (limited) return Response.json({ error: limited }, { status: 429 });
 

@@ -37,7 +37,7 @@ export default function WhatsThat({
   photo?: HTMLImageElement | null; postcardHref?: string; onResult?: (r: Identified, dataUrl: string) => void; label?: string;
 }) {
   const input = useRef<HTMLInputElement>(null);
-  const [state, setState] = useState<{ busy?: boolean; error?: string; result?: Identified; dataUrl?: string }>({});
+  const [state, setState] = useState<{ busy?: boolean; error?: string; paused?: boolean; result?: Identified; dataUrl?: string }>({});
   const [copied, setCopied] = useState(false);
 
   const ask = async (dataUrl: string) => {
@@ -48,7 +48,7 @@ export default function WhatsThat({
         body: JSON.stringify({ ...Object.fromEntries(new URLSearchParams(route)), d: date, t: time, side, minute, image: dataUrl }),
       });
       const j = await r.json();
-      if (!r.ok) return setState({ error: j.error ?? "Something went wrong.", dataUrl });
+      if (!r.ok) return setState({ error: j.error ?? "Something went wrong.", paused: Boolean(j.setup), dataUrl });
       setState({ result: j, dataUrl });
       onResult?.(j, dataUrl);
     } catch {
@@ -84,7 +84,7 @@ export default function WhatsThat({
         <p className={styles.hint}>Point your phone out of the window. We match it against what&rsquo;s on your side right now.</p>
       )}
       <div aria-live="polite">
-        {state.error && <p className={styles.error}>{state.error}</p>}
+        {state.error && <p className={state.paused ? styles.paused : styles.error}>{state.error}</p>}
         {r && (
           <div className={styles.result}>
             <p className={styles.title}>
