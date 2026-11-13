@@ -266,6 +266,14 @@
    "lon": -87.9048,
    "tz": "America/Chicago"
   },
+  "ORH": {
+   "name": "Worcester Regional",
+   "city": "Worcester",
+   "country": "United States",
+   "lat": 42.2673,
+   "lon": -71.8757,
+   "tz": "America/New_York"
+  },
   "PBI": {
    "name": "Palm Beach International",
    "city": "West Palm Beach",
@@ -305,6 +313,14 @@
    "lat": 19.7579,
    "lon": -70.57,
    "tz": "America/Santo_Domingo"
+  },
+  "PSE": {
+   "name": "Mercedita",
+   "city": "Ponce",
+   "country": "Puerto Rico",
+   "lat": 18.0083,
+   "lon": -66.563,
+   "tz": "America/Puerto_Rico"
   },
   "PUJ": {
    "name": "Punta Cana International",
@@ -369,6 +385,14 @@
    "lat": 32.7336,
    "lon": -117.19,
    "tz": "America/Los_Angeles"
+  },
+  "SAV": {
+   "name": "Savannah Hilton Head International",
+   "city": "Savannah",
+   "country": "United States",
+   "lat": 32.1276,
+   "lon": -81.2021,
+   "tz": "America/New_York"
   },
   "SDQ": {
    "name": "Las Américas International",
