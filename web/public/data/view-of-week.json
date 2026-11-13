@@ -1,35 +1,1153 @@
 {
- "week_of": "2026-11-09",
- "flights": [
-  {
-   "route": "lhr-bos",
-   "origin": "LHR",
-   "dest": "BOS",
-   "date": "2026-11-15",
-   "local": "07:00",
-   "side": "A",
-   "golden_minutes": 255,
-   "reason": "Sunrise on the left (A): 255 min of golden light, starting 0h 20m after takeoff."
-  },
-  {
-   "route": "lhr-jfk",
-   "origin": "LHR",
-   "dest": "JFK",
-   "date": "2026-11-15",
-   "local": "07:00",
-   "side": "A",
-   "golden_minutes": 253,
-   "reason": "Sunrise on the left (A): 253 min of golden light, starting 0h 20m after takeoff."
-  },
-  {
-   "route": "jfk-lax",
-   "origin": "JFK",
-   "dest": "LAX",
-   "date": "2026-11-10",
-   "local": "16:00",
-   "side": "A",
-   "golden_minutes": 147,
-   "reason": "Sunset on the left (A): 147 min of golden light, starting 0h 07m after takeoff."
-  }
- ]
+ "from": "2026-11-13",
+ "days": {
+  "2026-11-13": [
+   {
+    "route": "lhr-bos",
+    "origin": "LHR",
+    "dest": "BOS",
+    "date": "2026-11-13",
+    "local": "07:00",
+    "side": "A",
+    "golden_minutes": 253,
+    "reason": "Sunrise on the left (A): 253 min of golden light, starting 0h 15m after takeoff."
+   },
+   {
+    "route": "lhr-jfk",
+    "origin": "LHR",
+    "dest": "JFK",
+    "date": "2026-11-13",
+    "local": "07:00",
+    "side": "A",
+    "golden_minutes": 252,
+    "reason": "Sunrise on the left (A): 252 min of golden light, starting 0h 15m after takeoff."
+   },
+   {
+    "route": "cdg-jfk",
+    "origin": "CDG",
+    "dest": "JFK",
+    "date": "2026-11-13",
+    "local": "16:00",
+    "side": "A",
+    "golden_minutes": 246,
+    "reason": "Sunset on the left (A): 246 min of golden light, starting 0h 50m after takeoff."
+   },
+   {
+    "route": "bos-sfo",
+    "origin": "BOS",
+    "dest": "SFO",
+    "date": "2026-11-13",
+    "local": "06:00",
+    "side": "A",
+    "golden_minutes": 149,
+    "reason": "Sunrise on the left (A): 149 min of golden light, starting 0h 59m after takeoff."
+   },
+   {
+    "route": "jfk-lax",
+    "origin": "JFK",
+    "dest": "LAX",
+    "date": "2026-11-13",
+    "local": "16:00",
+    "side": "A",
+    "golden_minutes": 147,
+    "reason": "Sunset on the left (A): 147 min of golden light, from takeoff."
+   },
+   {
+    "route": "jfk-las",
+    "origin": "JFK",
+    "dest": "LAS",
+    "date": "2026-11-13",
+    "local": "16:00",
+    "side": "A",
+    "golden_minutes": 145,
+    "reason": "Sunset on the left (A): 145 min of golden light, from takeoff."
+   },
+   {
+    "route": "jfk-slc",
+    "origin": "JFK",
+    "dest": "SLC",
+    "date": "2026-11-13",
+    "local": "06:00",
+    "side": "A",
+    "golden_minutes": 144,
+    "reason": "Sunrise on the left (A): 144 min of golden light, starting 1h 20m after takeoff."
+   },
+   {
+    "route": "jfk-sfo",
+    "origin": "JFK",
+    "dest": "SFO",
+    "date": "2026-11-13",
+    "local": "06:00",
+    "side": "A",
+    "golden_minutes": 140,
+    "reason": "Sunrise on the left (A): 140 min of golden light, starting 1h 19m after takeoff."
+   }
+  ],
+  "2026-11-14": [
+   {
+    "route": "lhr-bos",
+    "origin": "LHR",
+    "dest": "BOS",
+    "date": "2026-11-14",
+    "local": "07:00",
+    "side": "A",
+    "golden_minutes": 253,
+    "reason": "Sunrise on the left (A): 253 min of golden light, starting 0h 18m after takeoff."
+   },
+   {
+    "route": "lhr-jfk",
+    "origin": "LHR",
+    "dest": "JFK",
+    "date": "2026-11-14",
+    "local": "07:00",
+    "side": "A",
+    "golden_minutes": 252,
+    "reason": "Sunrise on the left (A): 252 min of golden light, starting 0h 18m after takeoff."
+   },
+   {
+    "route": "cdg-jfk",
+    "origin": "CDG",
+    "dest": "JFK",
+    "date": "2026-11-14",
+    "local": "16:00",
+    "side": "A",
+    "golden_minutes": 251,
+    "reason": "Sunset on the left (A): 251 min of golden light, starting 0h 47m after takeoff."
+   },
+   {
+    "route": "bos-sfo",
+    "origin": "BOS",
+    "dest": "SFO",
+    "date": "2026-11-14",
+    "local": "15:00",
+    "side": "A",
+    "golden_minutes": 152,
+    "reason": "Sunset on the left (A): 152 min of golden light, starting 1h 50m after takeoff."
+   },
+   {
+    "route": "jfk-lax",
+    "origin": "JFK",
+    "dest": "LAX",
+    "date": "2026-11-14",
+    "local": "16:00",
+    "side": "A",
+    "golden_minutes": 144,
+    "reason": "Sunset on the left (A): 144 min of golden light, from takeoff."
+   },
+   {
+    "route": "jfk-slc",
+    "origin": "JFK",
+    "dest": "SLC",
+    "date": "2026-11-14",
+    "local": "06:00",
+    "side": "A",
+    "golden_minutes": 144,
+    "reason": "Sunrise on the left (A): 144 min of golden light, starting 1h 23m after takeoff."
+   },
+   {
+    "route": "jfk-las",
+    "origin": "JFK",
+    "dest": "LAS",
+    "date": "2026-11-14",
+    "local": "16:00",
+    "side": "A",
+    "golden_minutes": 142,
+    "reason": "Sunset on the left (A): 142 min of golden light, from takeoff."
+   },
+   {
+    "route": "jfk-sfo",
+    "origin": "JFK",
+    "dest": "SFO",
+    "date": "2026-11-14",
+    "local": "06:00",
+    "side": "A",
+    "golden_minutes": 140,
+    "reason": "Sunrise on the left (A): 140 min of golden light, starting 1h 22m after takeoff."
+   }
+  ],
+  "2026-11-15": [
+   {
+    "route": "cdg-jfk",
+    "origin": "CDG",
+    "dest": "JFK",
+    "date": "2026-11-15",
+    "local": "16:00",
+    "side": "A",
+    "golden_minutes": 256,
+    "reason": "Sunset on the left (A): 256 min of golden light, starting 0h 43m after takeoff."
+   },
+   {
+    "route": "lhr-bos",
+    "origin": "LHR",
+    "dest": "BOS",
+    "date": "2026-11-15",
+    "local": "07:00",
+    "side": "A",
+    "golden_minutes": 255,
+    "reason": "Sunrise on the left (A): 255 min of golden light, starting 0h 20m after takeoff."
+   },
+   {
+    "route": "lhr-jfk",
+    "origin": "LHR",
+    "dest": "JFK",
+    "date": "2026-11-15",
+    "local": "07:00",
+    "side": "A",
+    "golden_minutes": 253,
+    "reason": "Sunrise on the left (A): 253 min of golden light, starting 0h 20m after takeoff."
+   },
+   {
+    "route": "bos-sfo",
+    "origin": "BOS",
+    "dest": "SFO",
+    "date": "2026-11-15",
+    "local": "15:00",
+    "side": "A",
+    "golden_minutes": 157,
+    "reason": "Sunset on the left (A): 157 min of golden light, starting 1h 47m after takeoff."
+   },
+   {
+    "route": "jfk-lax",
+    "origin": "JFK",
+    "dest": "LAX",
+    "date": "2026-11-15",
+    "local": "16:00",
+    "side": "A",
+    "golden_minutes": 142,
+    "reason": "Sunset on the left (A): 142 min of golden light, from takeoff."
+   },
+   {
+    "route": "jfk-slc",
+    "origin": "JFK",
+    "dest": "SLC",
+    "date": "2026-11-15",
+    "local": "06:00",
+    "side": "A",
+    "golden_minutes": 142,
+    "reason": "Sunrise on the left (A): 142 min of golden light, starting 1h 27m after takeoff."
+   },
+   {
+    "route": "jfk-las",
+    "origin": "JFK",
+    "dest": "LAS",
+    "date": "2026-11-15",
+    "local": "16:00",
+    "side": "A",
+    "golden_minutes": 140,
+    "reason": "Sunset on the left (A): 140 min of golden light, from takeoff."
+   },
+   {
+    "route": "jfk-sfo",
+    "origin": "JFK",
+    "dest": "SFO",
+    "date": "2026-11-15",
+    "local": "06:00",
+    "side": "A",
+    "golden_minutes": 139,
+    "reason": "Sunrise on the left (A): 139 min of golden light, starting 1h 26m after takeoff."
+   }
+  ],
+  "2026-11-16": [
+   {
+    "route": "cdg-jfk",
+    "origin": "CDG",
+    "dest": "JFK",
+    "date": "2026-11-16",
+    "local": "16:00",
+    "side": "A",
+    "golden_minutes": 260,
+    "reason": "Sunset on the left (A): 260 min of golden light, starting 0h 39m after takeoff."
+   },
+   {
+    "route": "lhr-bos",
+    "origin": "LHR",
+    "dest": "BOS",
+    "date": "2026-11-16",
+    "local": "07:00",
+    "side": "A",
+    "golden_minutes": 248,
+    "reason": "Sunrise on the left (A): 248 min of golden light, starting 0h 30m after takeoff."
+   },
+   {
+    "route": "lhr-jfk",
+    "origin": "LHR",
+    "dest": "JFK",
+    "date": "2026-11-16",
+    "local": "07:00",
+    "side": "A",
+    "golden_minutes": 247,
+    "reason": "Sunrise on the left (A): 247 min of golden light, starting 0h 30m after takeoff."
+   },
+   {
+    "route": "bos-sfo",
+    "origin": "BOS",
+    "dest": "SFO",
+    "date": "2026-11-16",
+    "local": "15:00",
+    "side": "A",
+    "golden_minutes": 161,
+    "reason": "Sunset on the left (A): 161 min of golden light, starting 1h 44m after takeoff."
+   },
+   {
+    "route": "jfk-slc",
+    "origin": "JFK",
+    "dest": "SLC",
+    "date": "2026-11-16",
+    "local": "06:00",
+    "side": "A",
+    "golden_minutes": 142,
+    "reason": "Sunrise on the left (A): 142 min of golden light, starting 1h 30m after takeoff."
+   },
+   {
+    "route": "jfk-sfo",
+    "origin": "JFK",
+    "dest": "SFO",
+    "date": "2026-11-16",
+    "local": "15:00",
+    "side": "A",
+    "golden_minutes": 141,
+    "reason": "Sunset on the left (A): 141 min of golden light, starting 2h 26m after takeoff."
+   },
+   {
+    "route": "jfk-lax",
+    "origin": "JFK",
+    "dest": "LAX",
+    "date": "2026-11-16",
+    "local": "16:00",
+    "side": "A",
+    "golden_minutes": 140,
+    "reason": "Sunset on the left (A): 140 min of golden light, from takeoff."
+   },
+   {
+    "route": "jfk-las",
+    "origin": "JFK",
+    "dest": "LAS",
+    "date": "2026-11-16",
+    "local": "16:00",
+    "side": "A",
+    "golden_minutes": 138,
+    "reason": "Sunset on the left (A): 138 min of golden light, from takeoff."
+   }
+  ],
+  "2026-11-17": [
+   {
+    "route": "cdg-jfk",
+    "origin": "CDG",
+    "dest": "JFK",
+    "date": "2026-11-17",
+    "local": "16:00",
+    "side": "A",
+    "golden_minutes": 265,
+    "reason": "Sunset on the left (A): 265 min of golden light, starting 0h 36m after takeoff."
+   },
+   {
+    "route": "lhr-jfk",
+    "origin": "LHR",
+    "dest": "JFK",
+    "date": "2026-11-17",
+    "local": "15:00",
+    "side": "A",
+    "golden_minutes": 250,
+    "reason": "Sunset on the left (A): 250 min of golden light, starting 0h 40m after takeoff."
+   },
+   {
+    "route": "lhr-bos",
+    "origin": "LHR",
+    "dest": "BOS",
+    "date": "2026-11-17",
+    "local": "15:00",
+    "side": "A",
+    "golden_minutes": 250,
+    "reason": "Sunset on the left (A): 250 min of golden light, starting 0h 40m after takeoff."
+   },
+   {
+    "route": "bos-sfo",
+    "origin": "BOS",
+    "dest": "SFO",
+    "date": "2026-11-17",
+    "local": "15:00",
+    "side": "A",
+    "golden_minutes": 165,
+    "reason": "Sunset on the left (A): 165 min of golden light, starting 1h 41m after takeoff."
+   },
+   {
+    "route": "jfk-sfo",
+    "origin": "JFK",
+    "dest": "SFO",
+    "date": "2026-11-17",
+    "local": "15:00",
+    "side": "A",
+    "golden_minutes": 145,
+    "reason": "Sunset on the left (A): 145 min of golden light, starting 2h 23m after takeoff."
+   },
+   {
+    "route": "jfk-slc",
+    "origin": "JFK",
+    "dest": "SLC",
+    "date": "2026-11-17",
+    "local": "06:00",
+    "side": "A",
+    "golden_minutes": 141,
+    "reason": "Sunrise on the left (A): 141 min of golden light, starting 1h 34m after takeoff."
+   },
+   {
+    "route": "jfk-lax",
+    "origin": "JFK",
+    "dest": "LAX",
+    "date": "2026-11-17",
+    "local": "16:00",
+    "side": "A",
+    "golden_minutes": 138,
+    "reason": "Sunset on the left (A): 138 min of golden light, from takeoff."
+   },
+   {
+    "route": "jfk-las",
+    "origin": "JFK",
+    "dest": "LAS",
+    "date": "2026-11-17",
+    "local": "16:00",
+    "side": "A",
+    "golden_minutes": 136,
+    "reason": "Sunset on the left (A): 136 min of golden light, from takeoff."
+   }
+  ],
+  "2026-11-18": [
+   {
+    "route": "cdg-jfk",
+    "origin": "CDG",
+    "dest": "JFK",
+    "date": "2026-11-18",
+    "local": "16:00",
+    "side": "A",
+    "golden_minutes": 269,
+    "reason": "Sunset on the left (A): 269 min of golden light, starting 0h 33m after takeoff."
+   },
+   {
+    "route": "lhr-jfk",
+    "origin": "LHR",
+    "dest": "JFK",
+    "date": "2026-11-18",
+    "local": "15:00",
+    "side": "A",
+    "golden_minutes": 255,
+    "reason": "Sunset on the left (A): 255 min of golden light, starting 0h 36m after takeoff."
+   },
+   {
+    "route": "lhr-bos",
+    "origin": "LHR",
+    "dest": "BOS",
+    "date": "2026-11-18",
+    "local": "15:00",
+    "side": "A",
+    "golden_minutes": 255,
+    "reason": "Sunset on the left (A): 255 min of golden light, starting 0h 36m after takeoff."
+   },
+   {
+    "route": "bos-sfo",
+    "origin": "BOS",
+    "dest": "SFO",
+    "date": "2026-11-18",
+    "local": "15:00",
+    "side": "A",
+    "golden_minutes": 170,
+    "reason": "Sunset on the left (A): 170 min of golden light, starting 1h 38m after takeoff."
+   },
+   {
+    "route": "jfk-sfo",
+    "origin": "JFK",
+    "dest": "SFO",
+    "date": "2026-11-18",
+    "local": "15:00",
+    "side": "A",
+    "golden_minutes": 149,
+    "reason": "Sunset on the left (A): 149 min of golden light, starting 2h 20m after takeoff."
+   },
+   {
+    "route": "jfk-slc",
+    "origin": "JFK",
+    "dest": "SLC",
+    "date": "2026-11-18",
+    "local": "06:00",
+    "side": "A",
+    "golden_minutes": 141,
+    "reason": "Sunrise on the left (A): 141 min of golden light, starting 1h 37m after takeoff."
+   },
+   {
+    "route": "jfk-lax",
+    "origin": "JFK",
+    "dest": "LAX",
+    "date": "2026-11-18",
+    "local": "16:00",
+    "side": "A",
+    "golden_minutes": 136,
+    "reason": "Sunset on the left (A): 136 min of golden light, from takeoff."
+   },
+   {
+    "route": "jfk-las",
+    "origin": "JFK",
+    "dest": "LAS",
+    "date": "2026-11-18",
+    "local": "16:00",
+    "side": "A",
+    "golden_minutes": 134,
+    "reason": "Sunset on the left (A): 134 min of golden light, from takeoff."
+   }
+  ],
+  "2026-11-19": [
+   {
+    "route": "cdg-jfk",
+    "origin": "CDG",
+    "dest": "JFK",
+    "date": "2026-11-19",
+    "local": "16:00",
+    "side": "A",
+    "golden_minutes": 273,
+    "reason": "Sunset on the left (A): 273 min of golden light, starting 0h 30m after takeoff."
+   },
+   {
+    "route": "lhr-jfk",
+    "origin": "LHR",
+    "dest": "JFK",
+    "date": "2026-11-19",
+    "local": "15:00",
+    "side": "A",
+    "golden_minutes": 260,
+    "reason": "Sunset on the left (A): 260 min of golden light, starting 0h 32m after takeoff."
+   },
+   {
+    "route": "lhr-bos",
+    "origin": "LHR",
+    "dest": "BOS",
+    "date": "2026-11-19",
+    "local": "15:00",
+    "side": "A",
+    "golden_minutes": 260,
+    "reason": "Sunset on the left (A): 260 min of golden light, starting 0h 32m after takeoff."
+   },
+   {
+    "route": "bos-sfo",
+    "origin": "BOS",
+    "dest": "SFO",
+    "date": "2026-11-19",
+    "local": "15:00",
+    "side": "A",
+    "golden_minutes": 174,
+    "reason": "Sunset on the left (A): 174 min of golden light, starting 1h 35m after takeoff."
+   },
+   {
+    "route": "jfk-sfo",
+    "origin": "JFK",
+    "dest": "SFO",
+    "date": "2026-11-19",
+    "local": "15:00",
+    "side": "A",
+    "golden_minutes": 153,
+    "reason": "Sunset on the left (A): 153 min of golden light, starting 2h 18m after takeoff."
+   },
+   {
+    "route": "jfk-slc",
+    "origin": "JFK",
+    "dest": "SLC",
+    "date": "2026-11-19",
+    "local": "06:00",
+    "side": "A",
+    "golden_minutes": 140,
+    "reason": "Sunrise on the left (A): 140 min of golden light, starting 1h 41m after takeoff."
+   },
+   {
+    "route": "jfk-lax",
+    "origin": "JFK",
+    "dest": "LAX",
+    "date": "2026-11-19",
+    "local": "16:00",
+    "side": "A",
+    "golden_minutes": 134,
+    "reason": "Sunset on the left (A): 134 min of golden light, from takeoff."
+   },
+   {
+    "route": "jfk-las",
+    "origin": "JFK",
+    "dest": "LAS",
+    "date": "2026-11-19",
+    "local": "16:00",
+    "side": "A",
+    "golden_minutes": 132,
+    "reason": "Sunset on the left (A): 132 min of golden light, from takeoff."
+   }
+  ],
+  "2026-11-20": [
+   {
+    "route": "cdg-jfk",
+    "origin": "CDG",
+    "dest": "JFK",
+    "date": "2026-11-20",
+    "local": "16:00",
+    "side": "A",
+    "golden_minutes": 276,
+    "reason": "Sunset on the left (A): 276 min of golden light, starting 0h 27m after takeoff."
+   },
+   {
+    "route": "lhr-bos",
+    "origin": "LHR",
+    "dest": "BOS",
+    "date": "2026-11-20",
+    "local": "15:00",
+    "side": "A",
+    "golden_minutes": 265,
+    "reason": "Sunset on the left (A): 265 min of golden light, starting 0h 28m after takeoff."
+   },
+   {
+    "route": "lhr-jfk",
+    "origin": "LHR",
+    "dest": "JFK",
+    "date": "2026-11-20",
+    "local": "15:00",
+    "side": "A",
+    "golden_minutes": 264,
+    "reason": "Sunset on the left (A): 264 min of golden light, starting 0h 28m after takeoff."
+   },
+   {
+    "route": "bos-sfo",
+    "origin": "BOS",
+    "dest": "SFO",
+    "date": "2026-11-20",
+    "local": "15:00",
+    "side": "A",
+    "golden_minutes": 178,
+    "reason": "Sunset on the left (A): 178 min of golden light, starting 1h 32m after takeoff."
+   },
+   {
+    "route": "jfk-sfo",
+    "origin": "JFK",
+    "dest": "SFO",
+    "date": "2026-11-20",
+    "local": "15:00",
+    "side": "A",
+    "golden_minutes": 158,
+    "reason": "Sunset on the left (A): 158 min of golden light, starting 2h 15m after takeoff."
+   },
+   {
+    "route": "jfk-slc",
+    "origin": "JFK",
+    "dest": "SLC",
+    "date": "2026-11-20",
+    "local": "06:00",
+    "side": "A",
+    "golden_minutes": 137,
+    "reason": "Sunrise on the left (A): 137 min of golden light, starting 1h 44m after takeoff."
+   },
+   {
+    "route": "jfk-lax",
+    "origin": "JFK",
+    "dest": "LAX",
+    "date": "2026-11-20",
+    "local": "16:00",
+    "side": "A",
+    "golden_minutes": 132,
+    "reason": "Sunset on the left (A): 132 min of golden light, from takeoff."
+   },
+   {
+    "route": "jfk-las",
+    "origin": "JFK",
+    "dest": "LAS",
+    "date": "2026-11-20",
+    "local": "16:00",
+    "side": "A",
+    "golden_minutes": 130,
+    "reason": "Sunset on the left (A): 130 min of golden light, from takeoff."
+   }
+  ],
+  "2026-11-21": [
+   {
+    "route": "cdg-jfk",
+    "origin": "CDG",
+    "dest": "JFK",
+    "date": "2026-11-21",
+    "local": "16:00",
+    "side": "A",
+    "golden_minutes": 280,
+    "reason": "Sunset on the left (A): 280 min of golden light, starting 0h 25m after takeoff."
+   },
+   {
+    "route": "lhr-bos",
+    "origin": "LHR",
+    "dest": "BOS",
+    "date": "2026-11-21",
+    "local": "15:00",
+    "side": "A",
+    "golden_minutes": 270,
+    "reason": "Sunset on the left (A): 270 min of golden light, starting 0h 24m after takeoff."
+   },
+   {
+    "route": "lhr-jfk",
+    "origin": "LHR",
+    "dest": "JFK",
+    "date": "2026-11-21",
+    "local": "15:00",
+    "side": "A",
+    "golden_minutes": 269,
+    "reason": "Sunset on the left (A): 269 min of golden light, starting 0h 24m after takeoff."
+   },
+   {
+    "route": "bos-sfo",
+    "origin": "BOS",
+    "dest": "SFO",
+    "date": "2026-11-21",
+    "local": "15:00",
+    "side": "A",
+    "golden_minutes": 181,
+    "reason": "Sunset on the left (A): 181 min of golden light, starting 1h 30m after takeoff."
+   },
+   {
+    "route": "jfk-sfo",
+    "origin": "JFK",
+    "dest": "SFO",
+    "date": "2026-11-21",
+    "local": "15:00",
+    "side": "A",
+    "golden_minutes": 161,
+    "reason": "Sunset on the left (A): 161 min of golden light, starting 2h 13m after takeoff."
+   },
+   {
+    "route": "bos-las",
+    "origin": "BOS",
+    "dest": "LAS",
+    "date": "2026-11-21",
+    "local": "15:00",
+    "side": "A",
+    "golden_minutes": 135,
+    "reason": "Sunset on the left (A): 135 min of golden light, starting 1h 43m after takeoff."
+   },
+   {
+    "route": "jfk-slc",
+    "origin": "JFK",
+    "dest": "SLC",
+    "date": "2026-11-21",
+    "local": "06:00",
+    "side": "A",
+    "golden_minutes": 133,
+    "reason": "Sunrise on the left (A): 133 min of golden light, starting 1h 48m after takeoff."
+   },
+   {
+    "route": "jfk-lax",
+    "origin": "JFK",
+    "dest": "LAX",
+    "date": "2026-11-21",
+    "local": "16:00",
+    "side": "A",
+    "golden_minutes": 131,
+    "reason": "Sunset on the left (A): 131 min of golden light, from takeoff."
+   }
+  ],
+  "2026-11-22": [
+   {
+    "route": "cdg-jfk",
+    "origin": "CDG",
+    "dest": "JFK",
+    "date": "2026-11-22",
+    "local": "16:00",
+    "side": "A",
+    "golden_minutes": 284,
+    "reason": "Sunset on the left (A): 284 min of golden light, starting 0h 22m after takeoff."
+   },
+   {
+    "route": "lhr-bos",
+    "origin": "LHR",
+    "dest": "BOS",
+    "date": "2026-11-22",
+    "local": "15:00",
+    "side": "A",
+    "golden_minutes": 274,
+    "reason": "Sunset on the left (A): 274 min of golden light, starting 0h 21m after takeoff."
+   },
+   {
+    "route": "lhr-jfk",
+    "origin": "LHR",
+    "dest": "JFK",
+    "date": "2026-11-22",
+    "local": "15:00",
+    "side": "A",
+    "golden_minutes": 273,
+    "reason": "Sunset on the left (A): 273 min of golden light, starting 0h 21m after takeoff."
+   },
+   {
+    "route": "bos-sfo",
+    "origin": "BOS",
+    "dest": "SFO",
+    "date": "2026-11-22",
+    "local": "15:00",
+    "side": "A",
+    "golden_minutes": 182,
+    "reason": "Sunset on the left (A): 182 min of golden light, starting 1h 27m after takeoff."
+   },
+   {
+    "route": "jfk-sfo",
+    "origin": "JFK",
+    "dest": "SFO",
+    "date": "2026-11-22",
+    "local": "15:00",
+    "side": "A",
+    "golden_minutes": 162,
+    "reason": "Sunset on the left (A): 162 min of golden light, starting 2h 11m after takeoff."
+   },
+   {
+    "route": "bos-las",
+    "origin": "BOS",
+    "dest": "LAS",
+    "date": "2026-11-22",
+    "local": "15:00",
+    "side": "A",
+    "golden_minutes": 139,
+    "reason": "Sunset on the left (A): 139 min of golden light, starting 1h 40m after takeoff."
+   },
+   {
+    "route": "jfk-slc",
+    "origin": "JFK",
+    "dest": "SLC",
+    "date": "2026-11-22",
+    "local": "06:00",
+    "side": "A",
+    "golden_minutes": 130,
+    "reason": "Sunrise on the left (A): 130 min of golden light, starting 1h 51m after takeoff."
+   },
+   {
+    "route": "jfk-lax",
+    "origin": "JFK",
+    "dest": "LAX",
+    "date": "2026-11-22",
+    "local": "16:00",
+    "side": "A",
+    "golden_minutes": 129,
+    "reason": "Sunset on the left (A): 129 min of golden light, from takeoff."
+   }
+  ],
+  "2026-11-23": [
+   {
+    "route": "cdg-jfk",
+    "origin": "CDG",
+    "dest": "JFK",
+    "date": "2026-11-23",
+    "local": "16:00",
+    "side": "A",
+    "golden_minutes": 287,
+    "reason": "Sunset on the left (A): 287 min of golden light, starting 0h 20m after takeoff."
+   },
+   {
+    "route": "lhr-jfk",
+    "origin": "LHR",
+    "dest": "JFK",
+    "date": "2026-11-23",
+    "local": "15:00",
+    "side": "A",
+    "golden_minutes": 278,
+    "reason": "Sunset on the left (A): 278 min of golden light, starting 0h 18m after takeoff."
+   },
+   {
+    "route": "lhr-bos",
+    "origin": "LHR",
+    "dest": "BOS",
+    "date": "2026-11-23",
+    "local": "15:00",
+    "side": "A",
+    "golden_minutes": 278,
+    "reason": "Sunset on the left (A): 278 min of golden light, starting 0h 18m after takeoff."
+   },
+   {
+    "route": "bos-sfo",
+    "origin": "BOS",
+    "dest": "SFO",
+    "date": "2026-11-23",
+    "local": "15:00",
+    "side": "A",
+    "golden_minutes": 183,
+    "reason": "Sunset on the left (A): 183 min of golden light, starting 1h 25m after takeoff."
+   },
+   {
+    "route": "jfk-sfo",
+    "origin": "JFK",
+    "dest": "SFO",
+    "date": "2026-11-23",
+    "local": "15:00",
+    "side": "A",
+    "golden_minutes": 164,
+    "reason": "Sunset on the left (A): 164 min of golden light, starting 2h 08m after takeoff."
+   },
+   {
+    "route": "bos-las",
+    "origin": "BOS",
+    "dest": "LAS",
+    "date": "2026-11-23",
+    "local": "15:00",
+    "side": "A",
+    "golden_minutes": 143,
+    "reason": "Sunset on the left (A): 143 min of golden light, starting 1h 38m after takeoff."
+   },
+   {
+    "route": "bos-lax",
+    "origin": "BOS",
+    "dest": "LAX",
+    "date": "2026-11-23",
+    "local": "15:00",
+    "side": "A",
+    "golden_minutes": 132,
+    "reason": "Sunset on the left (A): 132 min of golden light, starting 1h 41m after takeoff."
+   },
+   {
+    "route": "jfk-lax",
+    "origin": "JFK",
+    "dest": "LAX",
+    "date": "2026-11-23",
+    "local": "16:00",
+    "side": "A",
+    "golden_minutes": 128,
+    "reason": "Sunset on the left (A): 128 min of golden light, from takeoff."
+   }
+  ],
+  "2026-11-24": [
+   {
+    "route": "cdg-jfk",
+    "origin": "CDG",
+    "dest": "JFK",
+    "date": "2026-11-24",
+    "local": "16:00",
+    "side": "A",
+    "golden_minutes": 287,
+    "reason": "Sunset on the left (A): 287 min of golden light, starting 0h 17m after takeoff."
+   },
+   {
+    "route": "lhr-jfk",
+    "origin": "LHR",
+    "dest": "JFK",
+    "date": "2026-11-24",
+    "local": "15:00",
+    "side": "A",
+    "golden_minutes": 282,
+    "reason": "Sunset on the left (A): 282 min of golden light, starting 0h 15m after takeoff."
+   },
+   {
+    "route": "lhr-bos",
+    "origin": "LHR",
+    "dest": "BOS",
+    "date": "2026-11-24",
+    "local": "15:00",
+    "side": "A",
+    "golden_minutes": 282,
+    "reason": "Sunset on the left (A): 282 min of golden light, starting 0h 15m after takeoff."
+   },
+   {
+    "route": "bos-sfo",
+    "origin": "BOS",
+    "dest": "SFO",
+    "date": "2026-11-24",
+    "local": "15:00",
+    "side": "A",
+    "golden_minutes": 183,
+    "reason": "Sunset on the left (A): 183 min of golden light, starting 1h 23m after takeoff."
+   },
+   {
+    "route": "jfk-sfo",
+    "origin": "JFK",
+    "dest": "SFO",
+    "date": "2026-11-24",
+    "local": "15:00",
+    "side": "A",
+    "golden_minutes": 166,
+    "reason": "Sunset on the left (A): 166 min of golden light, starting 2h 06m after takeoff."
+   },
+   {
+    "route": "bos-las",
+    "origin": "BOS",
+    "dest": "LAS",
+    "date": "2026-11-24",
+    "local": "15:00",
+    "side": "A",
+    "golden_minutes": 146,
+    "reason": "Sunset on the left (A): 146 min of golden light, starting 1h 36m after takeoff."
+   },
+   {
+    "route": "bos-lax",
+    "origin": "BOS",
+    "dest": "LAX",
+    "date": "2026-11-24",
+    "local": "15:00",
+    "side": "A",
+    "golden_minutes": 135,
+    "reason": "Sunset on the left (A): 135 min of golden light, starting 1h 39m after takeoff."
+   },
+   {
+    "route": "jfk-lax",
+    "origin": "JFK",
+    "dest": "LAX",
+    "date": "2026-11-24",
+    "local": "16:00",
+    "side": "A",
+    "golden_minutes": 126,
+    "reason": "Sunset on the left (A): 126 min of golden light, from takeoff."
+   }
+  ],
+  "2026-11-25": [
+   {
+    "route": "lhr-bos",
+    "origin": "LHR",
+    "dest": "BOS",
+    "date": "2026-11-25",
+    "local": "15:00",
+    "side": "A",
+    "golden_minutes": 286,
+    "reason": "Sunset on the left (A): 286 min of golden light, starting 0h 12m after takeoff."
+   },
+   {
+    "route": "lhr-jfk",
+    "origin": "LHR",
+    "dest": "JFK",
+    "date": "2026-11-25",
+    "local": "15:00",
+    "side": "A",
+    "golden_minutes": 285,
+    "reason": "Sunset on the left (A): 285 min of golden light, starting 0h 12m after takeoff."
+   },
+   {
+    "route": "cdg-jfk",
+    "origin": "CDG",
+    "dest": "JFK",
+    "date": "2026-11-25",
+    "local": "16:00",
+    "side": "A",
+    "golden_minutes": 285,
+    "reason": "Sunset on the left (A): 285 min of golden light, starting 0h 15m after takeoff."
+   },
+   {
+    "route": "bos-sfo",
+    "origin": "BOS",
+    "dest": "SFO",
+    "date": "2026-11-25",
+    "local": "15:00",
+    "side": "A",
+    "golden_minutes": 184,
+    "reason": "Sunset on the left (A): 184 min of golden light, starting 1h 21m after takeoff."
+   },
+   {
+    "route": "jfk-sfo",
+    "origin": "JFK",
+    "dest": "SFO",
+    "date": "2026-11-25",
+    "local": "15:00",
+    "side": "A",
+    "golden_minutes": 167,
+    "reason": "Sunset on the left (A): 167 min of golden light, starting 2h 04m after takeoff."
+   },
+   {
+    "route": "bos-las",
+    "origin": "BOS",
+    "dest": "LAS",
+    "date": "2026-11-25",
+    "local": "15:00",
+    "side": "A",
+    "golden_minutes": 149,
+    "reason": "Sunset on the left (A): 149 min of golden light, starting 1h 34m after takeoff."
+   },
+   {
+    "route": "bos-lax",
+    "origin": "BOS",
+    "dest": "LAX",
+    "date": "2026-11-25",
+    "local": "15:00",
+    "side": "A",
+    "golden_minutes": 139,
+    "reason": "Sunset on the left (A): 139 min of golden light, starting 1h 37m after takeoff."
+   },
+   {
+    "route": "jfk-las",
+    "origin": "JFK",
+    "dest": "LAS",
+    "date": "2026-11-25",
+    "local": "15:00",
+    "side": "A",
+    "golden_minutes": 126,
+    "reason": "Sunset on the left (A): 126 min of golden light, starting 2h 20m after takeoff."
+   }
+  ],
+  "2026-11-26": [
+   {
+    "route": "lhr-bos",
+    "origin": "LHR",
+    "dest": "BOS",
+    "date": "2026-11-26",
+    "local": "15:00",
+    "side": "A",
+    "golden_minutes": 289,
+    "reason": "Sunset on the left (A): 289 min of golden light, starting 0h 10m after takeoff."
+   },
+   {
+    "route": "lhr-jfk",
+    "origin": "LHR",
+    "dest": "JFK",
+    "date": "2026-11-26",
+    "local": "15:00",
+    "side": "A",
+    "golden_minutes": 288,
+    "reason": "Sunset on the left (A): 288 min of golden light, starting 0h 10m after takeoff."
+   },
+   {
+    "route": "cdg-jfk",
+    "origin": "CDG",
+    "dest": "JFK",
+    "date": "2026-11-26",
+    "local": "16:00",
+    "side": "A",
+    "golden_minutes": 283,
+    "reason": "Sunset on the left (A): 283 min of golden light, starting 0h 13m after takeoff."
+   },
+   {
+    "route": "bos-sfo",
+    "origin": "BOS",
+    "dest": "SFO",
+    "date": "2026-11-26",
+    "local": "15:00",
+    "side": "A",
+    "golden_minutes": 184,
+    "reason": "Sunset on the left (A): 184 min of golden light, starting 1h 19m after takeoff."
+   },
+   {
+    "route": "jfk-sfo",
+    "origin": "JFK",
+    "dest": "SFO",
+    "date": "2026-11-26",
+    "local": "15:00",
+    "side": "A",
+    "golden_minutes": 168,
+    "reason": "Sunset on the left (A): 168 min of golden light, starting 2h 03m after takeoff."
+   },
+   {
+    "route": "bos-las",
+    "origin": "BOS",
+    "dest": "LAS",
+    "date": "2026-11-26",
+    "local": "15:00",
+    "side": "A",
+    "golden_minutes": 152,
+    "reason": "Sunset on the left (A): 152 min of golden light, starting 1h 32m after takeoff."
+   },
+   {
+    "route": "bos-lax",
+    "origin": "BOS",
+    "dest": "LAX",
+    "date": "2026-11-26",
+    "local": "15:00",
+    "side": "A",
+    "golden_minutes": 142,
+    "reason": "Sunset on the left (A): 142 min of golden light, starting 1h 35m after takeoff."
+   },
+   {
+    "route": "jfk-las",
+    "origin": "JFK",
+    "dest": "LAS",
+    "date": "2026-11-26",
+    "local": "15:00",
+    "side": "A",
+    "golden_minutes": 129,
+    "reason": "Sunset on the left (A): 129 min of golden light, starting 2h 18m after takeoff."
+   }
+  ]
+ }
 }

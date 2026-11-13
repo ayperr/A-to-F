@@ -44,7 +44,7 @@ Facts were checked on 1 Nov 2026; sources at the end.
 | 4 | Claude Code 101 | Whole build: CLAUDE.md, explore → plan → code → test → commit |
 | 5 | Agent Skills | `route-analysis`, `window-narrator`, `postcard-copy` (plus 2 plugin skills) |
 | 6 | Subagents | `route-analyst`, `storyteller`, independent read-only `landmark-verifier` |
-| 7 | Claude Code in Action | Hooks (guard generated data; check claims and engine after edits), headless `claude -p` in `regenerate.sh`, weekly routine |
+| 7 | Claude Code in Action | Hooks (guard generated data; check claims and engine after edits), headless `claude -p` in `regenerate.sh` |
 | 8 | Software Development | CI (tests, data freshness, parity), Claude Code Action PR review, Vercel deploys |
 | 9 | Claude API | Live: "What's that?" (`/api/identify`: vision, tool use with a `flight_context` tool and a strict `answer` tool, prompt caching, effort control) and "Tell me about it" (`/api/landmark`: structured output grounded in Wikipedia). Offline: `narrate.py` (Message Batches, adaptive thinking). Every sentence checked against the geometry. Tests use a fake client (`lib/claude/claude.test.ts`). |
 | 10 | MCP Advanced | Progress, logging, sampling with server-side check, roots, resource templates, STDIO vs stateless StreamableHTTP + `json_response` on Vercel |
