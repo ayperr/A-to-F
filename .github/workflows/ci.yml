@@ -20,6 +20,8 @@ jobs:
           python pipeline/basemap.py --download
       - name: Geometry and landmark tests
         run: python -m pytest pipeline -q
+      - name: Copy matches the data (typed-in counts)
+        run: python scripts/check_copy.py --strict
       - name: Data is up to date with the engine
         run: |
           python pipeline/build_data.py

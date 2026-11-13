@@ -43,6 +43,7 @@ python pipeline/landmarks.py --download && python pipeline/basemap.py --download
 python -m pytest pipeline -q                   # engine + landmark tests
 ./scripts/regenerate.sh                        # rebuild all data, then headless Claude verification
 python pipeline/check_claims.py --strict       # narration vs geometry
+python scripts/check_copy.py --strict          # typed-in counts in the copy vs the data
 python pipeline/narrate.py                     # window narration (needs ANTHROPIC_API_KEY)
 
 # MCP server
@@ -67,7 +68,7 @@ npm test && npm run lint && npm run build
   exported catalogue (`web/public/data/landmarks.json`); the Claude APIs rebuild unmapped routes the same way. Next's docs: `web/node_modules/next/dist/docs/`.
 - `mcp_server/` FastMCP, **pinned mcp==1.30.0** (v1 API; 2.x renamed FastMCP). `main.py` at repo root hosts it.
 - `.claude/` skills (route-analysis, window-narrator, postcard-copy), agents (route-analyst, storyteller,
-  landmark-verifier), hooks (guard generated files, check claims/engine after edits).
+  landmark-verifier, code-auditor, copy-checker), hooks (guard generated files, check claims/engine after edits).
 - `plugin/a-to-f-trip-planner/` Cowork plugin (skills + hosted MCP).
 - `.github/workflows/` CI, Claude Code PR review, "Generate Claude data" (narration with a repo secret),
   "Observe JetBlue routes" (snapshot every 5 min until Fri 18:00 ET, each run starting the next; commits

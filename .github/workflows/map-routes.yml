@@ -51,6 +51,8 @@ jobs:
         run: |
           python pipeline/check_claims.py --strict
           python -m pytest pipeline -q
+          # typed-in counts in the copy that the new routes made out of date: a warning on the run, not a stop
+          python scripts/check_copy.py | tee -a "$GITHUB_STEP_SUMMARY"
 
       - uses: actions/setup-node@v7
         with:
