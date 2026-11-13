@@ -178,6 +178,14 @@
    "lon": -61.7862,
    "tz": "America/Grenada"
   },
+  "GUA": {
+   "name": "La Aurora",
+   "city": "Guatemala City",
+   "country": "Guatemala",
+   "lat": 14.5833,
+   "lon": -90.5275,
+   "tz": "America/Guatemala"
+  },
   "HPN": {
    "name": "Westchester County",
    "city": "White Plains",
