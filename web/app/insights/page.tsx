@@ -31,20 +31,21 @@ export default function InsightsPage() {
     })
     .sort((x, y) => y.wins / y.total - x.wins / x.total)
     .slice(0, 3);
-  const flights = data.flights.toLocaleString("en-US");
   // Routes with a year on file (pipeline/stats.py): the core ones in insights.json, the rest one file each.
   const dir = join(process.cwd(), "public", "data", "insights");
   const onFile = new Set([...Object.keys(data.routes),
     ...(existsSync(dir) ? readdirSync(dir).filter((f) => f.endsWith(".json")).map((f) => f.slice(0, -5)) : [])]);
   const gridRoutes = routes.filter((r) => onFile.has(r.id)).map((r) => r.id);
+  // Every route is simulated the same way (365 days x 10 departure times), so the total follows from the count.
+  const flights = ((data.flights / Object.keys(data.routes).length) * gridRoutes.length).toLocaleString("en-US");
 
   return (
     <article className={styles.page}>
       <h1>A year of window seats</h1>
       <p className={styles.lead}>
-        We flew the {Object.keys(data.routes).length} hand-checked routes on every day of {data.year}, at ten departure
-        times a day: {flights} simulated flights, each worked out minute by minute by the same engine as the planner,
-        on an approximate great-circle path. The grid at the bottom does the same for all {gridRoutes.length} routes.
+        We flew all {gridRoutes.length} routes on every day of {data.year}, at ten departure times a day: {flights}
+        simulated flights, each worked out minute by minute by the same engine as the planner, on an approximate
+        great-circle path.
       </p>
 
       <ul className={styles.facts}>

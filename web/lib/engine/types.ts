@@ -44,7 +44,7 @@ export interface RouteDetail {
 
 export interface RouteSummary {
   id: string;
-  core?: boolean;   // one of the 20 hand-checked directions (Insights, engine fixtures); others are observed routes
+  core?: boolean;   // one of the 20 core directions (Insights, engine fixtures); others are observed routes
   origin: string;
   dest: string;
   origin_city: string;

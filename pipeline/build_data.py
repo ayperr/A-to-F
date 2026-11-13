@@ -78,7 +78,7 @@ def main() -> None:
             "landmark_count": len(lms), "track_source": detail["track_source"], "core": r["core"],
         })
         if not r["core"]:
-            continue   # the engine fixtures stay on the 20 hand-checked routes
+            continue   # the engine fixtures stay on the 20 core routes
         for day in GOLDEN_DATES:
             for hhmm in DEPARTURE_SLOTS.values():
                 dep = departure_utc(o.tz, day, hhmm)

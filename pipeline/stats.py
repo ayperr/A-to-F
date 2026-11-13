@@ -7,7 +7,7 @@ of 2026 (365 days x 10 departure times = 3,650 flights per route). Every cell re
 days A, F or neither won, and why (golden light, landmarks, shade; golden split by side), plus n,
 the number of days.
 
-insights.json holds the 20 hand-checked core directions (the Insights headlines and the grid's first
+insights.json holds the 20 core directions (the Insights headlines and the grid's first
 load: 73,000 flights). Every other mapped route gets its own small file, fetched when it is picked in
 the grid. Those are only computed when missing (a new route), or for all routes with --all.
 """

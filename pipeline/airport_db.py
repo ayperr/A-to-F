@@ -1,4 +1,4 @@
-"""Airports beyond the nine hand-checked ones, from the OpenFlights airport database (ODbL).
+"""Airports beyond the nine core ones, from the OpenFlights airport database (ODbL).
 
     python pipeline/airport_db.py --update
 

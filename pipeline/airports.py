@@ -3,7 +3,7 @@
 Airport coordinates are the published aerodrome reference points (rounded).
 `verified` on a route means we have a current source showing JetBlue flies it.
 
-The nine core airports and ten core pairs were checked by hand; they also feed Insights and the
+The nine core airports and ten core pairs came first; they also feed Insights and the
 engine test fixtures. More routes come from observed_routes.json (JetBlue planes seen on the A to F
 live list): a route is added only once one of its planes was seen taking off or landing at one of its
 airports, and its airports come from airports_extra.json (OpenFlights, written by airport_db.py).
