@@ -36,7 +36,7 @@ This project answers it with geometry, not guesswork — and then makes sure eve
 | `mcp_server/` | MCP server: progress, logging, sampling, roots; `main.py` hosts it on Vercel |
 | `.claude/` | Skills, subagents and hooks used to build and check the project with Claude Code |
 | `plugin/` | Cowork plugin for trip planners |
-| `.github/workflows/` | CI, Claude Code PR review, Claude data generation |
+| `.github/workflows/` | CI, Claude Code PR review, Claude data generation, the JetBlue route observer and the route mapper |
 
 ## Run it
 ```bash

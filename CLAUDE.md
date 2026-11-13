@@ -14,7 +14,7 @@ Plan, status and what's left: `BUILD_GUIDE.md`.
    A window sees |rel| 20°–160°. Golden light uses the looser glow band |rel| 5°–175°.
 3. **Python and TypeScript engines stay identical.** Change both, rebuild data, run both test suites.
    `npm test` checks 320 Python vectors (`web/lib/engine/fixtures/golden.json`), and the landmark search
-   (`web/lib/engine/landmarks.ts`) against Python on the 20 mapped routes plus 52 other airport pairs.
+   (`web/lib/engine/landmarks.ts`) against Python on every mapped route plus 52 other airport pairs.
 4. **Never invent data.** Landmarks come from Natural Earth and carry Wikidata IDs. The 20 core directions came
    first; more routes come only from `observed_routes.json`: seen on the live list AND either both airports seen in
    use (a plane below 3,000 m, within 40 km, nearest to that airport) or listed in `published_routes.json`

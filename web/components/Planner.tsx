@@ -197,8 +197,8 @@ export default function Planner({ detail, adhoc }: { detail: RouteDetail; adhoc?
           minute={m} onMinute={setMinute} cityLabel={`${detail.origin.city} time`} />
         <p className={styles.fine}>
           Flight path is the shortest route between the airports. Real flights bend with winds and air traffic control,
-          so anything within 40 km of the line is marked as possibly on either side. Landmarks come from Natural Earth
-          and each links to Wikidata on the <Link href="/about">how it works</Link> page.
+          so anything within 40 km of the line is marked as possibly on either side. Landmarks come from Natural Earth,
+          and each one on a mapped route links to Wikidata on the <Link href="/about">how it works</Link> page.
         </p>
       </section>
     </div>

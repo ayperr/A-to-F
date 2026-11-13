@@ -20,5 +20,5 @@ The full local server (with streamed progress, sampling and roots) is in the mai
 
 ## Try it
 
-- "Which side should I sit on for JFK to LAX on 12 November leaving at 3pm?"
+- "Which side should I sit on for JFK to LAX on 20 November leaving at 3pm?"
 - "Plan my window seats: BOS to LHR on 20 Dec at 21:00, LHR to BOS on 3 Jan at 07:00."

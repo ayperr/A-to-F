@@ -41,7 +41,7 @@ export default function About() {
             For every minute, the sun&rsquo;s direction and height above the horizon at the plane&rsquo;s position,
             using the standard NOAA solar formulas. At 11 km up the horizon sits about 3 degrees lower than on the
             ground, so you see the sun for a few minutes after it has set for people below. The calculation matches
-            the open-source astral library exactly across 20,000 random times and places.
+            the open-source astral library across 3,000 random times and places.
           </p>
         </li>
         <li>
@@ -74,8 +74,8 @@ export default function About() {
         <li>
           <h2>Where Claude fits</h2>
           <p>
-            Geometry decides the side and Claude explains it, never the other way round. Claude writes the window
-            narration, explains landmarks and tells you what is in your photo, with information and fun facts about it.
+            Geometry decides the side and Claude explains it, never the other way round. Claude explains landmarks
+            and tells you what is in your photo, with information and fun facts about it.
             Every sentence it writes is checked against the engine first, and a sentence naming the wrong side is
             dropped.
           </p>

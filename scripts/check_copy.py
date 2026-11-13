@@ -38,8 +38,8 @@ def facts() -> dict:
         "landmark_features": len(json.loads((DATA / "landmarks.json").read_text())["features"]),
         "core_simulated_flights": json.loads((DATA / "insights.json").read_text())["flights"],
         "year_grid_flights": 3650 * len(routes),
-        # landmark parity test: the core routes plus the extra airport pairs in the fixture
-        "parity_routes": len(core) + len(json.loads(FIXTURE.read_text())),
+        # landmark parity test: every mapped route plus the unmapped airport pairs in the fixture
+        "parity_routes": len(routes) + len(json.loads(FIXTURE.read_text())),
     }
 
 

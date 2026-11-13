@@ -10,11 +10,11 @@ Facts were checked on 1 Nov 2026; sources at the end.
 
 | Area | What exists | Proof |
 |---|---|---|
-| Engine | NOAA solar position (`pipeline/solar.py`), side rules, horizon dip, golden "glow" band, landmarks, recommend() | Identical to astral on 20,000 random cases; 19 Python tests |
+| Engine | NOAA solar position (`pipeline/solar.py`), side rules, horizon dip, golden "glow" band, landmarks, recommend() | Identical to astral on 3,000 random cases; 25 Python tests |
 | Landmarks | Corridor search over Natural Earth features with Wikidata IDs (`pipeline/landmarks.py`), side/minute/distance/confidence | Tests: provenance, Rockies + Grand Canyon on JFK→LAX, sides flip on return |
 | Browser engine | TypeScript port (`web/lib/engine`) for any date and time | 320 parity cases vs Python (`npm test`) |
 | Planner | Flight-number lookup or route picker, A/F answer, clickable seat row (middle/aisle seats explained), camera moments that open the Virtual Window at that minute, two-lane timeline | `/`, `/route/[id]` |
-| Any JetBlue flight | Flight number + date → AeroDataBox → airports and time. Every flight gets the sun answer, landmarks, camera moments, Virtual Window, postcard and the Claude features: track and landmarks are computed in the browser from the exported Natural Earth catalogue, tested equal to the pipeline on 72 routes. Mapped routes add their own pages, Insights and narration | `/api/flight`, `/flight`, `/flight/window`, `/flight/postcard`, `lib/engine/landmarks.ts` |
+| Any JetBlue flight | Flight number + date → AeroDataBox → airports and time. Every flight gets the sun answer, landmarks, camera moments, Virtual Window, postcard and the Claude features: track and landmarks are computed in the browser from the exported Natural Earth catalogue, tested equal to the pipeline on every mapped route plus 52 unmapped pairs. Mapped routes add their own pages, Insights and narration | `/api/flight`, `/flight`, `/flight/window`, `/flight/postcard`, `lib/engine/landmarks.ts` |
 | Virtual Window | CesiumJS side camera, real sun lighting, terrain (ion token), 1×/60×/300×, phone GPS | `/window/[id]` |
 | Live flights | JetBlue planes in the air now (adsb.lol, by fleet type) with routes (adsbdb.com, cached 12 h); live Virtual Window follows the real position (dead-reckoned between 10 s polls), LIVE button after replay; a flight number for today that's airborne opens it | `/api/live`, `?live=JBU615`; tests in `lib/live.test.ts` |
 | Postcard | 1080×1350 canvas: map, golden stretch, landmarks on your side, your photo in the window, share/download | `/postcard/[id]` |
@@ -57,7 +57,7 @@ Facts were checked on 1 Nov 2026; sources at the end.
 | Vercel Hobby | Free, non-commercial only; functions up to 300 s; Python ASGI apps via `app` in `main.py` |
 | Claude models | `claude-haiku-5-5` (~$0.10/$0.50 per M tokens, third-party listing: confirm in Console), `claude-sonnet-5-5`; Batches 50% off |
 | MCP Python SDK | Latest 2.3.0 renamed FastMCP → MCPServer; pinned 1.30.0 |
-| Routes | All 10 pairs (20 directions) confirmed as JetBlue nonstops; sources in `pipeline/airports.py` |
+| Routes | The 10 core pairs (20 directions) are confirmed JetBlue nonstops (sources in `pipeline/airports.py`); every other route comes from the live-list observer under CLAUDE.md rule 4 |
 
 Sources: cesium.com/platform/cesium-ion/pricing · vercel.com/docs/plans/hobby ·
 vercel.com/docs/functions/runtimes/python · code.claude.com/docs/en/hooks · llmreference.com · airportroutes.com · flymag.com.
