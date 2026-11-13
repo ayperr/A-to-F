@@ -1,0 +1,76 @@
+name: Map new routes
+
+# The route mapper. Started by "Observe JetBlue routes" right after it commits pipeline/observed_routes.json
+# (or by hand from the Actions tab). It maps every route that passes the rule in CLAUDE.md (seen on the live
+# list, and both airports seen in use or the pair on the published list), then rebuilds everything that
+# follows from the route list:
+#   - routes and their landmarks (also the "Every landmark, with its source" list on How it works)
+#   - the Insights year grid for each new route (stats.py only computes routes that have none yet)
+#   - "Longest golden light this week" on the Routes page
+# It runs the narration check and both test suites, and commits only if all of them pass. Vercel deploys
+# the commit. Nothing here is written by hand, and nothing is invented: no route is added without the rule.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: map-routes
+  cancel-in-progress: false
+
+jobs:
+  map:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: main
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.13"
+      - run: pip install -r pipeline/requirements.txt
+      - name: Download Natural Earth layers
+        run: |
+          python pipeline/landmarks.py --download
+          python pipeline/basemap.py --download
+
+      - name: Map the routes, then everything that follows from them
+        run: |
+          before=$(python -c 'import json;print(len(json.load(open("web/public/data/routes.json"))["routes"]))')
+          python pipeline/airport_db.py --update
+          python pipeline/build_data.py
+          python pipeline/stats.py
+          python pipeline/view_of_week.py
+          after=$(python -c 'import json;print(len(json.load(open("web/public/data/routes.json"))["routes"]))')
+          echo "BEFORE=$before" >> "$GITHUB_ENV"; echo "AFTER=$after" >> "$GITHUB_ENV"
+          echo "Route directions: $before -> $after"
+
+      - name: Checks (narration vs geometry, Python engine)
+        run: |
+          python pipeline/check_claims.py --strict
+          python -m pytest pipeline -q
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+      - name: Web tests, lint and build
+        working-directory: web
+        run: |
+          npm ci
+          npm test
+          npm run lint
+          npm run build
+
+      - name: Commit
+        run: |
+          git add pipeline/airports_extra.json web/public/data web/lib/engine/fixtures
+          git diff --cached --quiet && { echo "Nothing new to map."; exit 0; }
+          git config user.name "a-to-f-bot"
+          git config user.email "a-to-f-bot@users.noreply.github.com"
+          git commit -m "Map observed routes: $BEFORE -> $AFTER directions (route mapper)"
+          git pull --rebase -q origin main
+          git push

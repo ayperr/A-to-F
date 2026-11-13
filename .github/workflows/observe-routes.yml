@@ -5,6 +5,7 @@ name: Observe JetBlue routes
 # 5 minutes for about 55 minutes and then starts the next run itself (workflow_dispatch is allowed from
 # GITHUB_TOKEN). The running list lives in the Actions cache; it is committed at most every 6 hours (so
 # routes can be mapped while it runs, with few redeploys) and once more when the window ends.
+# Every commit starts "Map new routes" (map-routes.yml), which maps what qualifies and publishes it.
 # Start it, or restart a broken chain, from the Actions tab with "Run workflow". Tick "commit" to commit the
 # latest saved list right away (a separate queue: the chain keeps running).
 on:
@@ -96,8 +97,10 @@ jobs:
           if-no-files-found: ignore
           overwrite: true
 
-      - name: Commit (every 6 hours, when asked, and when the window ends)
+      - name: Commit (every 6 hours, when asked, and when the window ends), then start the route mapper
         if: steps.phase.outputs.phase != 'done'
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
           [ -f pipeline/observed_routes.json ] || { echo "Nothing observed yet."; exit 0; }
           last=$(git log -1 --format=%ct -- pipeline/observed_routes.json 2>/dev/null || echo 0); last=${last:-0}
@@ -113,6 +116,7 @@ jobs:
           git commit -m "Observed JetBlue routes ($(python3 -c 'import json;d=json.load(open("pipeline/observed_routes.json"));r=d["routes"].values();print(len(d["routes"]),"pairs,",sum(1 for x in r if x.get("confirmed")),"confirmed,",d["snapshots"],"snapshots")'))"
           git pull --rebase -q origin main
           git push
+          gh workflow run map-routes.yml --ref main -R "$GITHUB_REPOSITORY"
 
       - name: Start the next run
         if: always() && steps.phase.outputs.phase == 'observe'
