@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { routes } from "@/lib/routes";
+import RoutePicker from "./RoutePicker";
 import styles from "./YearGrid.module.css";
 
 export type Cell = {
@@ -61,19 +62,11 @@ export default function YearGrid({ data, ids }: { data: Insights; ids: string[] 
 
   return (
     <div>
-      <label className={styles.pick}>
-        <span>Route</span>
-        <select value={id} onChange={(e) => {
-          const v = e.target.value;
-          setExtra((x) => (x[v] === "error" ? Object.fromEntries(Object.entries(x).filter(([k]) => k !== v)) : x));
-          setHover(null);
-          setId(v);
-        }}>
-          {routes.filter((x) => ids.includes(x.id)).map((x) => (
-            <option key={x.id} value={x.id}>{x.origin} to {x.dest}</option>
-          ))}
-        </select>
-      </label>
+      <RoutePicker ids={ids} value={id} onChange={(v) => {
+        setExtra((x) => (x[v] === "error" ? Object.fromEntries(Object.entries(x).filter(([k]) => k !== v)) : x));
+        setHover(null);
+        setId(v);
+      }} />
 
       <ul className={styles.legend} aria-label="Legend">
         <li><span className={`${styles.swatch} ${styles.A}`}>A</span>Left side wins</li>

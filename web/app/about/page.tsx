@@ -1,24 +1,26 @@
 import type { Metadata } from "next";
 import { catalogSize, loadRoute } from "@/lib/detail";
+import LandmarkSources, { type SourceRow } from "@/components/LandmarkSources";
 import { routes } from "@/lib/routes";
 import styles from "./about.module.css";
 
 export const metadata: Metadata = { title: "How it works" };
 
-const SIDE: Record<string, string> = { A: "left", F: "right", below: "below" };
-
 export default function About() {
   const details = routes.map((r) => loadRoute(r.id)!);
   const unique = new Set(details.flatMap((d) => d.landmarks.map((l) => l.wikidata))).size;
+  const byRoute: Record<string, SourceRow[]> = Object.fromEntries(details.map((d) => [d.id, d.landmarks.map((l) => (
+    { minute: l.minute, name: l.name, side: l.side, low: l.confidence === "low", km: l.dist_km, q: l.wikidata }))]));
 
   return (
     <article className={styles.page}>
       <h1>How A to F works</h1>
       <p className={styles.lead}>
         &ldquo;Which side has the view?&rdquo; is the question friends have asked me most since I started working
-        for the airline KLM, and passengers sometimes asked it at the gate as well. The answer depends on the route,
+        as a gate agent, and passengers sometimes asked it at the gate as well. The answer depends on the route,
         the date, the departure time and the position of the sun, so most people simply guess. A to F answers it with
-        geometry rather than guesswork. For everyone who cannot see out, in a middle or aisle seat, next to a closed
+        geometry rather than guesswork. I chose JetBlue because it is the airline I hope to build my career with, so
+        A to F is also a first look at what I would bring to it. For everyone who cannot see out, in a middle or aisle seat, next to a closed
         blind or on a night flight, there is the Virtual Window: the view from the window seat, live or replayed, in
         the real light of that moment or in full daylight or full night.
       </p>
@@ -91,30 +93,8 @@ export default function About() {
 
       <section className={styles.section}>
         <h2>Every landmark, with its source</h2>
-        <p className={styles.lead}>Minutes are after takeoff on the approximate path.</p>
-        {details.map((d) => (
-          <details key={d.id} className={styles.route}>
-            <summary>{d.origin.iata} to {d.dest.iata}, {d.landmarks.length} landmarks</summary>
-            {d.landmarks.length ? (
-              <table className={styles.table}>
-                <thead><tr><th scope="col">Minute</th><th scope="col">Landmark</th><th scope="col">Side</th><th scope="col">Distance</th><th scope="col">Wikidata</th></tr></thead>
-                <tbody>
-                  {d.landmarks.map((l) => (
-                    <tr key={l.name}>
-                      <td>{l.minute}</td>
-                      <td>{l.name}</td>
-                      <td>{SIDE[l.side]}{l.confidence === "low" ? ", could be either" : ""}</td>
-                      <td>{l.dist_km} km</td>
-                      <td><a href={`https://www.wikidata.org/wiki/${l.wikidata}`} rel="noreferrer" target="_blank">{l.wikidata}</a></td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            ) : (
-              <p className={styles.empty}>Open sea most of the way. The view on this one is the sky.</p>
-            )}
-          </details>
-        ))}
+        <p className={styles.lead}>Pick a route. Minutes are after takeoff on the approximate path.</p>
+        <LandmarkSources byRoute={byRoute} />
       </section>
 
       <section className={styles.section}>

@@ -1,0 +1,8 @@
+.pick { display: flex; flex-wrap: wrap; align-items: baseline; gap: 10px 22px; font-size: 1.3rem; margin-bottom: 18px; }
+.pick label { display: inline-flex; align-items: baseline; gap: 10px; }
+.pick span { color: var(--ink-soft); font-size: 1rem; }
+.pick select {
+  font: inherit; font-weight: 800; color: var(--ink); background: transparent; border: 0;
+  border-bottom: 3px solid var(--accent); padding: 0 2px 2px; cursor: pointer; max-width: 100%;
+}
+.pick option { background: var(--bg); font-size: 1rem; }

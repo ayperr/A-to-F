@@ -8,8 +8,9 @@ for the sunset, the sunrise and the landmarks on their route, gives anyone who c
 > Independent student project for JetBlue flyers. **Not affiliated with or endorsed by JetBlue Airways.**
 
 ## Why
-Ever since I started working for KLM (two years as a gate agent at Schiphol), "which side has the view?" is the question
-friends ask me most, and passengers sometimes asked it at the gate too.
+"Which side has the view?" is the question friends have asked me most since I started working as a gate agent, and
+passengers sometimes asked it at the gate as well. I chose JetBlue because it is the airline I hope to build my career
+with, so A to F is also a first look at what I would bring to it.
 This project answers it with geometry, not guesswork — and then makes sure every seat gets the view.
 
 ## How it works

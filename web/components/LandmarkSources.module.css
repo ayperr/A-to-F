@@ -1,0 +1,6 @@
+.count { color: var(--ink-soft); margin: -6px 0 8px; }
+.table { width: 100%; border-collapse: collapse; font-size: 0.9rem; margin: 4px 0 18px; font-variant-numeric: tabular-nums; }
+.table th { text-align: left; color: var(--ink-soft); font-weight: 600; padding: 6px 8px 6px 0; border-bottom: 1px solid var(--line); }
+.table td { padding: 7px 8px 7px 0; border-bottom: 1px solid var(--line); }
+.empty { color: var(--ink-soft); }
+@media (max-width: 560px) { .table th:nth-child(4), .table td:nth-child(4) { display: none; } }
