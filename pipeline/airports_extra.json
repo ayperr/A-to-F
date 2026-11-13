@@ -74,6 +74,22 @@
    "lon": -78.7322,
    "tz": "America/New_York"
   },
+  "BWI": {
+   "name": "Baltimore/Washington International Thurgood Marshall",
+   "city": "Baltimore",
+   "country": "United States",
+   "lat": 39.1754,
+   "lon": -76.6683,
+   "tz": "America/New_York"
+  },
+  "CDG": {
+   "name": "Charles de Gaulle International",
+   "city": "Paris",
+   "country": "France",
+   "lat": 49.0128,
+   "lon": 2.55,
+   "tz": "Europe/Paris"
+  },
   "CHS": {
    "name": "Charleston Air Force Base-International",
    "city": "Charleston",
@@ -98,6 +114,14 @@
    "lon": -80.9431,
    "tz": "America/New_York"
   },
+  "CMH": {
+   "name": "John Glenn Columbus International",
+   "city": "Columbus",
+   "country": "United States",
+   "lat": 39.998,
+   "lon": -82.8919,
+   "tz": "America/New_York"
+  },
   "CUN": {
    "name": "Cancún International",
    "city": "Cancun",
@@ -113,6 +137,14 @@
    "lat": 38.8521,
    "lon": -77.0377,
    "tz": "America/New_York"
+  },
+  "DFW": {
+   "name": "Dallas Fort Worth International",
+   "city": "Dallas-Fort Worth",
+   "country": "United States",
+   "lat": 32.8968,
+   "lon": -97.038,
+   "tz": "America/Chicago"
   },
   "DTW": {
    "name": "Detroit Metropolitan Wayne County",
@@ -242,6 +274,14 @@
    "lon": -75.2411,
    "tz": "America/New_York"
   },
+  "PHX": {
+   "name": "Phoenix Sky Harbor International",
+   "city": "Phoenix",
+   "country": "United States",
+   "lat": 33.4343,
+   "lon": -112.012,
+   "tz": "America/Phoenix"
+  },
   "PIT": {
    "name": "Pittsburgh International",
    "city": "Pittsburgh",
@@ -272,6 +312,14 @@
    "country": "United States",
    "lat": 41.7326,
    "lon": -71.4204,
+   "tz": "America/New_York"
+  },
+  "PWM": {
+   "name": "Portland International Jetport",
+   "city": "Portland",
+   "country": "United States",
+   "lat": 43.6462,
+   "lon": -70.3093,
    "tz": "America/New_York"
   },
   "RDU": {
@@ -321,6 +369,14 @@
    "lat": 18.4297,
    "lon": -69.6689,
    "tz": "America/Santo_Domingo"
+  },
+  "SLC": {
+   "name": "Salt Lake City International",
+   "city": "Salt Lake City",
+   "country": "United States",
+   "lat": 40.7884,
+   "lon": -111.978,
+   "tz": "America/Denver"
   },
   "STI": {
    "name": "Cibao International",
