@@ -21,7 +21,7 @@ Plan, status and what's left: `BUILD_GUIDE.md`.
    (airportroutes.com, FlightAware observed operations). Airports from OpenFlights (`airport_db.py --update`). No seat maps, no JetBlue internals.
 5. **Label approximations.** Tracks are `synthetic-great-circle`; durations are short westbound. Never present
    them as real flight times. Live flights use real positions, but their routes and time since takeoff are estimates.
-6. **Generated files are not hand-edited** (`web/public/data/routes*`, `landmarks.json`, `insights.json`,
+6. **Generated files are not hand-edited** (`web/public/data/routes*`, `landmarks.json`, `insights*`,
    `basemap.json`, `narration.json`, golden fixtures). A PreToolUse hook blocks it. Change the pipeline and rerun it.
 7. **Brand/legal.** "for JetBlue flyers", never "by JetBlue". White and blue, but our own blues and our own
    A to F logo: never JetBlue's logo, fonts or exact brand colours. Tokens in `web/app/globals.css`: bg #ffffff,
@@ -59,7 +59,8 @@ npm test && npm run lint && npm run build
 - `pipeline/` Python. `solar.py` (NOAA sun), `sun_geometry.py` (sides + recommend), `landmarks.py` (Natural Earth
   corridor search), `fetch_tracks.py`, `build_data.py`, `stats.py` (year grid), `view_of_week.py`, `basemap.py`,
   `narrate.py`, `check_claims.py`, `observe_routes.py` (JetBlue routes seen on the live list), `airport_db.py`
-  (OpenFlights airports for them), `tests/`. Insights and the engine fixtures stay on the 20 core directions.
+  (OpenFlights airports for them), `tests/`. Insights headlines and the engine fixtures stay on the 20 core directions; the year grid covers every route
+  (`web/public/data/insights/<id>.json`, computed by `stats.py` for new routes).
 - `web/` Next.js 16 (App Router, `cacheComponents`), Vercel root `web`. Pages: `/`, `/route/[id]`, `/window/[id]`
   (CesiumJS), `/postcard/[id]` (canvas), `/insights`, `/about`, `/privacy`; APIs `/api/flight` (AeroDataBox), `/api/live` (adsb.lol positions + adsbdb.com routes, CDN-cached 30 s / 5 s), `/api/identify` and `/api/landmark` (Claude, `lib/claude/`).
   Engine port in `web/lib/engine`, including the landmark search, so any JetBlue flight gets landmarks from the

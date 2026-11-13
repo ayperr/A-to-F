@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { existsSync, readFileSync } from "node:fs";
+import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import YearGrid, { type Insights } from "@/components/YearGrid";
 import { routes } from "@/lib/routes";
@@ -32,13 +32,19 @@ export default function InsightsPage() {
     .sort((x, y) => y.wins / y.total - x.wins / x.total)
     .slice(0, 3);
   const flights = data.flights.toLocaleString("en-US");
+  // Routes with a year on file (pipeline/stats.py): the core ones in insights.json, the rest one file each.
+  const dir = join(process.cwd(), "public", "data", "insights");
+  const onFile = new Set([...Object.keys(data.routes),
+    ...(existsSync(dir) ? readdirSync(dir).filter((f) => f.endsWith(".json")).map((f) => f.slice(0, -5)) : [])]);
+  const gridRoutes = routes.filter((r) => onFile.has(r.id)).map((r) => r.id);
 
   return (
     <article className={styles.page}>
       <h1>A year of window seats</h1>
       <p className={styles.lead}>
-        We flew every route on every day of {data.year}, at ten departure times a day: {flights} simulated flights,
-        each worked out minute by minute by the same engine as the planner, on an approximate great-circle path.
+        We flew the {Object.keys(data.routes).length} hand-checked routes on every day of {data.year}, at ten departure
+        times a day: {flights} simulated flights, each worked out minute by minute by the same engine as the planner,
+        on an approximate great-circle path. The grid at the bottom does the same for all {gridRoutes.length} routes.
       </p>
 
       <ul className={styles.facts}>
@@ -61,7 +67,7 @@ export default function InsightsPage() {
 
       <section className={styles.section}>
         <h2>Which side wins, by month and departure time</h2>
-        <YearGrid data={data} />
+        <YearGrid data={data} ids={gridRoutes} />
       </section>
 
     </article>

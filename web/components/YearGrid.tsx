@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { routes } from "@/lib/routes";
 import styles from "./YearGrid.module.css";
 
@@ -24,19 +24,52 @@ function verdict(c: Cell) {
   return { side: "-", strong: c.none === n };
 }
 
-export default function YearGrid({ data }: { data: Insights }) {
+type Grid = { grid: Cell[][]; totals: Cell };
+
+// Core routes come with the page; every other route has its own file (pipeline/stats.py), fetched on pick.
+const fetched = new Map<string, Promise<Grid>>();
+function loadGrid(id: string): Promise<Grid> {
+  if (!fetched.has(id)) {
+    const p = fetch(`/data/insights/${id}.json`).then((r) => {
+      if (!r.ok) throw new Error(`insights ${r.status}`);
+      return r.json() as Promise<Grid>;
+    });
+    p.catch(() => fetched.delete(id));
+    fetched.set(id, p);
+  }
+  return fetched.get(id)!;
+}
+
+export default function YearGrid({ data, ids }: { data: Insights; ids: string[] }) {
   const [id, setId] = useState("jfk-lax");
+  const [extra, setExtra] = useState<Record<string, Grid | "error">>({});
   const [hover, setHover] = useState<{ m: number; h: number } | null>(null);
   const r = routes.find((x) => x.id === id)!;
-  const grid = data.routes[id].grid;
-  const hc = hover ? grid[hover.m][hover.h] : null;
+  const got = (data.routes[id] as Grid | undefined) ?? extra[id];
+  const grid = got && got !== "error" ? got.grid : null;
+  const hc = hover && grid ? grid[hover.m][hover.h] : null;
+
+  useEffect(() => {
+    if (data.routes[id] || extra[id]) return;
+    let live = true;
+    loadGrid(id).then(
+      (g) => live && setExtra((e) => ({ ...e, [id]: g })),
+      () => live && setExtra((e) => ({ ...e, [id]: "error" })),
+    );
+    return () => { live = false; };
+  }, [id, data.routes, extra]);
 
   return (
     <div>
       <label className={styles.pick}>
         <span>Route</span>
-        <select value={id} onChange={(e) => setId(e.target.value)}>
-          {routes.map((x) => (
+        <select value={id} onChange={(e) => {
+          const v = e.target.value;
+          setExtra((x) => (x[v] === "error" ? Object.fromEntries(Object.entries(x).filter(([k]) => k !== v)) : x));
+          setHover(null);
+          setId(v);
+        }}>
+          {routes.filter((x) => ids.includes(x.id)).map((x) => (
             <option key={x.id} value={x.id}>{x.origin} to {x.dest}</option>
           ))}
         </select>
@@ -62,7 +95,7 @@ export default function YearGrid({ data }: { data: Insights }) {
             </tr>
           </thead>
           <tbody>
-            {grid.map((row, m) => (
+            {(grid ?? []).map((row, m) => (
               <tr key={m}>
                 <th scope="row">{MONTHS[m]}</th>
                 {row.map((c, h) => {
@@ -84,7 +117,9 @@ export default function YearGrid({ data }: { data: Insights }) {
         </table>
       </div>
       <p className={styles.readout} aria-live="polite">
-        {hover && hc
+        {!grid
+          ? got === "error" ? "This route's year did not load. Pick it again to retry." : "Working out the year for this route…"
+          : hover && hc
           ? `${MONTH_LONG[hover.m]}, leaving ${String(data.hours[hover.h]).padStart(2, "0")}:00 ${r.origin_city} time: left wins ${hc.A}, right ${hc.F}, either ${hc.none} of the ${hc.n} days in ${MONTH_LONG[hover.m]}. Golden light on ${hc.golden}.`
           : "Point at a square to see the days behind it. Every day of the month is simulated."}
       </p>

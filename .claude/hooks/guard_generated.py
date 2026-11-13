@@ -11,6 +11,7 @@ GENERATED = (
     "web/public/data/routes/",
     "web/public/data/routes.json",
     "web/public/data/insights.json",
+    "web/public/data/insights/",
     "web/public/data/basemap.json",
     "web/public/data/landmarks.json",
     "web/lib/engine/fixtures/golden.json",
