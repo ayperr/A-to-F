@@ -1,5 +1,5 @@
 // The browser's landmark search must give the pipeline's answers: for every mapped route (the
-// landmarks stored in their JSON) and for 52 airport pairs that are not mapped (landmarks-golden.json).
+// landmarks stored in their JSON) and for 52 airport pairs that are not core routes (landmarks-golden.json).
 import { readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";

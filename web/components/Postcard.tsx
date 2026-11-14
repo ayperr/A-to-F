@@ -282,7 +282,7 @@ export default function Postcard({ detail, backHref }: { detail: RouteDetail; ba
       // A landmark identified in the photo (checked against this side's list) goes first.
       const inPhoto = identified?.match ?? null;
       const names = [...(inPhoto ? [inPhoto] : []), ...seen.map((l) => l.name).filter((n) => n !== inPhoto)].slice(0, 5);
-      if (!names.length) names.push("Mostly open sky and sea");
+      if (!names.length) names.push("No landmarks on my side this time");
       for (const name of names) {
         const lines = wrap(ctx, name, fw);
         if (fy + (lines.length - 1) * 38 > hy + hh) break; // keep inside the row; drop, never squeeze

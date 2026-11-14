@@ -14,7 +14,7 @@ For each route id you are given (default: all in web/public/data/routes.json):
    - Westbound winter afternoons should mostly be golden on the left; eastbound early mornings golden on the right.
    - No landmark within 80 km of the origin or destination airport (cities) or in the first/last 12 minutes.
    - The same landmark flips side between a route and its return.
-   - Year stats (web/public/data/insights.json): no route should be 100% one side all year.
+   - Year stats (web/public/data/insights/<id>.json, one per route): no route should be 100% one side all year.
 4. Run `python -m pytest pipeline -q` and `cd web && npm test`.
 
 Report: a table (route, duration, landmarks, low-confidence, anomalies) and a short list of anything that

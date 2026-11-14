@@ -16,7 +16,7 @@ export default function RoutesPage() {
         with their own pages and a full year in Insights. Pick one, then tell us when you fly.
       </p>
       <p style={{ color: "var(--ink-soft)", margin: "10px 0 0", maxWidth: "60ch", fontSize: "0.9rem" }}>
-        New routes are added from what is actually flying: A to F recorded every JetBlue route on the live list from
+        New routes were added from what was actually flying: A to F recorded every JetBlue route on the live list from
         Thursday 12 to Friday 13 November, and mapped each one it could confirm.
       </p>
       <RouteList />

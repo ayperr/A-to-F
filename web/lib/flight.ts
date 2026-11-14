@@ -1,4 +1,4 @@
-import { clock, todayIn } from "./engine/time";
+import { clock, dateIn, todayIn } from "./engine/time";
 import { routes } from "./routes";
 
 /**
@@ -97,7 +97,7 @@ export function parseFlights(data: unknown, number: string) {
       const o = airport(dep), d = airport(arr), ms = utcMs(dep);
       if (!o || !d || ms === null) return null;
       const id = `${o.iata.toLowerCase()}-${d.iata.toLowerCase()}`;
-      const local = new Intl.DateTimeFormat("en-CA", { timeZone: o.tz, year: "numeric", month: "2-digit", day: "2-digit" }).format(new Date(ms));
+      const local = dateIn(ms, o.tz);
       return {
         number: String(pick(f, "number") ?? number),
         airline: String(pick(f, "airline.name") ?? "JetBlue"),

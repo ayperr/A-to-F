@@ -7,7 +7,7 @@ Writes:
     web/public/data/routes/<id>.json       track (1 point per minute) + landmarks along it
     web/public/data/landmarks.json         the landmark catalogue, so the browser can find landmarks for any flight
     web/lib/engine/fixtures/golden.json    Python answers the TS engine must reproduce
-    web/lib/engine/fixtures/landmarks-golden.json   landmarks for airport pairs that are not mapped routes
+    web/lib/engine/fixtures/landmarks-golden.json   landmarks for 52 airport pairs that are not core routes
 
 The track is date-independent geometry; the browser adds the departure time and computes
 the sun for any date. Python stays the source of truth: the TS port is tested against it.
@@ -92,7 +92,7 @@ def main() -> None:
                     "rec": rec,
                 })
 
-    # Every ordered airport pair that is not a mapped route: the browser must find the same landmarks.
+    # Every ordered pair of core airports that is not a core route: the browser must find the same landmarks.
     mapped = {r["id"] for r in all_routes() if r["core"]}   # the 52 pairs stay the same as routes get added
     lm_golden = []
     for a in CORE_AIRPORTS.values():

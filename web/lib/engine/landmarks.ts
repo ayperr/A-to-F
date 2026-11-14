@@ -1,7 +1,7 @@
 // Landmarks along any route, in the browser. Line-by-line port of pipeline/landmarks.py along_route(),
 // run on the catalogue the pipeline exports (web/public/data/landmarks.json): the same Natural Earth
 // features, the same rounded geometry and the same rules. Tested against the Python answers for the
-// 20 mapped routes and 52 other airport pairs (landmarks.test.ts).
+// every mapped route and 52 airport pairs that are not core routes (landmarks.test.ts).
 import { wrap180 } from "./geometry";
 import { initialBearing } from "./track";
 import type { Landmark, TrackRow } from "./types";

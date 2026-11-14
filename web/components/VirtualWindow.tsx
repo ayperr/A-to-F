@@ -5,7 +5,7 @@
 import type * as CesiumNS from "cesium";
 import Link from "next/link";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { clock, localToUtcMs, todayIn } from "@/lib/engine/time";
+import { clock, dateIn, localToUtcMs, todayIn } from "@/lib/engine/time";
 import type { RouteDetail } from "@/lib/engine/types";
 import { duration } from "@/lib/routes";
 import styles from "./VirtualWindow.module.css";
@@ -229,7 +229,7 @@ export default function VirtualWindow({ detail, backHref }: { detail: RouteDetai
         if (first) {
           // No departure time for a live flight: estimate it from how far along the route the plane is.
           const dep = Date.now() - k * 60_000;
-          setDate(new Intl.DateTimeFormat("en-CA", { timeZone: detail.origin.tz, year: "numeric", month: "2-digit", day: "2-digit" }).format(new Date(dep)));
+          setDate(dateIn(dep, detail.origin.tz));
           setTime(clock(dep, detail.origin.tz));
           first = false;
         }

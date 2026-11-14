@@ -14,7 +14,7 @@ Plan, status and what's left: `BUILD_GUIDE.md`.
    A window sees |rel| 20°–160°. Golden light uses the looser glow band |rel| 5°–175°.
 3. **Python and TypeScript engines stay identical.** Change both, rebuild data, run both test suites.
    `npm test` checks 320 Python vectors (`web/lib/engine/fixtures/golden.json`), and the landmark search
-   (`web/lib/engine/landmarks.ts`) against Python on every mapped route plus 52 other airport pairs.
+   (`web/lib/engine/landmarks.ts`) against Python on every mapped route plus 52 pairs of core airports that are not core routes.
 4. **Never invent data.** Landmarks come from Natural Earth and carry Wikidata IDs. The 20 core directions came
    first; more routes come only from `observed_routes.json`: seen on the live list AND either both airports seen in
    use (a plane below 3,000 m, within 40 km, nearest to that airport) or listed in `published_routes.json`
@@ -61,7 +61,7 @@ npm test && npm run lint && npm run build
   corridor search), `fetch_tracks.py`, `build_data.py`, `stats.py` (year grid), `view_of_week.py`, `basemap.py`,
   `narrate.py`, `check_claims.py`, `observe_routes.py` (JetBlue routes seen on the live list), `airport_db.py`
   (OpenFlights airports for them), `tests/`. Insights headlines and the engine fixtures stay on the 20 core directions; the year grid covers every route
-  (`web/public/data/insights/<id>.json`, computed by `stats.py` for new routes).
+  (`web/public/data/insights/<id>.json`, one per route: core rewritten on every `stats.py` run, others when new).
 - `web/` Next.js 16 (App Router, `cacheComponents`), Vercel root `web`. Pages: `/`, `/routes`, `/route/[id]`, `/window/[id]`
   (CesiumJS), `/postcard/[id]` (canvas), `/flight`, `/flight/window`, `/flight/postcard` (any flight number), `/insights`,
   `/about`, `/privacy`; APIs `/api/flight` (AeroDataBox), `/api/live` (adsb.lol positions + adsbdb.com routes, CDN-cached 30 s / 5 s), `/api/identify` and `/api/landmark` (Claude, `lib/claude/`).

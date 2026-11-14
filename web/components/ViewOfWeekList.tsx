@@ -2,6 +2,7 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { todayIn } from "@/lib/engine/time";
+import { duration } from "@/lib/routes";
 import styles from "./ViewOfWeek.module.css";
 import { shortDay } from "@/lib/format";
 
@@ -11,7 +12,6 @@ export type Flight = {
 };
 
 const addDays = (iso: string, n: number) => new Date(Date.parse(`${iso}T12:00:00Z`) + n * 864e5).toISOString().slice(0, 10);
-const day = shortDay;
 
 /** Top three of the next seven days after today (New York date, so no departure has passed yet),
  *  from three different airports. */
@@ -38,9 +38,9 @@ export default function ViewOfWeekList({ flights }: { flights: Flight[] }) {
         {shown.map((f) => (
           <li key={`${f.route}-${f.date}`}>
             <Link href={`/route/${f.route}?d=${f.date}&t=${f.local}`}>
-              <span className={styles.min}>{Math.floor(f.golden_minutes / 60)}h {String(f.golden_minutes % 60).padStart(2, "0")}m</span>
+              <span className={styles.min}>{duration(f.golden_minutes)}</span>
               <span className={styles.what}>
-                {f.origin_city} to {f.dest_city}, {day(f.date)} at {f.local}
+                {f.origin_city} to {f.dest_city}, {shortDay(f.date)} at {f.local}
                 <small>seat {f.side}, {f.side === "A" ? "left" : "right"} window</small>
               </span>
             </Link>

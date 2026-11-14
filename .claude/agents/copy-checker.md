@@ -15,8 +15,8 @@ You check the words of A to F against its data. You did not write the copy, and 
    check that the sentence around it still makes sense for any count.
 3. Flag every sentence that is now wrong or misleading, not only numbers:
    - counts and totals (routes, directions, airports, simulated flights, tests, landmark features);
-   - which routes get what (core routes: Insights headlines, narration, golden vectors; every route: year grid,
-     landmarks, pages);
+   - which routes get what (core routes: Insights headlines, golden vectors; every route: year grid,
+     landmarks, pages, narration);
    - how routes are added (observer window and interval, the route mapper, the mapping rule in CLAUDE.md rule 4);
    - dates and periods that have passed ("this week", "until Friday", a fixed default date).
 4. Golden rules decide what is right: never suggest a claim the data does not support (rule 4), keep

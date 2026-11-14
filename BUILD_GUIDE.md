@@ -14,7 +14,7 @@ Facts were checked on 1 Nov 2026; sources at the end.
 | Landmarks | Corridor search over Natural Earth features with Wikidata IDs (`pipeline/landmarks.py`), side/minute/distance/confidence | Tests: provenance, Rockies + Grand Canyon on JFK→LAX, sides flip on return |
 | Browser engine | TypeScript port (`web/lib/engine`) for any date and time | 320 parity cases vs Python (`npm test`) |
 | Planner | Flight-number lookup or route picker, A/F answer, clickable seat row (middle/aisle seats explained), camera moments that open the Virtual Window at that minute, two-lane timeline | `/`, `/route/[id]` |
-| Any JetBlue flight | Flight number + date → AeroDataBox → airports and time. Every flight gets the sun answer, landmarks, camera moments, Virtual Window, postcard and the Claude features: track and landmarks are computed in the browser from the exported Natural Earth catalogue, tested equal to the pipeline on every mapped route plus 52 unmapped pairs. Mapped routes add their own pages, Insights and narration | `/api/flight`, `/flight`, `/flight/window`, `/flight/postcard`, `lib/engine/landmarks.ts` |
+| Any JetBlue flight | Flight number + date → AeroDataBox → airports and time. Every flight gets the sun answer, landmarks, camera moments, Virtual Window, postcard and the Claude features: track and landmarks are computed in the browser from the exported Natural Earth catalogue, tested equal to the pipeline on every mapped route plus 52 pairs of core airports that are not core routes. Mapped routes add their own pages and Insights, and narration once item 2 has run | `/api/flight`, `/flight`, `/flight/window`, `/flight/postcard`, `lib/engine/landmarks.ts` |
 | Virtual Window | CesiumJS side camera, real sun lighting, terrain (ion token), 1×/60×/300×, phone GPS | `/window/[id]` |
 | Live flights | JetBlue planes in the air now (adsb.lol, by fleet type) with routes (adsbdb.com, cached 12 h); live Virtual Window follows the real position (dead-reckoned between 10 s polls), LIVE button after replay; a flight number for today that's airborne opens it | `/api/live`, `?live=JBU615`; tests in `lib/live.test.ts` |
 | Postcard | 1080×1350 canvas: map, golden stretch, landmarks on your side, your photo in the window, share/download | `/postcard/[id]` |
@@ -31,7 +31,7 @@ Facts were checked on 1 Nov 2026; sources at the end.
    Vercel (project a-to-f, Production) for the live features and as a GitHub Actions secret for narration. Never in chat.
    Live features (What's that?, Tell me about it) are capped at 300 photos and 1,000 notes a day.
 2. **Run the narration:** GitHub → Actions → "Generate Claude data" → Run workflow. It commits `narration.json`
-   (checked against the geometry) and the site redeploys. Expected cost: a few cents.
+   (checked against the geometry) and the site redeploys. It now covers all 286 directions (about 1,600 Haiku lines and 130 Sonnet tips), so check the batch cost against the $5 limit first.
 3. **PR review:** open a small PR to see the Claude Code review run (needs the key as a secret).
 
 ## 3. How each course shows up

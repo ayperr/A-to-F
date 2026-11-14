@@ -31,10 +31,9 @@ export default function InsightsPage() {
     })
     .sort((x, y) => y.wins / y.total - x.wins / x.total)
     .slice(0, 3);
-  // Routes with a year on file (pipeline/stats.py): the core ones in insights.json, the rest one file each.
+  // Routes with a year on file: pipeline/stats.py writes one file per route.
   const dir = join(process.cwd(), "public", "data", "insights");
-  const onFile = new Set([...Object.keys(data.routes),
-    ...(existsSync(dir) ? readdirSync(dir).filter((f) => f.endsWith(".json")).map((f) => f.slice(0, -5)) : [])]);
+  const onFile = new Set(existsSync(dir) ? readdirSync(dir).filter((f) => f.endsWith(".json")).map((f) => f.slice(0, -5)) : []);
   const gridRoutes = routes.filter((r) => onFile.has(r.id)).map((r) => r.id);
   // Every route is simulated the same way (365 days x 10 departure times), so the total follows from the count.
   const flights = ((data.flights / Object.keys(data.routes).length) * gridRoutes.length).toLocaleString("en-US");

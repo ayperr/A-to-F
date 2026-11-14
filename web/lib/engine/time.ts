@@ -28,8 +28,11 @@ export function clock(epochMs: number, tz: string): string {
   );
 }
 
+/** The calendar date (YYYY-MM-DD) of a moment in a time zone. */
+export function dateIn(ms: number, tz: string): string {
+  return new Intl.DateTimeFormat("en-CA", { timeZone: tz, year: "numeric", month: "2-digit", day: "2-digit" }).format(new Date(ms));
+}
+
 export function todayIn(tz: string): string {
-  return new Intl.DateTimeFormat("en-CA", { timeZone: tz, year: "numeric", month: "2-digit", day: "2-digit" }).format(
-    new Date(),
-  );
+  return dateIn(Date.now(), tz);
 }

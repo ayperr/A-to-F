@@ -32,7 +32,7 @@ export default function LandmarkSources({ byRoute }: { byRoute: Record<string, S
           </tbody>
         </table>
       ) : (
-        <p className={styles.empty}>Open sea most of the way. The view on this one is the sky.</p>
+        <p className={styles.empty}>No landmarks from the catalogue lie along this route, so the light is the view on this one.</p>
       )}
     </div>
   );

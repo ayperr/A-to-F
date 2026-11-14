@@ -166,10 +166,5 @@ async def read_route_file(route_id: str, ctx: Context) -> dict:
             "track_source": d["track_source"]}
 
 
-def http_app():
-    """ASGI app for hosting (stateless StreamableHTTP)."""
-    return mcp.streamable_http_app()
-
-
 if __name__ == "__main__":
     mcp.run(transport="streamable-http" if HTTP else "stdio")
