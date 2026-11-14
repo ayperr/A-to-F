@@ -12,13 +12,10 @@ import WhatsThat from "./WhatsThat";
 import LandmarkAbout from "./LandmarkAbout";
 import styles from "./Planner.module.css";
 import { routeRef } from "@/lib/adhoc";
+import { TIMES, shortDay } from "@/lib/format";
 
-const TIMES = Array.from({ length: 48 }, (_, i) => `${String(Math.floor(i / 2)).padStart(2, "0")}:${i % 2 ? "30" : "00"}`);
 
-const prettyDate = (iso: string) =>
-  new Intl.DateTimeFormat("en-GB", { weekday: "short", day: "numeric", month: "short", timeZone: "UTC" }).format(
-    new Date(`${iso}T12:00:00Z`),
-  );
+const prettyDate = shortDay;
 
 const ANSWER: Record<string, string> = { A: "Sit on the left.", F: "Sit on the right." };
 

@@ -43,7 +43,7 @@ This project answers it with geometry, not guesswork — and then makes sure eve
 python3 -m venv .venv && source .venv/bin/activate
 pip install -r pipeline/requirements.txt -r mcp_server/requirements.txt
 python -m pytest pipeline -q
-python pipeline/build_data.py --date 2026-11-12
+python pipeline/build_data.py
 cd web && npm install && npm run dev
 ```
 

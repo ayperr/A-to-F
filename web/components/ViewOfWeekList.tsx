@@ -3,6 +3,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { todayIn } from "@/lib/engine/time";
 import styles from "./ViewOfWeek.module.css";
+import { shortDay } from "@/lib/format";
 
 export type Flight = {
   route: string; origin: string; dest: string; date: string; local: string; side: "A" | "F"; golden_minutes: number;
@@ -10,8 +11,7 @@ export type Flight = {
 };
 
 const addDays = (iso: string, n: number) => new Date(Date.parse(`${iso}T12:00:00Z`) + n * 864e5).toISOString().slice(0, 10);
-const day = (iso: string) =>
-  new Intl.DateTimeFormat("en-GB", { weekday: "short", day: "numeric", month: "short", timeZone: "UTC" }).format(new Date(`${iso}T12:00:00Z`));
+const day = shortDay;
 
 /** Top three of the next seven days after today (New York date, so no departure has passed yet),
  *  from three different airports. */

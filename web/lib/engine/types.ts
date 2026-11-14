@@ -1,5 +1,5 @@
 export type Side = "A" | "F" | null;
-export type Rule = "golden" | "landmarks" | "shade" | "neutral" | "dark";
+type Rule = "golden" | "landmarks" | "shade" | "neutral" | "dark";
 
 /** [lat, lon, altitude m, heading deg] — one row per minute after takeoff. */
 export type TrackRow = [number, number, number, number];

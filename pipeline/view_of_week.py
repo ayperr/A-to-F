@@ -3,8 +3,7 @@
     python pipeline/view_of_week.py [--from 2026-11-13] [--days 14]   -> web/public/data/view-of-week.json
 
 For every day it keeps the best departure of each route (up to 8 per day). The Routes page then picks,
-in the browser, the top three of today and the six days after it, so the list stays right for two weeks
-after a run. Rerun it with every data batch (scripts/regenerate.sh does).
+in the browser, the top three of the seven days after today, so the list stays right for a week after a run. Rerun it with every data batch (scripts/regenerate.sh does).
 """
 from __future__ import annotations
 

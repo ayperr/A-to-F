@@ -5,7 +5,7 @@ import { gcDistanceKm, syntheticTrack } from "./engine/track";
 import type { Airport, RouteDetail } from "./engine/types";
 
 /** Built here from airports, not loaded from a route file. */
-export const ADHOC_SOURCE = "flight lookup";
+const ADHOC_SOURCE = "flight lookup";
 
 const validTz = (tz: string) => { try { new Intl.DateTimeFormat("en", { timeZone: tz }); return true; } catch { return false; } };
 

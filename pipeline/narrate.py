@@ -26,7 +26,7 @@ from sun_geometry import landmark_weights, recommend, samples_for
 
 SKILL = Path(__file__).resolve().parents[1] / ".claude" / "skills" / "window-narrator" / "SKILL.md"
 LINE_MODEL, TIP_MODEL = "claude-haiku-5-5", "claude-sonnet-5-5"
-TIP_DATE, TIP_TIMES = date(2026, 11, 12), ["07:00", "11:00", "15:00", "19:00"]
+TIP_DATE, TIP_TIMES = date.today(), ["07:00", "11:00", "15:00", "19:00"]   # tips speak about the day they are written
 SIDE_WORD = {"A": "on your left", "F": "on your right", "below": "below you"}
 LINE_SCHEMA = {"type": "object", "additionalProperties": False, "required": ["line"],
                "properties": {"line": {"type": "string", "maxLength": 140}}}

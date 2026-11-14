@@ -11,7 +11,7 @@ const RAD = Math.PI / 180;
 
 /** One feature as exported: name, kind, Wikidata ID, source, score, bbox [lat0, lat1, lon0, lon1],
  *  and either a point [lat, lon] or rings of [lon, lat]. */
-export interface CatalogFeature {
+interface CatalogFeature {
   n: string; k: string; q: string; s: string; sc: number;
   b: [number, number, number, number];
   p?: [number, number];

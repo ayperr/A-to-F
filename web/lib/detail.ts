@@ -17,11 +17,16 @@ export function loadRoute(id: string): RouteDetail | undefined {
 
 let catalog: Catalog | null = null;
 
+/** The landmark catalogue, read from disk once per server instance. Throws if it is missing. */
+function loadCatalogSync(): Catalog {
+  catalog ??= JSON.parse(readFileSync(join(process.cwd(), "public", "data", "landmarks.json"), "utf8")) as Catalog;
+  return catalog;
+}
+
 /** How many features the landmark catalogue holds (read at build time for the About page). */
 export function catalogSize(): number {
   try {
-    catalog ??= JSON.parse(readFileSync(join(process.cwd(), "public", "data", "landmarks.json"), "utf8")) as Catalog;
-    return catalog.features.length;
+    return loadCatalogSync().features.length;
   } catch {
     return 0;
   }
@@ -36,9 +41,8 @@ export function resolveRoute(p: { route?: unknown; o?: unknown; x?: unknown }): 
   const detail = adhocDetail(new URLSearchParams({ o: p.o, x: p.x }));
   if (!detail || detail.id !== String(p.route ?? "")) return undefined;
   try {
-    catalog ??= JSON.parse(readFileSync(join(process.cwd(), "public", "data", "landmarks.json"), "utf8")) as Catalog;
+    return withLandmarks(detail, loadCatalogSync());
   } catch {
     return undefined;
   }
-  return withLandmarks(detail, catalog);
 }

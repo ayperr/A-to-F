@@ -62,8 +62,9 @@ npm test && npm run lint && npm run build
   `narrate.py`, `check_claims.py`, `observe_routes.py` (JetBlue routes seen on the live list), `airport_db.py`
   (OpenFlights airports for them), `tests/`. Insights headlines and the engine fixtures stay on the 20 core directions; the year grid covers every route
   (`web/public/data/insights/<id>.json`, computed by `stats.py` for new routes).
-- `web/` Next.js 16 (App Router, `cacheComponents`), Vercel root `web`. Pages: `/`, `/route/[id]`, `/window/[id]`
-  (CesiumJS), `/postcard/[id]` (canvas), `/insights`, `/about`, `/privacy`; APIs `/api/flight` (AeroDataBox), `/api/live` (adsb.lol positions + adsbdb.com routes, CDN-cached 30 s / 5 s), `/api/identify` and `/api/landmark` (Claude, `lib/claude/`).
+- `web/` Next.js 16 (App Router, `cacheComponents`), Vercel root `web`. Pages: `/`, `/routes`, `/route/[id]`, `/window/[id]`
+  (CesiumJS), `/postcard/[id]` (canvas), `/flight`, `/flight/window`, `/flight/postcard` (any flight number), `/insights`,
+  `/about`, `/privacy`; APIs `/api/flight` (AeroDataBox), `/api/live` (adsb.lol positions + adsbdb.com routes, CDN-cached 30 s / 5 s), `/api/identify` and `/api/landmark` (Claude, `lib/claude/`).
   Engine port in `web/lib/engine`, including the landmark search, so any JetBlue flight gets landmarks from the
   exported catalogue (`web/public/data/landmarks.json`); the Claude APIs rebuild unmapped routes the same way. Next's docs: `web/node_modules/next/dist/docs/`.
 - `mcp_server/` FastMCP, **pinned mcp==1.30.0** (v1 API; 2.x renamed FastMCP). `main.py` at repo root hosts it.
@@ -71,8 +72,9 @@ npm test && npm run lint && npm run build
   landmark-verifier, code-auditor, copy-checker), hooks (guard generated files, check claims/engine after edits).
 - `plugin/a-to-f-trip-planner/` Cowork plugin (skills + hosted MCP).
 - `.github/workflows/` CI, Claude Code PR review, "Generate Claude data" (narration with a repo secret),
-  "Observe JetBlue routes" (snapshot every 5 min until Fri 18:00 ET, each run starting the next; commits
-  `pipeline/observed_routes.json` every 6 hours and at the end).
+  "Observe JetBlue routes" (snapshot every 5 min from Thu 12 to Fri 13 Nov 18:00 ET, finished; committed
+  `pipeline/observed_routes.json`), "Map new routes" (`map-routes.yml`, started by each observer commit: maps what
+  passes rule 4, rebuilds data, runs every check, commits only if all pass).
 
 ## Working style
 Explore → plan → code → test → commit. Small commits. Run tests and `npm run build` before every commit.

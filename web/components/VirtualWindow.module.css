@@ -89,3 +89,6 @@
 .liveInfo { margin: 0; color: var(--ink-soft); font-size: 0.9rem; flex: 1 1 220px; }
 .liveFine { margin-top: 28px; padding-top: 16px; border-top: 1px solid var(--line); color: var(--ink-soft); font-size: 0.82rem; }
 .liveFine a { color: var(--accent); }
+
+.postcardLink { margin: 14px 0 0; font-size: 0.95rem; color: var(--ink-soft); }
+.postcardLink a { font-weight: 700; }

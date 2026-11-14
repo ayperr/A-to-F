@@ -68,7 +68,7 @@ export default function InsightsPage() {
 
       <section className={styles.section}>
         <h2>Which side wins, by month and departure time</h2>
-        <YearGrid data={data} ids={gridRoutes} />
+        <YearGrid year={data.year} hours={data.hours} first="jfk-lax" firstGrid={data.routes["jfk-lax"]} ids={gridRoutes} />
       </section>
 
     </article>

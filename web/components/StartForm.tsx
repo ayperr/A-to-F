@@ -9,11 +9,10 @@ import { destinationsFrom, getRoute, origins, routeId, routes } from "@/lib/rout
 import { callsignFor, liveHref } from "@/lib/live";
 import LiveFlights from "./LiveFlights";
 import styles from "./StartForm.module.css";
+import { TIMES, shortDay } from "@/lib/format";
 
-const TIMES = Array.from({ length: 48 }, (_, i) => `${String(Math.floor(i / 2)).padStart(2, "0")}:${i % 2 ? "30" : "00"}`);
 const city = (iata: string) => routes.find((r) => r.origin === iata)?.origin_city ?? iata;
-const pretty = (iso: string) =>
-  new Intl.DateTimeFormat("en-GB", { weekday: "short", day: "numeric", month: "short", timeZone: "UTC" }).format(new Date(`${iso}T12:00:00Z`));
+const pretty = shortDay;
 
 export default function StartForm() {
   const router = useRouter();

@@ -5,7 +5,7 @@
 import type * as CesiumNS from "cesium";
 import Link from "next/link";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { clock, localToUtcMs } from "@/lib/engine/time";
+import { clock, localToUtcMs, todayIn } from "@/lib/engine/time";
 import type { RouteDetail } from "@/lib/engine/types";
 import { duration } from "@/lib/routes";
 import styles from "./VirtualWindow.module.css";
@@ -37,7 +37,9 @@ export default function VirtualWindow({ detail, backHref }: { detail: RouteDetai
   const followRef = useRef(false);
 
   const [side, setSide] = useState<"A" | "F">("A");
-  const [date, setDate] = useState("2026-11-12");
+  // Where "Make a postcard" goes: the mapped route's page, or the flight's own postcard page with its airports.
+  const [postcardBase, setPostcardBase] = useState(`/postcard/${detail.id}?`);
+  const [date, setDate] = useState("2026-11-15");   // placeholder until mount: the link date, or today at the origin
   const [time, setTime] = useState("15:00");
   const [minute, setMinute] = useState(0);
   const [playing, setPlaying] = useState(false);
@@ -60,7 +62,12 @@ export default function VirtualWindow({ detail, backHref }: { detail: RouteDetai
   useEffect(() => {
     const q = new URLSearchParams(window.location.search);
     /* eslint-disable react-hooks/set-state-in-effect -- one-time sync from the URL after hydration */
-    if (q.get("d")) setDate(q.get("d")!);
+    setDate(q.get("d") ?? todayIn(detail.origin.tz));   // no date in the link: today at the origin
+    if (window.location.pathname.startsWith("/flight/")) {
+      const keep = new URLSearchParams(q);
+      for (const k of ["live", "d", "t", "s", "m"]) keep.delete(k);
+      setPostcardBase(`/flight/postcard?${keep.toString()}&`);
+    }
     if (q.get("t")) setTime(q.get("t")!);
     if (q.get("s") === "F" || q.get("s") === "A") { setSide(q.get("s") as "A" | "F"); sideRef.current = q.get("s") as "A" | "F"; }
     const startAt = Number(q.get("m"));
@@ -73,7 +80,7 @@ export default function VirtualWindow({ detail, backHref }: { detail: RouteDetai
       setFollowing(true); followRef.current = true;
     }
     /* eslint-enable react-hooks/set-state-in-effect */
-  }, []);
+  }, [detail.origin.tz]);   // once per page: the origin never changes
 
   const departureMs = useMemo(() => localToUtcMs(date, time, detail.origin.tz), [date, time, detail.origin.tz]);
   const last = detail.track.length - 1;
@@ -354,7 +361,7 @@ export default function VirtualWindow({ detail, backHref }: { detail: RouteDetai
             {mode === "day"
               ? `Day mode: the ground as if it were noon, so you can tell what's down there.${dark ? " Outside it's dark right now." : ""}`
               : mode === "night"
-                ? `Night mode: the same view after sunset.${dark ? "" : " Outside it's daylight right now."}`
+                ? `Night mode: the same view after sunset, brightened like a moonlit night so you can still make out the ground and the coastline.${dark ? "" : " Outside it's daylight right now."}`
                 : dark ? "It's dark out there right now. Day mode shows the ground as if it were noon." : "\u00a0"}
           </p>
           {live && (
@@ -391,12 +398,16 @@ export default function VirtualWindow({ detail, backHref }: { detail: RouteDetai
           )}
         </div>
 
-        {mapped && (
-          <div className={styles.snap}>
+        <div className={styles.snap}>
+          {mapped && (
             <WhatsThat route={routeRef(detail)} date={date} time={time} side={side} minute={gps ? null : m}
-              postcardHref={`/postcard/${detail.id}?d=${date}&t=${time}&s=${side}`} />
-          </div>
-        )}
+              postcardHref={`${postcardBase}d=${date}&t=${time}&s=${side}`} />
+          )}
+          <p className={styles.postcardLink}>
+            <Link href={`${postcardBase}d=${date}&t=${time}&s=${side}`}>Make a postcard of this flight</Link>
+            <span> with the route, the light and the landmarks on seat {side}&rsquo;s side.</span>
+          </p>
+        </div>
 
         {live ? (
           <p className={styles.liveFine}>

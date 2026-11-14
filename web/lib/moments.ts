@@ -2,7 +2,7 @@
 // from the engine (sun samples and landmark sides); this file only picks and orders them.
 import type { Landmark, SunSample } from "./engine/types";
 
-export interface Moment {
+interface Moment {
   minute: number;
   kind: "photo" | "video";
   title: string;

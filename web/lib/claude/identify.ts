@@ -7,7 +7,7 @@ import { clock, localToUtcMs } from "../engine/time";
 import type { Landmark, RouteDetail } from "../engine/types";
 import { MODEL, type MessagesClient, sideWordsOk } from "./shared";
 
-export const SPECIAL = ["sky", "clouds", "unknown"] as const;
+const SPECIAL = ["sky", "clouds", "unknown"] as const;
 
 export interface IdentifyInput {
   detail: RouteDetail;
@@ -18,7 +18,7 @@ export interface IdentifyInput {
   image: { data: string; mediaType: "image/jpeg" | "image/png" | "image/webp" };
 }
 
-export interface IdentifyResult {
+interface IdentifyResult {
   match: string | null;       // a landmark name from the route, or null for sky / clouds / not sure
   kind: string | null;        // the landmark's kind (city, lake, mountain range...) when matched
   confidence: "high" | "medium" | "low";

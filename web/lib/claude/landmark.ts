@@ -7,8 +7,8 @@ import { MODEL, type MessagesClient, sideWordsOk } from "./shared";
 
 const UA = "A-to-F/1.0 (https://a-to-f.vercel.app; student project)";
 
-export interface Article { title: string; extract: string; url: string }
-export interface AboutResult { text: string; source: { title: string; url: string }; checked: { replaced: boolean } }
+interface Article { title: string; extract: string; url: string }
+interface AboutResult { text: string; source: { title: string; url: string }; checked: { replaced: boolean } }
 
 /** Wikidata ID -> English Wikipedia summary. Returns null when there is no article. */
 export async function wikipediaSummary(qid: string, fetcher: typeof fetch = fetch): Promise<Article | null> {

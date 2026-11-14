@@ -7,9 +7,9 @@ of 2026 (365 days x 10 departure times = 3,650 flights per route). Every cell re
 days A, F or neither won, and why (golden light, landmarks, shade; golden split by side), plus n,
 the number of days.
 
-insights.json holds the 20 core directions (the Insights headlines and the grid's first
-load: 73,000 flights). Every other mapped route gets its own small file, fetched when it is picked in
-the grid. Those are only computed when missing (a new route), or for all routes with --all.
+insights.json holds the 20 core directions (the Insights headlines: 73,000 flights). Every route, core
+included, also gets its own small file in insights/, which the grid fetches when it is picked. Core
+routes are recomputed on every run; other routes only when missing (a new route), or all with --all.
 """
 from __future__ import annotations
 
@@ -66,7 +66,7 @@ def main() -> None:
     core = [r for r in routes if r.get("core", True)]
     per_route = OUT / "insights"
     per_route.mkdir(exist_ok=True)
-    ids = {r["id"] for r in routes if not r.get("core", True)}
+    ids = {r["id"] for r in routes}
     for f in per_route.glob("*.json"):          # routes that are no longer mapped
         if f.stem not in ids:
             f.unlink()
@@ -80,12 +80,12 @@ def main() -> None:
             if rid in core_ids:
                 result["routes"][rid] = g
                 result["flights"] += t["n"]
-            else:
-                (per_route / f"{rid}.json").write_text(json.dumps({"year": YEAR, "hours": HOURS, **g}, separators=(",", ":")))
+            # every route, core too, gets its own file: the grid on the page loads only the route that is picked
+            (per_route / f"{rid}.json").write_text(json.dumps({"year": YEAR, "hours": HOURS, **g}, separators=(",", ":")))
             print(f"{rid}: {t['n']} flights | A {t['A']} F {t['F']} either {t['none']} "
                   f"| golden {t['golden']} landmarks {t['landmarks']} shade {t['shade']}", flush=True)
     result["routes"] = {r["id"]: result["routes"][r["id"]] for r in core}
-    print(f"core: {result['flights']} simulated flights; {len(list(per_route.glob('*.json')))} other routes on file")
+    print(f"core: {result['flights']} simulated flights; {len(list(per_route.glob('*.json')))} routes on file")
     (OUT / "insights.json").write_text(json.dumps(result, separators=(",", ":")))
 
 

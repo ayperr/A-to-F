@@ -59,7 +59,7 @@ export function dayLabel(iso: string): string {
     .format(new Date(`${iso}T12:00:00Z`)).replace(",", "");
 }
 
-export type FlightAirport = { iata: string; name: string; city: string; lat: number; lon: number; tz: string };
+type FlightAirport = { iata: string; name: string; city: string; lat: number; lon: number; tz: string };
 
 // AeroDataBox shapes vary a little between versions, so read defensively.
 function pick(o: Record<string, unknown> | undefined, ...keys: string[]): unknown {
@@ -113,7 +113,7 @@ export function parseFlights(data: unknown, number: string) {
 }
 
 export type FlightLeg = ReturnType<typeof parseFlights>[number];
-export type Lookup = { legs: FlightLeg[] } | { error: string; setup?: boolean };
+type Lookup = { legs: FlightLeg[] } | { error: string; setup?: boolean };
 
 const isAirport = (a: unknown) => {
   const o = a as Partial<FlightAirport> | null;

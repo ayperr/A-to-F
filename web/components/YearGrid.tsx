@@ -4,7 +4,7 @@ import { routes } from "@/lib/routes";
 import RoutePicker from "./RoutePicker";
 import styles from "./YearGrid.module.css";
 
-export type Cell = {
+type Cell = {
   A: number; F: number; none: number; n: number;
   golden: number; landmarks: number; shade: number; golden_A: number; golden_F: number;
 };
@@ -27,7 +27,7 @@ function verdict(c: Cell) {
 
 type Grid = { grid: Cell[][]; totals: Cell };
 
-// Core routes come with the page; every other route has its own file (pipeline/stats.py), fetched on pick.
+// The opening route comes with the page; every route has its own file (pipeline/stats.py), fetched on pick.
 const fetched = new Map<string, Promise<Grid>>();
 function loadGrid(id: string): Promise<Grid> {
   if (!fetched.has(id)) {
@@ -41,24 +41,25 @@ function loadGrid(id: string): Promise<Grid> {
   return fetched.get(id)!;
 }
 
-export default function YearGrid({ data, ids }: { data: Insights; ids: string[] }) {
-  const [id, setId] = useState("jfk-lax");
+export default function YearGrid({ year, hours, first, firstGrid, ids }:
+  { year: number; hours: number[]; first: string; firstGrid: Grid; ids: string[] }) {
+  const [id, setId] = useState(first);
   const [extra, setExtra] = useState<Record<string, Grid | "error">>({});
   const [hover, setHover] = useState<{ m: number; h: number } | null>(null);
   const r = routes.find((x) => x.id === id)!;
-  const got = (data.routes[id] as Grid | undefined) ?? extra[id];
+  const got = id === first ? firstGrid : extra[id];
   const grid = got && got !== "error" ? got.grid : null;
   const hc = hover && grid ? grid[hover.m][hover.h] : null;
 
   useEffect(() => {
-    if (data.routes[id] || extra[id]) return;
+    if (id === first || extra[id]) return;
     let live = true;
     loadGrid(id).then(
       (g) => live && setExtra((e) => ({ ...e, [id]: g })),
       () => live && setExtra((e) => ({ ...e, [id]: "error" })),
     );
     return () => { live = false; };
-  }, [id, data.routes, extra]);
+  }, [id, first, extra]);
 
   return (
     <div>
@@ -79,12 +80,12 @@ export default function YearGrid({ data, ids }: { data: Insights; ids: string[] 
       <div className={styles.scroll}>
         <table className={styles.grid} onMouseLeave={() => setHover(null)}>
           <caption className="sr-only">
-            Winning window side for {r.origin} to {r.dest} by month and departure time, {data.year}
+            Winning window side for {r.origin} to {r.dest} by month and departure time, {year}
           </caption>
           <thead>
             <tr>
               <th scope="col"><span className="sr-only">Month</span></th>
-              {data.hours.map((h) => <th key={h} scope="col">{String(h).padStart(2, "0")}:00</th>)}
+              {hours.map((h) => <th key={h} scope="col">{String(h).padStart(2, "0")}:00</th>)}
             </tr>
           </thead>
           <tbody>
@@ -97,7 +98,7 @@ export default function YearGrid({ data, ids }: { data: Insights; ids: string[] 
                   return (
                     <td key={h}>
                       <button type="button" className={cls} onMouseEnter={() => setHover({ m, h })} onFocus={() => setHover({ m, h })}
-                        aria-label={`${MONTH_LONG[m]}, ${data.hours[h]}:00 departures: left ${c.A}, right ${c.F}, either ${c.none} of ${c.n} days; golden light on ${c.golden}`}>
+                        aria-label={`${MONTH_LONG[m]}, ${hours[h]}:00 departures: left ${c.A}, right ${c.F}, either ${c.none} of ${c.n} days; golden light on ${c.golden}`}>
                         {v.side === "-" ? "–" : v.side}
                         {c.golden * 2 > c.n && <i className={styles.goldDot} aria-hidden="true" />}
                       </button>
@@ -113,7 +114,7 @@ export default function YearGrid({ data, ids }: { data: Insights; ids: string[] 
         {!grid
           ? got === "error" ? "This route's year did not load. Pick it again to retry." : "Working out the year for this route…"
           : hover && hc
-          ? `${MONTH_LONG[hover.m]}, leaving ${String(data.hours[hover.h]).padStart(2, "0")}:00 ${r.origin_city} time: left wins ${hc.A}, right ${hc.F}, either ${hc.none} of the ${hc.n} days in ${MONTH_LONG[hover.m]}. Golden light on ${hc.golden}.`
+          ? `${MONTH_LONG[hover.m]}, leaving ${String(hours[hover.h]).padStart(2, "0")}:00 ${r.origin_city} time: left wins ${hc.A}, right ${hc.F}, either ${hc.none} of the ${hc.n} days in ${MONTH_LONG[hover.m]}. Golden light on ${hc.golden}.`
           : "Point at a square to see the days behind it. Every day of the month is simulated."}
       </p>
     </div>

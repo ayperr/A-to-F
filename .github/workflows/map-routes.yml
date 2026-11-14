@@ -34,7 +34,6 @@ jobs:
       - name: Download Natural Earth layers
         run: |
           python pipeline/landmarks.py --download
-          python pipeline/basemap.py --download
 
       - name: Map the routes, then everything that follows from them
         run: |

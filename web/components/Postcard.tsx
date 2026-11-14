@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { recommend, samplesFor } from "@/lib/engine/geometry";
-import { clock, localToUtcMs } from "@/lib/engine/time";
+import { clock, localToUtcMs, todayIn } from "@/lib/engine/time";
 import type { RouteDetail } from "@/lib/engine/types";
 import { duration } from "@/lib/routes";
 import styles from "./Postcard.module.css";
@@ -23,7 +23,7 @@ function windowPath(ctx: CanvasRenderingContext2D, x: number, y: number, w: numb
 
 export default function Postcard({ detail, backHref }: { detail: RouteDetail; backHref?: string }) {
   const canvas = useRef<HTMLCanvasElement>(null);
-  const [date, setDate] = useState("2026-11-12");
+  const [date, setDate] = useState("2026-11-15");   // placeholder until mount: the link date, or today at the origin
   const [time, setTime] = useState("15:00");
   const [side, setSide] = useState<"A" | "F">("A");
   const [photo, setPhoto] = useState<HTMLImageElement | null>(null);
@@ -34,7 +34,7 @@ export default function Postcard({ detail, backHref }: { detail: RouteDetail; ba
   useEffect(() => {
     const q = new URLSearchParams(window.location.search);
     /* eslint-disable react-hooks/set-state-in-effect -- one-time sync from the URL after hydration */
-    if (q.get("d")) setDate(q.get("d")!);
+    setDate(q.get("d") ?? todayIn(detail.origin.tz));   // no date in the link: today at the origin
     if (q.get("t")) setTime(q.get("t")!);
     if (q.get("s") === "A" || q.get("s") === "F") setSide(q.get("s") as "A" | "F");
     /* eslint-enable react-hooks/set-state-in-effect */
@@ -49,7 +49,7 @@ export default function Postcard({ detail, backHref }: { detail: RouteDetail; ba
         img.src = handoff.photo;
       }
     } catch { /* storage off */ }
-  }, []);
+  }, [detail.origin.tz]);   // once per page: the origin never changes
 
   const departureMs = useMemo(() => localToUtcMs(date, time, detail.origin.tz), [date, time, detail.origin.tz]);
   const samples = useMemo(() => samplesFor(detail.track, departureMs), [detail.track, departureMs]);

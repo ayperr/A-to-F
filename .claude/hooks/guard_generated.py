@@ -14,6 +14,8 @@ GENERATED = (
     "web/public/data/insights/",
     "web/public/data/basemap.json",
     "web/public/data/landmarks.json",
+    "web/public/data/narration.json",
+    "web/public/data/view-of-week.json",
     "web/lib/engine/fixtures/golden.json",
     "web/lib/engine/fixtures/landmarks-golden.json",
 )
