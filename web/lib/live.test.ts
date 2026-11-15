@@ -90,6 +90,13 @@ describe("joining, links and position maths", () => {
     expect(plausible({ lat: 38.97, lon: -114.94, heading: 251 }, r[0], r[1])).toBe(true);    // B6 615 over Nevada, JFK-SFO
     expect(plausible({ lat: 38.97, lon: -114.94, heading: 71 }, r[0], r[1])).toBe(false);    // same spot, flying the wrong way
     expect(plausible({ lat: 40.62, lon: -73.76, heading: 134 }, r[0], r[1])).toBe(true);     // just off JFK, heading wanders
+    // B6 1801 descending at 2,100 m west of Grand Bahama: listed as JFK to Nassau, really to Fort Lauderdale
+    const JFK = { iata: "JFK", city: "New York", lat: 40.64, lon: -73.78 }, NAS = { iata: "NAS", city: "Nassau", lat: 25.04, lon: -77.47 };
+    const FLL = { iata: "FLL", city: "Fort Lauderdale", lat: 26.07, lon: -80.15 }, low = { lat: 26.45, lon: -79.45, heading: 245, alt_m: 2126 };
+    expect(plausible(low, JFK, NAS)).toBe(false);
+    expect(plausible(low, JFK, FLL)).toBe(true);
+    expect(plausible({ ...low, heading: 130, alt_m: 11000 }, JFK, NAS)).toBe(true);         // at cruise, heading for Nassau, it could be
+    expect(plausible({ lat: 40.9, lon: -73.6, heading: 40, alt_m: 1500 }, JFK, NAS)).toBe(true); // low just after takeoff
     const [p] = joinRoutes([{ ...plane, lat: 37.06, lon: -78.26, heading: 75 }], new Map([["JBU615", [LGB, OAK]]]));
     expect(p.origin).toBeNull();
   });

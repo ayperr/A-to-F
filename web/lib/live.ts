@@ -86,15 +86,20 @@ export function parseAdsbdbRoute(data: unknown): [LiveAirport, LiveAirport] | nu
 const TZ = new Map(routes.map((r) => [r.origin, r.origin_tz]));
 const withTz = (a: LiveAirport): LiveAirport => (TZ.has(a.iata) ? { ...a, tz: TZ.get(a.iata) } : a);
 
+const LOW_M = 3000, NEAR_KM = 150;   // below 3,000 m a plane is within about 150 km of an airport
+
 /**
  * Callsign routes go stale (a number gets reused on another route). A route only counts when the plane is
  * roughly between its airports (the detour via the plane is at most 25% + 150 km longer than the direct
- * route) and, away from the airports, heading towards the destination.
+ * route), away from the airports heading towards the destination, and, when it is low and far from where it took
+ * off, close to where it lands (B6 1801, JFK to Fort Lauderdale, was listed as JFK to Nassau: at 2,100 m off Grand
+ * Bahama, about 230 km from Nassau).
  */
-export function plausible(p: { lat: number; lon: number; heading: number }, o: LiveAirport, d: LiveAirport): boolean {
+export function plausible(p: { lat: number; lon: number; heading: number; alt_m?: number }, o: LiveAirport, d: LiveAirport): boolean {
   const direct = gcDistanceKm(o.lat, o.lon, d.lat, d.lon);
   const fromO = gcDistanceKm(o.lat, o.lon, p.lat, p.lon), toD = gcDistanceKm(p.lat, p.lon, d.lat, d.lon);
   if (fromO + toD > direct * 1.25 + 150) return false;
+  if (p.alt_m !== undefined && p.alt_m < LOW_M && fromO >= NEAR_KM && toD >= NEAR_KM) return false;   // descending, but not to here
   if (fromO < 150 || toD < 150) return true;   // climbing out or descending: headings wander
   const off = Math.abs(((initialBearing(p.lat, p.lon, d.lat, d.lon) - p.heading + 540) % 360) - 180);
   return off < 75;
