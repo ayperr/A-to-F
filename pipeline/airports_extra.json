@@ -170,6 +170,14 @@
    "lon": -81.7596,
    "tz": "America/New_York"
   },
+  "GEO": {
+   "name": "Cheddi Jagan International",
+   "city": "Georgetown",
+   "country": "Guyana",
+   "lat": 6.4985,
+   "lon": -58.2541,
+   "tz": "America/Guyana"
+  },
   "GND": {
    "name": "Point Salines International",
    "city": "Point Salines",
@@ -265,6 +273,14 @@
    "lat": 41.9786,
    "lon": -87.9048,
    "tz": "America/Chicago"
+  },
+  "ORF": {
+   "name": "Norfolk International",
+   "city": "Norfolk",
+   "country": "United States",
+   "lat": 36.8946,
+   "lon": -76.2012,
+   "tz": "America/New_York"
   },
   "ORH": {
    "name": "Worcester Regional",
