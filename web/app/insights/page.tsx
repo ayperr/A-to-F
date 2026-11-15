@@ -42,8 +42,8 @@ export default function InsightsPage() {
     <article className={styles.page}>
       <h1>A year of window seats</h1>
       <p className={styles.lead}>
-        We flew all {gridRoutes.length} routes on every day of {data.year}, at ten departure times a day: {flights}
-        simulated flights, each worked out minute by minute by the same engine as the planner, on an approximate
+        We flew all {gridRoutes.length} routes on every day of {data.year}, at ten departure times a day:{" "}
+        {flights} simulated flights, each worked out minute by minute by the same engine as the planner, on an approximate
         great-circle path.
       </p>
 

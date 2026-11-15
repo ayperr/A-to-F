@@ -22,7 +22,9 @@ export default function About() {
         geometry rather than guesswork. I chose JetBlue because it is the airline I hope to build my career with, so
         A to F is also a first look at what I would bring to it. For everyone who cannot see out, in a middle or aisle seat, next to a closed
         blind or on a night flight, there is the Virtual Window: the view from the window seat, live or replayed, in
-        the real light of that moment, as if at noon, or as a moonlit night.
+        the real light of that moment, as if at noon, or as a moonlit night. It is something I have always thought
+        about while looking at the entertainment screen on board: it shows the map, the altitude and the terrain
+        below, but never the view out of the window. So I built it.
       </p>
 
       <ol className={styles.steps}>
