@@ -13,7 +13,8 @@ export default function RoutesPage() {
       <p style={{ color: "var(--ink-soft)", margin: 0, maxWidth: "60ch" }}>
         Every JetBlue flight works on A to F. Type its flight number on the first page to get the best side, the
         landmarks and camera moments, the Virtual Window and a postcard. The routes below are mapped in advance,
-        with their own pages and a full year in Insights. Pick one, then tell us when you fly.
+        with their own pages and a full year in Insights. Their flight times are estimates for the
+        shortest path, not timetable times. Pick one, then tell us when you fly.
       </p>
       <p style={{ color: "var(--ink-soft)", margin: "10px 0 0", maxWidth: "60ch", fontSize: "0.9rem" }}>
         New routes were added from what was actually flying: A to F recorded every JetBlue route on the live list from
