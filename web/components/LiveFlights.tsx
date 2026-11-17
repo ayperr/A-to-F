@@ -11,6 +11,7 @@ const ft = (m: number) => `${Math.round(m / 0.3048 / 1000)}k ft`;
 export default function LiveFlights() {
   const [flights, setFlights] = useState<LivePlane[] | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [staleMin, setStaleMin] = useState<number | null>(null);   // the feed is down: this list is this many minutes old
   const [filter, setFilter] = useState("");
 
   useEffect(() => {
@@ -22,6 +23,7 @@ export default function LiveFlights() {
           if (stop) return;
           if (!r.ok || !Array.isArray(j?.flights)) return setError(j?.error ?? "The live flight feed didn't answer. Try again in a minute.");
           setError(null);
+          setStaleMin(j.stale ? Math.max(1, Math.round((Date.now() - j.at) / 60_000)) : null);
           setFlights(j.flights);
         })
         .catch(() => !stop && setError("No connection. Try again in a minute."));
@@ -51,6 +53,12 @@ export default function LiveFlights() {
         <input className={styles.filter} placeholder="Filter: 615, JFK, Boston" value={filter}
           onChange={(e) => setFilter(e.target.value)} aria-label="Filter live flights by number or airport" />
       </div>
+      {staleMin !== null && (
+        <p className={styles.note}>
+          The live feed is not answering right now, so these positions are from{" "}
+          {staleMin} {staleMin === 1 ? "minute" : "minutes"} ago. The list refreshes itself.
+        </p>
+      )}
       {shown.length === 0 ? (
         <p className={styles.note}>{filter ? "No live flight matches that." : "No JetBlue flights in the air that we can see right now."}</p>
       ) : (

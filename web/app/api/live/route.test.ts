@@ -1,6 +1,10 @@
 // /api/live against fake adsb.lol and adsbdb: list, single flight, and upstream failures.
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
+// after() needs a request scope: here it just collects the work that carries on after the answer.
+const later: Promise<unknown>[] = [];
+vi.mock("next/server", () => ({ after: (fn: () => unknown) => { later.push(Promise.resolve(fn())); } }));
+
 const ac = (flight: string, o: Record<string, unknown> = {}) => ({ flight, lat: 39, lon: -100, alt_baro: 35000, gs: 450, track: 270, t: "A320", r: "N1", seen_pos: 1, ...o });
 const fr = (cs: string, o: string, d: string) => ({ response: { flightroute: { callsign: cs, callsign_icao: cs,
   origin: { iata_code: o, latitude: 40.64, longitude: -73.78, municipality: o },
@@ -23,7 +27,7 @@ async function get(q = "") {
   const r = await GET(new Request(`http://x/api/live${q}`));
   return { status: r.status, cache: r.headers.get("cache-control"), body: await r.json() };
 }
-beforeEach(() => vi.resetModules());
+beforeEach(() => { vi.resetModules(); later.length = 0; });
 afterEach(() => vi.unstubAllGlobals());
 
 describe("/api/live list", () => {
@@ -48,6 +52,49 @@ describe("/api/live list", () => {
     expect(status).toBe(502);
     expect(body.error).toMatch(/didn't answer/);
   });
+  it("a failed type is asked once more before it counts as failed", async () => {
+    let tries = 0;
+    vi.stubGlobal("fetch", async (url: string) => {
+      if (url.includes("/v2/type/A320")) return ++tries === 1 ? new Response(null, { status: 503 }) : Response.json({ ac: [ac("JBU615")] });
+      if (url.includes("/v2/type/")) return new Response(null, { status: 503 });
+      return new Response('"unknown callsign"', { status: 404 });
+    });
+    const { status, body } = await get();
+    expect(status).toBe(200);
+    expect(tries).toBe(2);
+    expect(body.flights.map((f: { number: string }) => f.number)).toEqual(["B6 615"]);
+  });
+  it("adsb.lol down after a good answer -> the last good list, marked stale", async () => {
+    const { GET } = await import("./route");
+    upstream({ A320: [ac("JBU615")] }, { JBU615: fr("JBU615", "JFK", "LAX") });
+    await GET(new Request("http://x/api/live"));
+    upstream({ A320: 503, A321: 503, A21N: 503, BCS3: 503, E190: 503 }, {});
+    const r = await GET(new Request("http://x/api/live"));
+    const body = await r.json();
+    expect(r.status).toBe(200);
+    expect(body.stale).toBe(true);
+    expect(body.flights[0].route_id).toBe("jfk-lax");
+    expect(r.headers.get("cache-control")).toBe("no-store");
+  });
+  it("slow route lookups: answers in about 5 s with what it has, and finishes the rest afterwards", async () => {
+    vi.stubGlobal("fetch", async (url: string) => {
+      if (url.includes("/v2/type/A320")) return Response.json({ ac: [ac("JBU615"), ac("JBU23")] });
+      if (url.includes("/v2/type/")) return Response.json({ ac: [] });
+      if (url.endsWith("JBU23")) await new Promise((res) => setTimeout(res, 7000));
+      const cs = url.match(/callsign\/(\w+)$/)?.[1] ?? "";
+      return Response.json(fr(cs, "JFK", "LAX"));
+    });
+    const { GET } = await import("./route");
+    const t0 = Date.now();
+    const body = await (await GET(new Request("http://x/api/live"))).json();
+    expect(Date.now() - t0).toBeLessThan(6500);
+    expect(body.flights.find((f: { number: string }) => f.number === "B6 615").route_id).toBe("jfk-lax");
+    expect(body.flights.find((f: { number: string }) => f.number === "B6 23").origin).toBeNull();
+    expect(later).toHaveLength(1);
+    await Promise.all(later);
+    const again = await (await GET(new Request("http://x/api/live"))).json();
+    expect(again.flights.find((f: { number: string }) => f.number === "B6 23").route_id).toBe("jfk-lax");
+  }, 15000);
   it("asks adsbdb about each callsign once per 12 hours", async () => {
     const calls = upstream({ A320: [ac("JBU615")] }, { JBU615: fr("JBU615", "JFK", "LAX") });
     const { GET } = await import("./route");
