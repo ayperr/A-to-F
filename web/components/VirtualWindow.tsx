@@ -12,7 +12,7 @@ import styles from "./VirtualWindow.module.css";
 import WhatsThat from "./WhatsThat";
 import LandmarkAbout from "./LandmarkAbout";
 
-import { aimNight, interpolate, ionWorks, type LightMode, lightFromSun, loadCesium, PITCH_DEG, setLightMode, TOKEN } from "@/lib/cesium";
+import { aimNight, detailFor, interpolate, ionWorks, type LightMode, lightFromSun, loadCesium, PITCH_DEG, setLightMode, TOKEN, tuneTiles } from "@/lib/cesium";
 import { samplesFor } from "@/lib/engine/geometry";
 import { deadReckon, type LivePlane, nearestMinute } from "@/lib/live";
 import { routeRef } from "@/lib/adhoc";
@@ -125,6 +125,7 @@ export default function VirtualWindow({ detail, backHref }: { detail: RouteDetai
         (window as unknown as { __atofViewer?: unknown }).__atofViewer = v;
         const scene = v.scene;
         lightFromSun(scene.globe);
+        tuneTiles(scene);
         scene.screenSpaceCameraController.enableInputs = false;
         (v.camera.frustum as CesiumNS.PerspectiveFrustum).fov = C.Math.toRadians(62);
 
@@ -196,6 +197,7 @@ export default function VirtualWindow({ detail, backHref }: { detail: RouteDetai
       v.clock.clockRange = C.ClockRange.UNBOUNDED;
       v.clock.multiplier = 1;
       v.clock.shouldAnimate = true;
+      v.scene.globe.maximumScreenSpaceError = detailFor(1, true);
       return;
     }
     const start = C.JulianDate.fromDate(new Date(departureMs));
@@ -205,6 +207,7 @@ export default function VirtualWindow({ detail, backHref }: { detail: RouteDetai
     v.clock.currentTime = C.JulianDate.addMinutes(start, Math.min(minuteRef.current, last), new C.JulianDate());
     v.clock.multiplier = speed;
     v.clock.shouldAnimate = playing;
+    v.scene.globe.maximumScreenSpaceError = detailFor(speed, playing);
   }, [departureMs, last, speed, playing, status, following]);
 
   // Poll the plane's position every 10 seconds (the API is CDN-cached, so viewers share calls).

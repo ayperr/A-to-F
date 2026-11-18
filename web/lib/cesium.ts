@@ -26,6 +26,24 @@ export function lightFromSun(globe: CesiumNS.Globe) {
   globe.nightFadeInDistance = 1;
 }
 
+/**
+ * Tile loading for a camera that moves fast. At 300x the plane covers about 70 km a second, so new tiles are
+ * needed faster than full-detail ones download, and the view stays blurry until they catch up. Keep more
+ * tiles (scrubbing back is instant), fetch the neighbours of what is on screen, let the hazy horizon use
+ * coarser tiles, and ask for less detail while playing fast (pausing brings full detail back).
+ */
+export function tuneTiles(scene: CesiumNS.Scene) {
+  scene.globe.tileCacheSize = 1000;        // Cesium default 100
+  scene.globe.preloadSiblings = true;
+  scene.fog.screenSpaceErrorFactor = 4;    // default 2: coarser tiles far away, where the haze is anyway
+}
+
+/** Detail for the playback speed: 2 is Cesium's full detail. Higher numbers mean fewer, coarser tiles. */
+export function detailFor(speed: number, playing: boolean): number {
+  if (!playing || speed < 60) return 2;
+  return speed >= 300 ? 6 : 4;
+}
+
 export type LightMode = "real" | "day" | "night";
 
 /**
