@@ -116,10 +116,17 @@ jobs:
           git commit -m "Observed JetBlue routes ($(python3 -c 'import json;d=json.load(open("pipeline/observed_routes.json"));r=d["routes"].values();print(len(d["routes"]),"pairs,",sum(1 for x in r if x.get("confirmed")),"confirmed,",d["snapshots"],"snapshots")'))"
           git pull --rebase -q origin main
           git push
-          gh workflow run map-routes.yml --ref main -R "$GITHUB_REPOSITORY"
+          for wait in 0 20 60; do sleep "$wait"; gh workflow run map-routes.yml --ref main -R "$GITHUB_REPOSITORY" && break; done
 
       - name: Start the next run
         if: always() && steps.phase.outputs.phase == 'observe'
         env:
           GH_TOKEN: ${{ github.token }}
-        run: gh workflow run observe-routes.yml --ref main -R "$GITHUB_REPOSITORY"
+        # GitHub's API sometimes answers 502 (it ended the 18 Nov window 2.5 hours early): try a few times.
+        run: |
+          for wait in 0 20 60 120; do
+            sleep "$wait"
+            gh workflow run observe-routes.yml --ref main -R "$GITHUB_REPOSITORY" && exit 0
+            echo "Dispatch failed, trying again."
+          done
+          exit 1

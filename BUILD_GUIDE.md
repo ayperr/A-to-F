@@ -22,7 +22,7 @@ Facts were checked on 1 Nov 2026; sources at the end.
 | Narration | Batches (Haiku lines, Sonnet adaptive-thinking tips), claim check rejects wrong sides | `pipeline/narrate.py`, `check_claims.py` |
 | MCP | STDIO: progress, logging, sampling (with side check), roots; hosted stateless HTTP + JSON | `mcp_server/smoke_test.py`; live endpoint |
 | Claude Code | 3 skills, 5 subagents (route-analyst, storyteller, landmark-verifier, code-auditor, copy-checker), PreToolUse + PostToolUse hooks, CLAUDE.md, `.mcp.json` | Hooks tested: block generated edits, catch wrong side |
-| Automation | CI, Claude Code PR review, "Generate Claude data" workflow, headless `regenerate.sh`, view of the week, "Observe JetBlue routes" (recorded the live list every 5 min in chained runs, Thu 12 to Fri 13 Nov 18:00 ET and Sat 14 Nov 08:00 to 20:00 ET), "Map new routes" (maps what passes rule 4, rebuilds, tests, commits), `scripts/check_copy.py` (typed-in counts vs data, in CI and the mapper) | `.github/workflows/`, `scripts/` |
+| Automation | CI, Claude Code PR review, "Generate Claude data" workflow, headless `regenerate.sh`, view of the week, "Observe JetBlue routes" (recorded the live list every 5 min in chained runs, Thu 12 to Fri 13 Nov 18:00 ET, Sat 14 Nov 08:00 to 20:00 ET and Wed 18 Nov 13:45 to 20:20 ET), "Map new routes" (maps what passes rule 4, rebuilds, tests, commits), `scripts/check_copy.py` (typed-in counts vs data, in CI and the mapper) | `.github/workflows/`, `scripts/` |
 | Cowork plugin | "A to F for trip planners": 2 skills + hosted MCP, validated | `plugin/a-to-f-trip-planner/` |
 
 ## 2. Still open

@@ -72,7 +72,7 @@ npm test && npm run lint && npm run build
   landmark-verifier, code-auditor, copy-checker), hooks (guard generated files, check claims/engine after edits).
 - `plugin/a-to-f-trip-planner/` Cowork plugin (skills + hosted MCP).
 - `.github/workflows/` CI, Claude Code PR review, "Generate Claude data" (narration with a repo secret),
-  "Observe JetBlue routes" (snapshot every 5 min, Thu 12 to Fri 13 Nov 18:00 ET and Sat 14 Nov 08:00-20:00 ET, finished; committed
+  "Observe JetBlue routes" (snapshot every 5 min, Thu 12 to Fri 13 Nov 18:00 ET, Sat 14 Nov 08:00-20:00 ET and Wed 18 Nov 13:45-20:20 ET, finished; committed
   `pipeline/observed_routes.json`), "Map new routes" (`map-routes.yml`, started by each observer commit: maps what
   passes rule 4, rebuilds data, runs every check, commits only if all pass).
 

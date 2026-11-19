@@ -18,7 +18,8 @@ export default function RoutesPage() {
       </p>
       <p style={{ color: "var(--ink-soft)", margin: "10px 0 0", maxWidth: "60ch", fontSize: "0.9rem" }}>
         New routes were added from what was actually flying: A to F recorded every JetBlue route on the live list from
-        Thursday 12 to Friday 13 November and again on Saturday 14 November, and mapped each one it could confirm.
+        Thursday 12 to Friday 13 November and again on Saturday 14 and Wednesday 18 November, and mapped each one it
+        could confirm.
       </p>
       <RouteList />
       <ViewOfWeek />
