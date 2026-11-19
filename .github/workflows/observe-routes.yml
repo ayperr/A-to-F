@@ -26,7 +26,7 @@ concurrency:
   cancel-in-progress: false
 
 env:
-  OBSERVE_UNTIL: "2026-11-19T04:00:00Z"   # Wed 18 Nov, 23:00 New York (third window, started 13:45)
+  OBSERVE_UNTIL: "2026-11-19T04:00:00Z"   # Wed 18 Nov, 23:00 New York (third window, 13:45 to 20:22, ended early)
   COMMIT_EVERY_H: "6"
 
 jobs:
